@@ -1,0 +1,43 @@
+.toast {
+    position: fixed;
+    bottom: 0;
+    z-index: 9999999;
+    width: 100%;
+    margin-block: 0.1vh;
+    width: 98vw;
+
+
+    .toast-body {
+        display: flex;
+        align-items: center;
+        padding-inline: 3vw;
+        padding-block: 1vh;
+        justify-content: space-between;
+    }
+
+    .button {
+        width: 100%;
+    }
+
+    svg {
+        height: 10vh;
+    }
+
+    .spinner {
+        path {
+            fill: white;
+        }
+    }
+
+    .success {
+        path {
+            fill: #39FF14;
+        }
+    }
+
+    .failure {
+        path {
+            fill: #FFFF33;
+        }
+    }
+}
