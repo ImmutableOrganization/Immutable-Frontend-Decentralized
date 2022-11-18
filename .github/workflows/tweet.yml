@@ -18,12 +18,9 @@ jobs:
           # https://docs.github.com/en/developers/webhooks-and-events/webhooks/webhook-events-and-payloads#release
           tweet-message: "${{ github.event.repository.name }} Commit: ${{ github.event.head_commit.message }}. \n
           repo: https://github.com/ImmutableOrganization/Immutable-Frontend-Decentralized \n
-          Our website: https://immutable.lol/ \n 
           Our whitepaper: https://www.immutable.lol/whitepaper \n 
           https://twitter.com/ImmutableOrg \n 
-          https://discord.com/invite/kCsQUJR7U4 \n
-          #IMT #Immutable #ImmutableToken #ImmutableOrganization
-          #cryptocurrency #uniswap #ERC20 #ethereum  #Arbitrum
+          #IMT #Immutable #ImmutableToken #ImmutableOrganization #ethereum #Arbitrum
           "
         env:
           # Get your tokens from https://developer.twitter.com/apps
