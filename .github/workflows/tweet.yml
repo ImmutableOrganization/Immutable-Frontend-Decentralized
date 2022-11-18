@@ -2,8 +2,9 @@ name: tweet-release
 
 # More triggers
 # https://docs.github.com/en/actions/learn-github-actions/events-that-trigger-workflows#release
-on: push
-    
+on:
+  release:
+    types: [published]    
 
 jobs:
   tweet:
