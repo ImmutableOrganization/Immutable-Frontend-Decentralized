@@ -11,15 +11,6 @@ const ipfsMatchBaseElement = `
 })();
 `
 
-const gaScript = `
-    (function () {
-        window.dataLayer = window.dataLayer || [];
-        function gtag() { dataLayer.push(arguments); }
-        gtag('js', new Date());
-
-        gtag('config', ${process.env.NEXT_PUBLIC_GA_ID});
-    })();
-`
 
 
 export default class MyDocument extends Document {
@@ -28,8 +19,6 @@ export default class MyDocument extends Document {
             <Html>
                 <Head>
                     <Script dangerouslySetInnerHTML={{ __html: ipfsMatchBaseElement }} />
-                    <script async src={`https://www.googletagmanager.com/gtag/js?id=${process.env.NEXT_PUBLIC_GA_ID}`}></script>
-                    <Script dangerouslySetInnerHTML={{ __html: gaScript }} />
                     <link rel="shortcut icon" href="https://ipfs.io/ipfs/Qmes8Ycb9JCLG9Ny2xeJxCFY7kSpyDfATEdgmncQ4TPVEs?filename=token.svg" />
                 </Head>
                 <body>

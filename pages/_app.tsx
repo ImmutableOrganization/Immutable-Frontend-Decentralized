@@ -22,6 +22,7 @@ import { Toast } from '../components/Toast/Toast'
 import { useSocket } from "../hooks/useSocket"
 import { alchemyProvider } from 'wagmi/providers/alchemy'
 import { InjectedConnector } from 'wagmi/connectors/injected'
+import { GoogleAnalytics } from "nextjs-google-analytics";
 
 export interface ErrorProps {
   formError: FormError,
@@ -123,6 +124,7 @@ function MyApp({ Component, pageProps }: AppProps) {
 
   return (
     <>
+      <GoogleAnalytics trackPageViews gaMeasurementId={process.env.NEXT_PUBLIC_GA_ID}/>
       <PopupContext.Provider value={{ formError, loading, setFormError, setIsLoading, openToast, toastMessage, setToastMessage, setOpenToast, toastType, setToastType }}>
         <WagmiConfig client={client} >
           <Header />

@@ -1,4 +1,5 @@
 import { NextPage } from "next";
+import Head from "next/head";
 import React from "react";
 import { Frame } from "../components/Frame";
 import { company_name, token_name } from "../utils/globals";
@@ -7,6 +8,10 @@ const Whitepaper: NextPage = () => {
 
     return (
         <div className="whitepaper">
+            <Head>
+                <title>Whitepaper</title>
+            </Head>
+
             <Frame headerText={"WHITEPAPER"} body={() =>
                 <div className="align-center">
                     <br></br>
