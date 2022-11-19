@@ -2,8 +2,10 @@ name: tweet-release
 
 # More triggers
 # https://docs.github.com/en/actions/learn-github-actions/events-that-trigger-workflows#release
-on: push
-    
+on: 
+  push:
+    # only trigger on branches, not on tags
+    branches: '**'
 
 jobs:
   tweet:
@@ -14,7 +16,10 @@ jobs:
         with:
           # GitHub event payload
           # https://docs.github.com/en/developers/webhooks-and-events/webhooks/webhook-events-and-payloads#release
-          tweet-message: "${{ github.event.repository.name }} release ${{ github.event.release.tag_name }}. Find at: ${{ github.event.release.html_url }}. Find out more about us: https://immutable.lol/ https://twitter.com/ImmutableOrg"
+          tweet-message: "https://github.com/ImmutableOrganization/Immutable-Frontend-Decentralized has been updated: ${{ github.event.head_commit.message }}. \n
+          https://twitter.com/ImmutableOrg \n 
+          #IMT #Immutable #ImmutableToken #ImmutableOrganization #ethereum #Arbitrum
+          "
         env:
           # Get your tokens from https://developer.twitter.com/apps
           TWITTER_CONSUMER_API_KEY: ${{ secrets.TWITTER_CONSUMER_API_KEY }}
