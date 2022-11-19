@@ -338,8 +338,8 @@ input[type=text]:hover {
             animation: twitter-colors 1s infinite;
         }
 
-        svg path {
-            animation: twitter-colors 1s infinite;
+        img.icon {
+            animation: twitter-colors-icon 1s infinite;
         }
     }
 
@@ -351,8 +351,8 @@ input[type=text]:hover {
             animation: discord-colors 1s infinite;
         }
 
-        svg path {
-            animation: discord-colors 1s infinite;
+        img.icon {
+            animation: discord-colors-icon 1s infinite;
         }
     }
 }
@@ -376,6 +376,19 @@ input[type=text]:hover {
         text-shadow: 0 0 0.15em #00e1ff;
     }
 }
+@keyframes twitter-colors-icon {
+    0% {
+        filter: invert(26%) sepia(82%) saturate(2598%) hue-rotate(203deg) brightness(105%) contrast(103%);
+    }
+
+    50% {
+        filter: invert(32%) sepia(53%) saturate(2451%) hue-rotate(215deg) brightness(99%) contrast(105%);
+    }
+
+    100% {
+        filter: invert(80%) sepia(38%) saturate(6178%) hue-rotate(145deg) brightness(104%) contrast(107%);
+    }
+}
 
 @keyframes discord-colors {
     0% {
@@ -394,6 +407,20 @@ input[type=text]:hover {
         fill: #703396;
         color: #703396;
         text-shadow: 0 0 0.15em #703396;
+    }
+}
+
+@keyframes discord-colors-icon {
+    0% {
+        filter: invert(30%) sepia(21%) saturate(3173%) hue-rotate(245deg) brightness(93%) contrast(89%);
+    }
+
+    50% {
+        filter: invert(74%) sepia(52%) saturate(4336%) hue-rotate(221deg) brightness(97%) contrast(91%);
+    }
+
+    100% {
+        filter: invert(26%) sepia(26%) saturate(3387%) hue-rotate(251deg) brightness(90%) contrast(95%);
     }
 }
 

@@ -1,6 +1,14 @@
 // CHAT
 .chat {
 
+    img.check-icon {
+        filter: invert(42%) sepia(93%) saturate(1352%) hue-rotate(87deg) brightness(119%) contrast(119%);
+        height: 5vh;
+    }
+    .exclamation-triangle {
+        filter: invert(100%) sepia(31%) saturate(4216%) hue-rotate(353deg) brightness(101%) contrast(115%);
+        height: 5vh;
+    }
 
     h1 {
         position: relative;
@@ -60,7 +68,7 @@
     .chat-options {
         // width: 100%;
     }
-
+    
     .chat-info {
         width: 100%;
 
@@ -77,24 +85,9 @@
                 align-items: center;
                 justify-content: space-between;
 
-                .exclamation-triangle {
-                    path {
-
-                        fill: #FFFF33;
-                    }
-                }
-
-                .check-icon {
-                    path {
-                        fill: #39FF14;
-                    }
-                }
-
-                svg {
-                    height: 5vh;
-
-                }
+            
             }
+            
         }
     }
 
@@ -154,12 +147,10 @@
             .button {
                 box-shadow: inset 1px 1px 0px 1px #ccd2d2, inset 0 0 0 1px #1f2223, 1px 1px 0 0px var(--boxShadowBottomRight);
 
-                svg {
+                img.icon {
                     height: 3vh;
-
-                    path {
-                        fill: yellow;
-                    }
+                    width: 7vw;
+                    filter: invert(100%) sepia(100%) saturate(0%) hue-rotate(288deg) brightness(102%) contrast(102%);
                 }
             }
         }

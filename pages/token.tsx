@@ -119,7 +119,7 @@ const Token: NextPage = () => {
                         </li>
                         <li>
                             <BaseLink href="/whitepaper" target="_blank" rel="noopener noreferrer" as={undefined}>
-                                https://www.immutable.lol/whitepaper
+                                Whitepaper
                             </BaseLink>
                         </li>
                     </ul>
