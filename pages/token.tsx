@@ -5,6 +5,7 @@ import { company_name, token_name, token_symbol } from "../utils/globals";
 import { Frame } from "../components/Frame";
 import { SwapWidget, darkTheme } from "@uniswap/widgets";
 import { addTokenArbitrum, addUSDCArbitrum, switchToArbitrum } from "../utils/addTokenToMetaMask";
+import { BaseLink } from "../components/BaseLink";
 
 // import dynamic from 'next/dynamic'
 // import { Suspense } from "react";
@@ -117,9 +118,9 @@ const Token: NextPage = () => {
                             For an outline of the The Organizations objectives and plans, read our whitepaper.
                         </li>
                         <li>
-                            <a href="https://www.immutable.lol/whitepaper" target="_blank" rel="noopener noreferrer">
+                            <BaseLink href="/whitepaper" target="_blank" rel="noopener noreferrer" as={undefined}>
                                 https://www.immutable.lol/whitepaper
-                            </a>
+                            </BaseLink>
                         </li>
                     </ul>
 
