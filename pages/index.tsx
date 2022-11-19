@@ -74,14 +74,14 @@ const Boards: NextPage = () => {
                             </div>
                         } />
                         <Frame headerText={"Index"} body={() =>
-                            <BaseLink href={`/posts/${0}`} as={undefined}>
+                            <BaseLink href={`/post?post_id=0`} as={undefined}>
                                 <a className="button initial">Go to homepage</a>
                             </BaseLink>
                         } />
                         <Frame headerText={"View Post"} body={() =>
                             <div className="new-post">
                                 <input type='number' placeholder='post id...' className="text_input terminal-input" value={postToViewId} onChange={(e) => setPostToViewId(e.target.value)} />
-                                <BaseLink href={`/posts/${postToViewId}`} as={undefined}>
+                                <BaseLink href={`/post?post_id=${postToViewId}`} as={undefined}>
                                     <a className="button">Navigate to post {postToViewId}</a>
                                 </BaseLink>
                             </div>

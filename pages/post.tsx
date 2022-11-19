@@ -2,11 +2,11 @@ import { NextPage } from "next";
 import Head from "next/head";
 import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
-import { Frame } from "../../../components/Frame";
-import { PostFrame } from "../../../components/Post/PostFrame";
-import { WalletHeader } from "../../../components/wallet/WalletHeader";
-import { useGetPost } from "../../../ContractHooks/useGetPost";
-import { ContractPost, contractPostSerializer } from "../../../interfaces/interfaces";
+import { Frame } from "../components/Frame";
+import { PostFrame } from "../components/Post/PostFrame";
+import { WalletHeader } from "../components/wallet/WalletHeader";
+import { useGetPost } from "../ContractHooks/useGetPost";
+import { ContractPost, contractPostSerializer } from "../interfaces/interfaces";
 
 const Post: NextPage = () => {
 

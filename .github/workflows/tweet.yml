@@ -16,7 +16,7 @@ jobs:
         with:
           # GitHub event payload
           # https://docs.github.com/en/developers/webhooks-and-events/webhooks/webhook-events-and-payloads#release
-          tweet-message: "https://github.com/ImmutableOrganization/Immutable-Frontend-Decentralized has been updated: ${{ github.event.head_commit.message }}. \n
+          tweet-message: "${{ github.event.head_commit.message }}. \n
           https://twitter.com/ImmutableOrg \n 
           #IMT #Immutable #ImmutableToken #ImmutableOrganization #ethereum #Arbitrum
           "

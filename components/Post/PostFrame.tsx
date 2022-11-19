@@ -150,7 +150,7 @@ export const PostFrame: React.FC<iPostFrame> = ({ post, _post_id, pageRootPost }
                                     <div key={index}>
                                         <PostFrame post={reply} _post_id={reply._id} pageRootPost={_post_id} />
                                         {reply._id !== post.parent &&
-                                            <BaseLink href={`/posts/${reply._id}`} as={undefined}>
+                                            <BaseLink href={`/post?post_id=${reply._id}`} as={undefined}>
                                                 <a className="button new-post">View</a>
                                             </BaseLink>
                                         }
