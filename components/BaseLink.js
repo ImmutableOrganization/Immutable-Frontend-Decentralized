@@ -9,13 +9,14 @@ export const BaseLink = ({ href, as, ...rest }) => {
 
         // during compilation
         if (baseURI_as.startsWith('/')) {
-            baseURI_as = '.' + href
+            // baseURI_as = '.' + href
 
             // this will run in the browser
             if (typeof document !== 'undefined') {
                 baseURI_as = resolve(document.baseURI, baseURI_as)
             }
         }
+        // console.log(`BaseLink: ${baseURI_as}`)
         return baseURI_as
     }, [as, href])
 
