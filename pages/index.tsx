@@ -86,13 +86,11 @@ const Boards: NextPage = () => {
                                 </BaseLink>
                             </div>
                         } />
-
                         <Frame headerText={"New Post"} body={() =>
                             <div className="new-post">
                                 <input type='button' className="button" value={openNewPost ? "Close" : "POST"} onClick={() => setOpenNewPost(!openNewPost)} />
                             </div>
                         } />
-
                         {openNewPost &&
                             <>
                                 {!account.connector?.ready ?

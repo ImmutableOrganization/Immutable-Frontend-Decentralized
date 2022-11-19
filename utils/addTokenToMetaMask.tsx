@@ -2,7 +2,7 @@ export const addToken = async () => {
     const tokenAddress = '0xA3847dDbC97C6D3AcD265f0A42B3b885e5f8865e';
     const tokenSymbol = 'IMT';
     const tokenDecimals = 18;
-    const tokenImage = 'https://www.immutable.lol/token.png';
+    const tokenImage = 'https://ipfs.io/ipfs/QmRneeRA2sNoNDvctwahPUNSa4jKetGobzN97YwP1LsvRd?filename=token.png';
 
     try {
         // wasAdded is a boolean. Like any RPC method, an error may be thrown.
@@ -34,7 +34,7 @@ export const addTokenArbitrum = async () => {
     const tokenAddress = '0x17482Fae07cF2fF29233C4c4e29B5deF5130B7a1';
     const tokenSymbol = 'IMT';
     const tokenDecimals = 18;
-    const tokenImage = 'https://www.immutable.lol/token.png';
+    const tokenImage = 'https://ipfs.io/ipfs/QmRneeRA2sNoNDvctwahPUNSa4jKetGobzN97YwP1LsvRd?filename=token.png';
 
     try {
         // wasAdded is a boolean. Like any RPC method, an error may be thrown.

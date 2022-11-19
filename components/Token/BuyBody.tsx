@@ -20,7 +20,7 @@ export const BuyBody: React.FC = () => {
             "symbol": `${token_symbol}`,
             "decimals": 18,
             "chainId": 42161,
-            "logoURI": "https://www.immutable.lol/token.png"
+            "logoURI": "https://ipfs.io/ipfs/QmRneeRA2sNoNDvctwahPUNSa4jKetGobzN97YwP1LsvRd?filename=token.png"
     
         }
     ]
