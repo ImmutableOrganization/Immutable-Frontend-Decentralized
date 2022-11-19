@@ -3,7 +3,7 @@ const shouldAnalyzeBundles = process.env.ANALYZE === true;
 
 const nextConfig = {
   reactStrictMode: true,
-  assetPrefix: './',
+  assetPrefix: '/',
   trailingSlash: true,
 }
 const withBundleAnalyzer = require("@next/bundle-analyzer")({
@@ -11,5 +11,3 @@ const withBundleAnalyzer = require("@next/bundle-analyzer")({
 });
 
 module.exports = withBundleAnalyzer(nextConfig);
-
-
