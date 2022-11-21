@@ -1,11 +1,11 @@
 import { NextPage } from "next";
 import Head from "next/head";
 import { company_name, token_name, token_symbol } from "../utils/globals";
-
 import { Frame } from "../components/Frame";
-
 import dynamic from 'next/dynamic'
 import { Suspense } from "react";
+import { BaseLink } from "../components/BaseLink";
+
 // eslint-disable-next-line @typescript-eslint/ban-ts-comment
 // @ts-ignore
 const DynamicDaoBody = dynamic(() =>
@@ -22,7 +22,6 @@ const DynamicBuyBody = dynamic(() =>
 
 const Token: NextPage = () => {
 
-
     const buyTokenBody = () => {
         return (
             <>
@@ -38,7 +37,66 @@ const Token: NextPage = () => {
         )
     }
 
-
+    const detailsBody = () => {
+        return (
+            <div className="">
+                <ul>
+                    <h3>
+                        Github:
+                    </h3>
+                    <li>
+                        The Organization has all of our code available so users can build and run the app locally.
+                    </li>
+                    <li>
+                        <a href="https://github.com/ImmutableOrganization" target="_blank">
+                            Link to the Organization's Github.
+                        </a>
+                    </li>
+                    <li>
+                        <a href="https://github.com/ImmutableOrganization/Immutable-Frontend-Decentralized/" target="_blank">
+                            Link to app's frontend repository.
+                        </a>
+                    </li>
+                </ul>
+                <ul>
+                    <h3>
+                        Frontend:
+                    </h3>
+                    <li>
+                        The main version of the website can be found at: &#x2800;
+                        <a target="_blank" href="https://immutable.lol/">
+                            immutable.lol.
+                        </a>
+                    </li>
+                    <li>
+                        The Organization's ENS can be found at: &#x2800;
+                        <a target="_blank" href="https://app.ens.domains/name/immutableapp.eth">
+                            app.ens.domains/name/immutableapp.eth.
+                        </a>
+                    </li>
+                    <li>
+                        The ENS points to the IPNS version of our app.
+                        To access the site via ENS, visit the link:
+                        &#x2800;
+                        <a target="_blank" href="https://immutableapp.eth.link/">
+                            immutableapp.eth.link.
+                        </a>
+                    </li>
+                </ul>
+                <ul>
+                    <h3>
+                        WHITEPAPER:
+                    </h3>
+                    <li>
+                        For an outline of the The Organizations objectives and plans, read our whitepaper at: &#x2800;
+                        <BaseLink href="/whitepaper" target="_blank" rel="noopener noreferrer" as={undefined}>
+                            Whitepaper link.
+                        </BaseLink>
+                    </li>
+                </ul>
+            </div>
+        )
+    }
 
     const communityBody = () => {
         return (
@@ -62,24 +120,21 @@ const Token: NextPage = () => {
         )
     }
 
-
     return (
-
         <div className="token-page">
             <Head>
                 <title>{company_name}</title>
             </Head>
             <Frame headerText={"TOKEN"} className='token-box' body={buyTokenBody} />
-            {/* <Frame headerText={"SWAP"} className='padding token-box' body={swapBody} /> */}
+            <Frame headerText={"DETAILS"} className='padding token-box' body={detailsBody} />
             <Suspense fallback={<div>Loading...</div>}>
                 <Frame headerText="DAO" className='padding token-box' body={() =>
                     <DynamicDaoBody />
                 }
                 />
             </Suspense>
-
             <Suspense fallback={<div>Loading...</div>}>
-                <Frame className={"padding token-box"} headerText={"BUY"} body={() =>
+                <Frame className={"padding token-box"} headerText={"BUY IMT"} body={() =>
                     <DynamicBuyBody />
                 }
                 />

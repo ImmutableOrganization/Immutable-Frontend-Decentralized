@@ -1,5 +1,3 @@
-import { BaseLink } from "../BaseLink"
-
 
 export const DaoBody: React.FC = () => {
 
@@ -14,20 +12,6 @@ export const DaoBody: React.FC = () => {
             </li>
             <li>
                 All fees collected by smart contracts operated by the Immutable Organization will be distributed proportionally to all token holders.
-            </li>
-        </ul>
-
-        <ul>
-            <h3>
-                WHITEPAPER:
-            </h3>
-            <li>
-                For an outline of the The Organizations objectives and plans, read our whitepaper.
-            </li>
-            <li>
-                <BaseLink href="/whitepaper" target="_blank" rel="noopener noreferrer" as={undefined}>
-                    Whitepaper
-                </BaseLink>
             </li>
         </ul>
 
