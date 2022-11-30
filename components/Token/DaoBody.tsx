@@ -18,9 +18,9 @@ export const DaoBody: React.FC = () => {
         <li>
           TOTAL SUPPLY: 20,000,000.
           <ul>
-            <li>49% publicly available to trade in the Liquidity Pool.</li>
+            <li>49% Liquidity Pool.</li>
             <li>20% Organization founders.</li>
-            <li>11% to the Organization treasury.</li>
+            <li>11% Organization treasury.</li>
             <li>
               The remaining 20% will be under the control of the Organization
               until further progress has been made for phase 1.0. It will be decided if this remaining amount
