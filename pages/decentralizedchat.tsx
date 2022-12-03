@@ -3,7 +3,8 @@ import { useEffect, useState } from 'react';
 import * as openpgp from 'openpgp';
 import { Frame } from '../components/Frame';
 import { useLocalStorage } from 'usehooks-ts';
-
+import { BaseRoomConfig, joinRoom } from 'trystero';
+import { TorrentRoomConfig } from 'trystero/torrent';
 let ranOnce = false;
 
 const DecentralizedChat: NextPage = () => {
@@ -21,6 +22,25 @@ const DecentralizedChat: NextPage = () => {
 
 	useEffect(() => {
 		if (!ranOnce) {
+			// first just do unencrypted chat right lol.
+
+			// make conn
+			// THIS MUST BE UNIQUE AND PRIVATE
+			const _appId = 'immutable';
+
+			// _roomname - A string to namespace peers and events within a room.
+			const _roomName = 'room22';
+
+			// CONFIG CAN TAKE A PASSWORD TO MASK PEERS TO NOT USERS OF THE APP
+			//password, encrypts the SID for peers , session descriptions will be encrypted using AES-CBC
+			// really no need i think, guess means only authed users can connect to the chat network.
+			// maybe set an env one for the org.
+
+			// other options params we can skip
+			const config: BaseRoomConfig = { appId: _appId };
+			const room = joinRoom(config, _roomName);
+			room.leave();
+			joinRoom;
 		}
 	}, []);
 
