@@ -1,4 +1,3 @@
-
 // // i only need this for local build
 // // i need to disable this when uploaded to ipfs
 // const replace = require('replace-in-file');

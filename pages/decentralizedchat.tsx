@@ -68,6 +68,13 @@ const DecentralizedChat: NextPage = () => {
 	return (
 		<>
 			<Frame headerText={'ENCRYPTED'} body={encryptionBody} />
+			<input
+				type='button'
+				className='button'
+				onClick={() => setEncryptionEnabled(!encryptionEnabled)}
+				value={`${encryptionEnabled ? 'DISABLE' : 'ENABLE'} ENCRYPTION`}
+			/>
+
 			<input type='button' className='button' onClick={() => genKeyPair()} value='genKeyPair' />
 		</>
 	);

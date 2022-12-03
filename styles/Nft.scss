@@ -1,94 +1,91 @@
 .nft {
-    .generatedImage {
+	.generatedImage {
+		z-index: 999;
+		position: fixed;
+		width: 99vw;
+		margin: auto;
+		text-transform: uppercase;
 
-        z-index: 999;
-        position: fixed;
-        width: 99vw;
-        margin: auto;
-        text-transform: uppercase;
+		ul {
+			text-align: left;
+		}
 
-        ul {
-            text-align: left;
-        }
+		.button {
+			width: 80%;
+		}
 
+		.frameBody {
+			padding-block: 1vh;
+			padding-inline: 1vw;
+			text-align: center;
+		}
 
-        .button {
-            width: 80%;
-        }
+		img {
+			height: auto;
+			width: auto;
+			max-width: 95vw;
+			max-height: 50vh;
+		}
+	}
 
-        .frameBody {
-            padding-block: 1vh;
-            padding-inline: 1vw;
-            text-align: center;
-        }
+	.nft-showcase {
+		.frameBody {
+			display: flex;
+			flex-direction: column;
 
-        img {
-            height: auto;
-            width: auto;
-            max-width: 95vw;
-            max-height: 50vh;
-        }
-    }
+			.button {
+				margin-block: 1vh;
+				margin-inline: 3vw;
+			}
+		}
+	}
 
-    .nft-showcase {
-        .frameBody {
-            display: flex;
-            flex-direction: column;
+	text-transform: uppercase;
 
-            .button {
-                margin-block: 1vh;
-                margin-inline: 3vw;
-            }
-        }
-    }
+	.collection-name {
+		font-size: min(8vw, 70px);
+		text-shadow: 5px 5px 5px #b846ff;
+		letter-spacing: 0.02em;
+		animation: shadow 3s infinite;
+		color: white;
+	}
 
-    text-transform: uppercase;
+	.showcase-item-property {
+		text-align: left;
+		padding: 1vh;
+		text-decoration: underline;
+		margin-inline: 3vw;
+	}
 
+	ul {
+		text-align: left;
+	}
 
-    .collection-name {
-        font-size: min(8vw, 70px);
-        text-shadow: 5px 5px 5px #b846ff;
-        letter-spacing: 0.02em;
-        animation: shadow 3s infinite;
-        color: white;
-    }
+	.mint {
+		width: 80%;
+		padding-inline: 5vw;
+		padding-block: 1vh;
+		margin-block: 1vh;
+		font-weight: bold;
+		background-color: var(--primary);
+		font-size: min(8vw, 40px);
+		letter-spacing: 0.02em;
+		text-transform: uppercase;
+		text-shadow: 5px 5px black;
+	}
 
-    .showcase-item-property {
-        text-align: left;
-        padding: 1vh;
-        text-decoration: underline;
-        margin-inline: 3vw;
-    }
+	.frame {
+		.frameBody {
+			padding-block: 1vh;
+			padding-inline: 1vw;
+			text-align: center;
+		}
 
-    ul {
-        text-align: left;
-    }
-
-    .mint {
-        width: 80%;
-        padding-inline: 5vw;
-        padding-block: 1vh;
-        margin-block: 1vh;
-        font-weight: bold;
-        background-color: var(--primary);
-        font-size: min(8vw, 40px);
-        letter-spacing: 0.02em;
-        text-transform: uppercase;
-        text-shadow: 5px 5px black;
-    }
-
-    .frame {
-        .frameBody {
-            padding-block: 1vh;
-            padding-inline: 1vw;
-            text-align: center;
-        }
-
-        img {
-            height: auto;
-            width: auto;
-            max-width: 95vw;
-            max-height: 50vh;
-        }
-    }
+		img {
+			height: auto;
+			width: auto;
+			max-width: 95vw;
+			max-height: 50vh;
+		}
+	}
 }
