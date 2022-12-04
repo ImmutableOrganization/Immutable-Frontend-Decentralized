@@ -76,6 +76,12 @@ const DecentralizedChat: NextPage = () => {
 
 	// ga tracking for page and events
 
+	// messages linked to a room
+	// user select a room
+	// user can enter messages to that room when its selected
+	// user also can select how many rooms to listen etc
+	// for now mvp -> user selects room, enters message, sends message, message is sent to all peers in room
+
 	return (
 		<>
 			<EncryptionComponent />

@@ -1,10 +1,13 @@
 import { useState } from 'react';
+import { v4 as uuidv4 } from 'uuid';
 
 interface RoomComponentProps {}
 
 interface RoomWrapper {
 	roomName: string;
+	_id: string;
 }
+
 const useRooms = () => {
 	const [rooms, setRooms] = useState<RoomWrapper[]>();
 
@@ -13,7 +16,7 @@ const useRooms = () => {
 		if (rooms) {
 			setRooms((rooms: any) => [...rooms, { roomName }]);
 		} else {
-			setRooms([{ roomName }]);
+			setRooms([{ roomName, _id: uuidv4() }]);
 		}
 	};
 
