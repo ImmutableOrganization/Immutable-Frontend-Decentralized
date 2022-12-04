@@ -1,9 +1,9 @@
 import { NextPage } from 'next';
-import { useEffect, useState } from 'react';
+import { Component, useEffect, useState } from 'react';
 import { BaseRoomConfig, joinRoom, Room } from 'trystero';
 import { EncryptionComponent } from '../components/ChatApp/EncryptionComponent';
 import { MessageComponent } from '../components/ChatApp/MessageComponent';
-import { RoomComponent } from '../components/ChatApp/RoomComponent';
+import { RoomComponent, RoomWrapper } from '../components/ChatApp/RoomComponent';
 let ranOnce = false;
 
 const DecentralizedChat: NextPage = () => {
@@ -73,6 +73,7 @@ const DecentralizedChat: NextPage = () => {
 	// errors on join room, invalid conn, invalid room name, invalid password
 	// needs to be a global popup for the chat page
 	// push notifications as well for when you get a message, error
+	// callback or notification if cant join room, invalid name etc
 
 	// ga tracking for page and events
 
@@ -82,11 +83,19 @@ const DecentralizedChat: NextPage = () => {
 	// user also can select how many rooms to listen etc
 	// for now mvp -> user selects room, enters message, sends message, message is sent to all peers in room
 
+	// need to verify user is sending messages to a valid channel
+
+	const emptyRoom: RoomWrapper = {
+		roomName: '',
+		_id: '',
+	};
+	const [selectedRoom, setSelectedRoom] = useState<RoomWrapper>(emptyRoom);
+
 	return (
 		<>
 			<EncryptionComponent />
-			<RoomComponent />
-			<MessageComponent />
+			<RoomComponent selectedRoomCallback={setSelectedRoom} />
+			<MessageComponent selectedRoom={selectedRoom} />
 		</>
 	);
 };

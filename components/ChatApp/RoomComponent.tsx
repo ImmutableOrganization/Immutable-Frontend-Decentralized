@@ -1,37 +1,48 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { v4 as uuidv4 } from 'uuid';
 
-interface RoomComponentProps {}
-
-interface RoomWrapper {
+interface RoomComponentProps {
+	selectedRoomCallback: (room: RoomWrapper) => void;
+}
+export interface RoomWrapper {
 	roomName: string;
 	_id: string;
 }
-
-const useRooms = () => {
+const useRooms = (selectedRoomCallback: (room: RoomWrapper) => void) => {
 	const [rooms, setRooms] = useState<RoomWrapper[]>();
 
 	// add room to state
 	const addRoom = (roomName: string) => {
+		if (roomName == '') {
+			return;
+			// CALLBACK TO ERROR HANDLER
+		}
+
 		if (rooms) {
-			setRooms((rooms: any) => [...rooms, { roomName }]);
+			if (!rooms.find((room) => room.roomName === roomName)) {
+				setRooms([...rooms, { roomName, _id: uuidv4() }]);
+			}
 		} else {
 			setRooms([{ roomName, _id: uuidv4() }]);
 		}
 	};
 
 	// remove room from state
-	const removeRoom = (roomName: string) => {
+	const removeRoom = (_room: RoomWrapper) => {
 		if (rooms) {
-			setRooms((rooms: any) => rooms.filter((room: RoomWrapper) => room.roomName !== roomName));
+			setRooms((rooms: any) => rooms.filter((room: RoomWrapper) => room._id !== _room._id));
 		}
 	};
 
-	return { rooms, addRoom, removeRoom };
-};
+	// select room
+	const selectRoom = (_room: RoomWrapper) => {
+		selectedRoomCallback(_room);
+	};
 
-export const RoomComponent: React.FunctionComponent<RoomComponentProps> = () => {
-	const { rooms, addRoom, removeRoom } = useRooms();
+	return { rooms, addRoom, removeRoom, selectRoom };
+};
+export const RoomComponent: React.FunctionComponent<RoomComponentProps> = ({ selectedRoomCallback }) => {
+	const { rooms, addRoom, removeRoom, selectRoom } = useRooms(selectedRoomCallback);
 
 	const joinRoom = () => {
 		const [roomName, setRoomName] = useState<string>('');
@@ -39,7 +50,6 @@ export const RoomComponent: React.FunctionComponent<RoomComponentProps> = () => 
 			<div className='joinRoom'>
 				<input type='text' value={roomName} onChange={(e) => setRoomName(e.target.value)} />
 				<input type='button' onClick={() => addRoom(roomName)} value='join room' />
-				<input type='button' onClick={() => removeRoom(roomName)} value='leave room' />
 			</div>
 		);
 	};
@@ -53,8 +63,9 @@ export const RoomComponent: React.FunctionComponent<RoomComponentProps> = () => 
 								<ul>
 									<h2>{room.roomName}</h2>
 									<li>peers</li>
-									<li>leave</li>
+									<input type='button' onClick={() => removeRoom(room)} value='leave room' />
 									<li>ping</li>
+									<input type='button' onClick={() => selectRoom(room)} value='select room' />
 								</ul>
 							</>
 						))}
