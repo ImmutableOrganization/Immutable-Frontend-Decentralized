@@ -4,7 +4,7 @@ import { RoomWrapper } from './RoomComponent';
 interface MessageComponentProps {
 	selectedRoom: RoomWrapper;
 	messages: any;
-	addMessage: any;
+	addMessage: (_message: Message, _roomId: string) => void;
 }
 
 export interface Message {
@@ -20,7 +20,7 @@ interface MessageList {
 export const useMessages = () => {
 	const [messages, setMessages] = useState<MessageList>();
 
-	const addMessage = (_message: string, _roomId: string) => {
+	const addMessage = (_message: Message, _roomId: string) => {
 		if (_roomId == '') {
 			return;
 			// CALLBACK TO ERROR HANDLER
@@ -29,13 +29,13 @@ export const useMessages = () => {
 			if (messages[_roomId]) {
 				setMessages({
 					...messages,
-					[_roomId]: [...messages[_roomId], { message: _message, timestamp: Date.now() }],
+					[_roomId]: [...messages[_roomId], { message: _message.message, timestamp: _message.timestamp }],
 				});
 			} else {
-				setMessages({ ...messages, [_roomId]: [{ message: _message, timestamp: Date.now() }] });
+				setMessages({ ...messages, [_roomId]: [{ message: _message.message, timestamp: _message.timestamp }] });
 			}
 		} else {
-			setMessages({ [_roomId]: [{ message: _message, timestamp: Date.now() }] });
+			setMessages({ [_roomId]: [{ message: _message.message, timestamp: _message.timestamp }] });
 		}
 	};
 
@@ -77,7 +77,12 @@ export const MessageComponent: React.FunctionComponent<MessageComponentProps> = 
 		return (
 			<>
 				<input type={'text'} value={message} onChange={(e) => setMessage(e.target.value)} />
-				<input type='button' className='button' value='Send Message' onClick={() => addMessage('test passphrase', selectedRoom._id)} />
+				<input
+					type='button'
+					className='button'
+					value='Send Message'
+					onClick={() => addMessage({ message: 'test passphrase', timestamp: Date.now() }, selectedRoom._id)}
+				/>
 			</>
 		);
 	};

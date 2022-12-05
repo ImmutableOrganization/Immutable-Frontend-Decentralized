@@ -2,10 +2,11 @@ import { faBed } from '@fortawesome/free-solid-svg-icons';
 import { GoogleAnalytics } from 'nextjs-google-analytics';
 import { useEffect, useState } from 'react';
 import { BaseRoomConfig, joinRoom, Room } from 'trystero';
-import { useRooms } from '../../pages/decentralizedchat';
+import { MessageCallback, useRooms } from '../../pages/decentralizedchat';
 
 interface RoomComponentProps {
 	selectedRoomCallback: (room: RoomWrapper) => void;
+	messageCallback: MessageCallback;
 }
 export interface RoomWrapper {
 	roomName: string;
@@ -15,8 +16,8 @@ export interface RoomWrapper {
 
 let ranOnce = false;
 
-export const RoomComponent: React.FunctionComponent<RoomComponentProps> = ({ selectedRoomCallback }) => {
-	const { rooms, addRoom, removeRoom, selectRoom, connectToRoom, disconnectRoom, selfId, getPeers } = useRooms(selectedRoomCallback);
+export const RoomComponent: React.FunctionComponent<RoomComponentProps> = ({ selectedRoomCallback, messageCallback }) => {
+	const { rooms, addRoom, removeRoom, selectRoom, connectToRoom, disconnectRoom, selfId, getPeers } = useRooms(selectedRoomCallback, messageCallback);
 
 	useEffect(() => {
 		if (!ranOnce) {

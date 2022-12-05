@@ -2,25 +2,13 @@ import { NextPage } from 'next';
 import { Component, useEffect, useState } from 'react';
 import * as trystero from 'trystero';
 import { EncryptionComponent } from '../components/ChatApp/EncryptionComponent';
-import { MessageComponent, useMessages } from '../components/ChatApp/MessageComponent';
+import { Message, MessageComponent, useMessages } from '../components/ChatApp/MessageComponent';
 import { RoomComponent, RoomWrapper } from '../components/ChatApp/RoomComponent';
 let ranOnce = false;
 import { v4 as uuidv4 } from 'uuid';
 import { BaseRoomConfig, joinRoom, selfId } from 'trystero';
 
-interface MessageCallback{
-	sendMessage: (message: string) => void;
-	getMessage: (message: string) => void;
-}
-const getMessageListener = (message: string) => {
-	console.log('got message', message);
-};
-const sendMessage = (message: string) => {
-	console.log('sending message', message);
-};
-
-
-export const useRooms = (selectedRoomCallback: (room: RoomWrapper) => void) => {
+export const useRooms = (selectedRoomCallback: (room: RoomWrapper) => void, messageCallback: MessageCallback) => {
 	const [rooms, setRooms] = useState<RoomWrapper[]>();
 
 	// add room to state
@@ -90,23 +78,48 @@ export const useRooms = (selectedRoomCallback: (room: RoomWrapper) => void) => {
 
 			// const idsToNames = {};
 			const [sendName, getMessage] = room.makeAction('name');
-getMessage((data, peerId) => getMessageListener);
+
+			// parse message
+			getMessage((data, peerId) => {
+				console.log('message received', data);
+
+				const _msg: Message = data as Message;
+				if (!_msg) {
+					console.log('message failed val');
+					// kick peer?
+					return;
+				}
+				if (_msg.message) {
+					//
+				} else {
+					console.log('message failed val');
+					// kick peer?
+					return;
+				}
+				if (_msg.timestamp) {
+					//
+				} else {
+					console.log('timestamp failed val');
+					// kick peer?
+					return;
+				}
+
+				messageCallback.getMessageListener(_msg, peerId, _room._id);
+			});
 			// // tell other peers currently in the room our name
 			sendName('Oedipa');
 
 			// need to show sends in progress somehow
-	// inprogressMessage((percent, peerId, metadata) => console.log(`${percent * 100}% done receiving  from ${peerId}`));
+			// inprogressMessage((percent, peerId, metadata) => console.log(`${percent * 100}% done receiving  from ${peerId}`));
 
 			// // tell newcomers
 			room.onPeerJoin((peerId) => sendName('Oedipa', peerId));
 
 			// // listen for peers naming themselves
 			// messageReciever, need this to callback to update message list somehow
-			maybe i can return these and then set them in base file
-			how do i make it work for sends even first
 			// getName((name, peerId) => (idsToNames[peerId] = name));
 
-			room.onPeerLeave((peerId) => console.log(`${idsToNames[peerId] || 'a weird stranger'} left`));
+			// room.onPeerLeave((peerId) => console.log(`${idsToNames[peerId] || 'a weird stranger'} left`));
 
 			// end of join room
 		} catch (e) {
@@ -151,6 +164,11 @@ getMessage((data, peerId) => getMessageListener);
 
 	return { rooms, addRoom, removeRoom, selectRoom, connectToRoom, disconnectRoom, selfId, getPeers };
 };
+
+export interface MessageCallback {
+	sendMessageAction: (message: Message) => void;
+	getMessageListener: (message: Message, peerId: string, roomId: string) => void;
+}
 const DecentralizedChat: NextPage = () => {
 	const emptyRoom: RoomWrapper = {
 		roomName: 'default',
@@ -161,7 +179,13 @@ const DecentralizedChat: NextPage = () => {
 	const [selectedRoom, setSelectedRoom] = useState<RoomWrapper>(emptyRoom);
 	const { messages, addMessage } = useMessages();
 
-	
+	const getMessageListener = (message: Message, peerId: string, roomId: string) => {
+		console.log('got message', message, 'from peer' + peerId);
+		addMessage(message, roomId);
+	};
+	const sendMessageAction = (message: Message) => {
+		console.log('sending message', message);
+	};
 
 	// const { sendMessage, getMessage, inprogressMessage } = useConnectToRoom();
 	// onload check if keys exist
@@ -233,7 +257,7 @@ const DecentralizedChat: NextPage = () => {
 	return (
 		<>
 			<EncryptionComponent />
-			<RoomComponent selectedRoomCallback={setSelectedRoom} />
+			<RoomComponent selectedRoomCallback={setSelectedRoom} messageCallback={{ getMessageListener, sendMessageAction }} />
 			<MessageComponent selectedRoom={selectedRoom} messages={messages} addMessage={addMessage} />
 		</>
 	);
