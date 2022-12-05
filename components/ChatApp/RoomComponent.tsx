@@ -44,6 +44,10 @@ const useRooms = (selectedRoomCallback: (room: RoomWrapper) => void) => {
 export const RoomComponent: React.FunctionComponent<RoomComponentProps> = ({ selectedRoomCallback }) => {
 	const { rooms, addRoom, removeRoom, selectRoom } = useRooms(selectedRoomCallback);
 
+	useEffect(() => {
+		addRoom('test');
+	}, []);
+
 	const joinRoom = () => {
 		const [roomName, setRoomName] = useState<string>('');
 		return (

@@ -42,6 +42,7 @@ const useMessages = () => {
 
 export const MessageComponent: React.FunctionComponent<MessageComponentProps> = ({ selectedRoom }) => {
 	const { messages, addMessage } = useMessages();
+	const [message, setMessage] = useState<string>('');
 
 	const messageList = () => {
 		return (
@@ -72,7 +73,6 @@ export const MessageComponent: React.FunctionComponent<MessageComponentProps> = 
 	};
 
 	const messageForm = () => {
-		const [message, setMessage] = useState<string>('');
 		return (
 			<>
 				<input type={'text'} value={message} onChange={(e) => setMessage(e.target.value)} />
@@ -86,7 +86,7 @@ export const MessageComponent: React.FunctionComponent<MessageComponentProps> = 
 			<h1>MessageComponent</h1>
 			{selectedRoom && selectedRoom._id != '' ? (
 				<>
-					{selectedRoom._id}
+					{selectedRoom._id} : NAME: {selectedRoom.roomName}
 					{messageForm()}
 					{messageList()}
 				</>

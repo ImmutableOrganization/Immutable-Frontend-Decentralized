@@ -1,17 +1,16 @@
 import { useLocalStorage } from 'usehooks-ts';
 import { Frame } from '../Frame';
 import * as openpgp from 'openpgp';
+import { useEffect, useState } from 'react';
 
 interface EncryptionComponentProps {}
 
 const useKeyRing = () => {
-	const [publicKey, setPublicKey] = useLocalStorage<string>('publicKey', '');
+	const [publicKey, setPublicKey] = useLocalStorage<string>('publicKey', '0x');
 	const [privateKey, setPrivateKey] = useLocalStorage<string>('privateKey', '');
 
 	const genKeyPair = async (_passPhrase: string, _properties: openpgp.UserID) => {
 		// reqs name email comment
-
-		console.log('generating key pair');
 
 		// validate properties
 
@@ -35,7 +34,12 @@ const useKeyRing = () => {
 		setPrivateKey(privateKey);
 	};
 
-	return { publicKey, genKeyPair };
+	const deleteKeyPair = () => {
+		setPublicKey('');
+		setPrivateKey('');
+	};
+
+	return { publicKey, genKeyPair, deleteKeyPair };
 };
 
 const defaultProperties: openpgp.UserID = {
@@ -44,13 +48,22 @@ const defaultProperties: openpgp.UserID = {
 	comment: '',
 };
 
+const useIsClient = () => {
+	const [isClient, setIsClient] = useState<boolean>(false);
+	useEffect(() => {
+		setIsClient(true);
+	}, []);
+	return isClient;
+};
+
 export const EncryptionComponent: React.FunctionComponent<EncryptionComponentProps> = ({}) => {
 	const [encryptionEnabled, setEncryptionEnabled] = useLocalStorage<boolean>('encryptionEnabled', false);
 
 	// does this need to be in the component itself
 	// or a crypto utils file?
 
-	const { publicKey, genKeyPair } = useKeyRing();
+	const { publicKey, genKeyPair, deleteKeyPair } = useKeyRing();
+	const isClient = useIsClient();
 
 	// how do i verify user is actually encrypted like has valid keys
 
@@ -75,17 +88,22 @@ export const EncryptionComponent: React.FunctionComponent<EncryptionComponentPro
 							onClick={() => setEncryptionEnabled(!encryptionEnabled)}
 							value={`${encryptionEnabled ? 'DISABLE' : 'ENABLE'} ENCRYPTION`}
 						/>
-						{publicKey == '' ? (
-							<div>
-								<p>No encryption keys exist.</p>
-							</div>
+						{isClient ? (
+							<>
+								{publicKey && publicKey != '' ? (
+									<>
+										Public Key: <textarea>{publicKey}</textarea>
+									</>
+								) : (
+									<>No encryption keys</>
+								)}
+							</>
 						) : (
-							<div>
-								<p>Public Key</p>
-								<textarea>{publicKey}</textarea>
-							</div>
+							<>Needs to be on client to render because keys </>
 						)}
+
 						<input type='button' className='button' value='Generate Key Pair' onClick={() => genKeyPair('test passphrase', defaultProperties)} />
+						<input type='button' className='button' value='Delete Key Pair' onClick={() => deleteKeyPair()} />
 					</>
 				)}
 			/>
