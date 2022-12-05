@@ -3,6 +3,8 @@ import { RoomWrapper } from './RoomComponent';
 
 interface MessageComponentProps {
 	selectedRoom: RoomWrapper;
+	messages: any;
+	addMessage: any;
 }
 
 interface Message {
@@ -15,7 +17,7 @@ interface MessageList {
 }
 
 // index in Messages is room id
-const useMessages = () => {
+export const useMessages = () => {
 	const [messages, setMessages] = useState<MessageList>();
 
 	const addMessage = (_message: string, _roomId: string) => {
@@ -40,8 +42,7 @@ const useMessages = () => {
 	return { messages, addMessage };
 };
 
-export const MessageComponent: React.FunctionComponent<MessageComponentProps> = ({ selectedRoom }) => {
-	const { messages, addMessage } = useMessages();
+export const MessageComponent: React.FunctionComponent<MessageComponentProps> = ({ selectedRoom, messages, addMessage }) => {
 	const [message, setMessage] = useState<string>('');
 
 	const messageList = () => {

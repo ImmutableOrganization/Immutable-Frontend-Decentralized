@@ -73,15 +73,6 @@ export const EncryptionComponent: React.FunctionComponent<EncryptionComponentPro
 				headerText={'ENCRYPTED'}
 				body={() => (
 					<>
-						{encryptionEnabled ? (
-							<div>
-								<p>Encryption Enabled.</p>
-							</div>
-						) : (
-							<div>
-								<p>Encryption Disabled.</p>
-							</div>
-						)}
 						<input
 							type='button'
 							className='button'
@@ -92,10 +83,20 @@ export const EncryptionComponent: React.FunctionComponent<EncryptionComponentPro
 							<>
 								{publicKey && publicKey != '' ? (
 									<>
-										Public Key: <textarea>{publicKey}</textarea>
+										Public Key: <textarea value={publicKey} />
 									</>
 								) : (
 									<>No encryption keys</>
+								)}
+
+								{encryptionEnabled ? (
+									<div>
+										<p>Encryption Enabled.</p>
+									</div>
+								) : (
+									<div>
+										<p>Encryption Disabled.</p>
+									</div>
 								)}
 							</>
 						) : (

@@ -1,5 +1,8 @@
+import { faBed } from '@fortawesome/free-solid-svg-icons';
+import { GoogleAnalytics } from 'nextjs-google-analytics';
 import { useEffect, useState } from 'react';
-import { v4 as uuidv4 } from 'uuid';
+import { BaseRoomConfig, joinRoom, Room } from 'trystero';
+import { useRooms } from '../../pages/decentralizedchat';
 
 interface RoomComponentProps {
 	selectedRoomCallback: (room: RoomWrapper) => void;
@@ -7,45 +10,17 @@ interface RoomComponentProps {
 export interface RoomWrapper {
 	roomName: string;
 	_id: string;
+	room: Room | undefined;
 }
-const useRooms = (selectedRoomCallback: (room: RoomWrapper) => void) => {
-	const [rooms, setRooms] = useState<RoomWrapper[]>();
 
-	// add room to state
-	const addRoom = (roomName: string) => {
-		if (roomName == '') {
-			return;
-			// CALLBACK TO ERROR HANDLER
-		}
+let ranOnce = false;
 
-		if (rooms) {
-			if (!rooms.find((room) => room.roomName === roomName)) {
-				setRooms([...rooms, { roomName, _id: uuidv4() }]);
-			}
-		} else {
-			setRooms([{ roomName, _id: uuidv4() }]);
-		}
-	};
-
-	// remove room from state
-	const removeRoom = (_room: RoomWrapper) => {
-		if (rooms) {
-			setRooms((rooms: any) => rooms.filter((room: RoomWrapper) => room._id !== _room._id));
-		}
-	};
-
-	// select room
-	const selectRoom = (_room: RoomWrapper) => {
-		selectedRoomCallback(_room);
-	};
-
-	return { rooms, addRoom, removeRoom, selectRoom };
-};
 export const RoomComponent: React.FunctionComponent<RoomComponentProps> = ({ selectedRoomCallback }) => {
-	const { rooms, addRoom, removeRoom, selectRoom } = useRooms(selectedRoomCallback);
+	const { rooms, addRoom, removeRoom, selectRoom, connectToRoom, disconnectRoom, selfId, getPeers } = useRooms(selectedRoomCallback);
 
 	useEffect(() => {
-		addRoom('test');
+		if (!ranOnce) {
+		}
 	}, []);
 
 	const joinRoom = () => {
@@ -57,19 +32,39 @@ export const RoomComponent: React.FunctionComponent<RoomComponentProps> = ({ sel
 			</div>
 		);
 	};
+
 	const roomsList = () => {
 		return (
 			<div className='roomsList'>
+				{selfId}
+
 				{rooms ? (
 					<>
 						{rooms.map((room: RoomWrapper) => (
 							<>
 								<ul>
 									<h2>{room.roomName}</h2>
-									<li>peers</li>
 									<input type='button' onClick={() => removeRoom(room)} value='leave room' />
-									<li>ping</li>
-									<input type='button' onClick={() => selectRoom(room)} value='select room' />
+									{room.room ? (
+										<>
+											<li>peers {}</li>
+											<li>ping</li>
+											<input type='button' onClick={() => disconnectRoom(room)} value='disconnect room' />
+											<input type='button' onClick={() => console.log(getPeers(room))} value='getpeers' />
+										</>
+									) : (
+										<>
+											<li>Not Connected</li>
+											<input
+												type='button'
+												onClick={(e: any) => {
+													selectRoom(room);
+													connectToRoom(room);
+												}}
+												value='connect to room'
+											/>
+										</>
+									)}
 								</ul>
 							</>
 						))}
