@@ -8,20 +8,18 @@ let ranOnce = false;
 import { v4 as uuidv4 } from 'uuid';
 import { BaseRoomConfig, joinRoom, selfId } from 'trystero';
 
-const useConnectToRoom = () => {
-	// THIS MUST BE UNIQUE AND PRIVATE
-	// _roomname - A string to namespace peers and events within a room.
-	// console.log('hi');
-	// const password = 'public';
-	// const [sendMessage, getMessage, inprogressMessage] = room.makeAction('message');
-	// // sender, runs when message sent to peers
-	// // reciever, runs when essage recieved from peers
-	// getMessage((_msg, peerId: string, metadata: any) => {
-	// 	console.log('hi!');
-	// });
-	// inprogressMessage((percent, peerId, metadata) => console.log(`${percent * 100}% done receiving  from ${peerId}`));
-	// return { sendMessage, getMessage, inprogressMessage };
+interface MessageCallback{
+	sendMessage: (message: string) => void;
+	getMessage: (message: string) => void;
+}
+const getMessageListener = (message: string) => {
+	console.log('got message', message);
 };
+const sendMessage = (message: string) => {
+	console.log('sending message', message);
+};
+
+
 export const useRooms = (selectedRoomCallback: (room: RoomWrapper) => void) => {
 	const [rooms, setRooms] = useState<RoomWrapper[]>();
 
@@ -91,10 +89,13 @@ export const useRooms = (selectedRoomCallback: (room: RoomWrapper) => void) => {
 			// THEN ACTION TO SEND MESSAGE TO USERS IN ROOM
 
 			// const idsToNames = {};
-			const [sendName, getName] = room.makeAction('name');
-
+			const [sendName, getMessage] = room.makeAction('name');
+getMessage((data, peerId) => getMessageListener);
 			// // tell other peers currently in the room our name
 			sendName('Oedipa');
+
+			// need to show sends in progress somehow
+	// inprogressMessage((percent, peerId, metadata) => console.log(`${percent * 100}% done receiving  from ${peerId}`));
 
 			// // tell newcomers
 			room.onPeerJoin((peerId) => sendName('Oedipa', peerId));
@@ -102,7 +103,8 @@ export const useRooms = (selectedRoomCallback: (room: RoomWrapper) => void) => {
 			// // listen for peers naming themselves
 			// messageReciever, need this to callback to update message list somehow
 			maybe i can return these and then set them in base file
-			getName((name, peerId) => (idsToNames[peerId] = name));
+			how do i make it work for sends even first
+			// getName((name, peerId) => (idsToNames[peerId] = name));
 
 			room.onPeerLeave((peerId) => console.log(`${idsToNames[peerId] || 'a weird stranger'} left`));
 
@@ -159,7 +161,8 @@ const DecentralizedChat: NextPage = () => {
 	const [selectedRoom, setSelectedRoom] = useState<RoomWrapper>(emptyRoom);
 	const { messages, addMessage } = useMessages();
 
-	const { rooms, connectToRoom } = useRooms(setSelectedRoom);
+	
+
 	// const { sendMessage, getMessage, inprogressMessage } = useConnectToRoom();
 	// onload check if keys exist
 	// if not prompt user to create

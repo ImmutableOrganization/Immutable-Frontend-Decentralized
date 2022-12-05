@@ -7,7 +7,7 @@ interface MessageComponentProps {
 	addMessage: any;
 }
 
-interface Message {
+export interface Message {
 	message: string;
 	timestamp: number;
 }
