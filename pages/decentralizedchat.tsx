@@ -8,10 +8,10 @@ let ranOnce = false;
 import { v4 as uuidv4 } from 'uuid';
 import { BaseRoomConfig, joinRoom, selfId } from 'trystero';
 
+let sendMessage: trystero.ActionSender<Message>;
+
 export const useRooms = (selectedRoomCallback: (room: RoomWrapper) => void, messageCallback: MessageCallback) => {
 	const [rooms, setRooms] = useState<RoomWrapper[]>();
-	const [sendMessage, setSendMessage] = useState<trystero.ActionSender<Message>>();
-
 	// add room to state
 	const addRoom = (_roomName: string) => {
 		if (_roomName == '') {
@@ -80,9 +80,10 @@ export const useRooms = (selectedRoomCallback: (room: RoomWrapper) => void, mess
 			// const idsToNames = {};
 			const [_sendMessage, getMessage, onMessageProgress] = room.makeAction<Message>('message');
 			// console.log('sendMessage', _sendMessage);
-
-			its this line that breaks it
-			setSendMessage(_sendMessage);
+			// _sendMessage({ message: 'test', timestamp: Date.now() });
+			// its this line that breaks it
+			sendMessage = _sendMessage;
+			console.log('sendMessage', sendMessage);
 			// parse message
 			getMessage((_msg, peerId) => {
 				console.log('message received', _msg);
@@ -160,7 +161,17 @@ export const useRooms = (selectedRoomCallback: (room: RoomWrapper) => void, mess
 		return [];
 	};
 
-	return { rooms, addRoom, removeRoom, selectRoom, connectToRoom, disconnectRoom, selfId, getPeers, sendMessage };
+	const callSendMessage = (message: Message) => {
+		console.log('calling send message', message);
+		if (sendMessage) {
+			sendMessage(message);
+			console.log('success');
+		} else {
+			console.log('fail');
+		}
+	};
+
+	return { rooms, addRoom, removeRoom, selectRoom, connectToRoom, disconnectRoom, selfId, getPeers, callSendMessage };
 };
 
 export interface MessageCallback {
@@ -180,25 +191,17 @@ const DecentralizedChat: NextPage = () => {
 
 	const getMessageListener = (message: Message, peerId: string, roomId: string) => {
 		console.log('got message', message, 'from peer' + peerId);
-		addMessage(message, roomId);
+		addMessage(message, roomId, false);
 	};
-	const { rooms, addRoom, removeRoom, selectRoom, connectToRoom, disconnectRoom, selfId, getPeers, sendMessage } = useRooms(setSelectedRoom, {
+	const { rooms, addRoom, removeRoom, selectRoom, connectToRoom, disconnectRoom, selfId, getPeers, callSendMessage } = useRooms(setSelectedRoom, {
 		getMessageListener,
 	});
+
 	const sendMessageAction = (message: Message) => {
 		// callback recieved from message component
 		// how to notify room component of message sent?
 		console.log('sending message', message);
-		if (!sendMessage) {
-			console.log('no send message');
-			// means there is no connection to any room
-			// error popup prob.
-			return;
-		} else {
-			console.log('sending message');
-			// we cant really validate for room here, just assume the current one we are connected to is the one we want to send to
-			sendMessage(message);
-		}
+		callSendMessage(message);
 	};
 	const { messages, addMessage } = useMessages(sendMessageAction);
 
