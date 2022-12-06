@@ -15,6 +15,7 @@ interface RoomComponentProps {
 	selectRoom: (room: RoomWrapper) => void;
 	getPeers: (room: RoomWrapper) => void;
 	connectToRoom: (room: RoomWrapper) => void;
+	connectStream: (room: RoomWrapper) => void;
 }
 export interface RoomWrapper {
 	roomName: string;
@@ -35,6 +36,7 @@ export const RoomComponent: React.FunctionComponent<RoomComponentProps> = ({
 	selfId,
 	getPeers,
 	connectToRoom,
+	connectStream,
 }) => {
 	useEffect(() => {
 		if (!ranOnce) {
@@ -69,6 +71,7 @@ export const RoomComponent: React.FunctionComponent<RoomComponentProps> = ({
 											<li>ping</li>
 											<input type='button' onClick={() => disconnectRoom(room)} value='disconnect room' />
 											<input type='button' onClick={() => console.log(getPeers(room))} value='getpeers' />
+											<input type='button' onClick={() => connectStream(room)} value='connect stream' />
 										</>
 									) : (
 										<>
