@@ -1,20 +1,25 @@
-import { faBed } from '@fortawesome/free-solid-svg-icons';
-import { GoogleAnalytics } from 'nextjs-google-analytics';
-import { useEffect, useState } from 'react';
-import { BaseRoomConfig, joinRoom, Room } from 'trystero';
-import { MessageCallback, useRooms } from '../../pages/decentralizedchat';
+import ReactPlayer from 'react-player';
+import { Room } from 'trystero';
+import { PeerStream } from './hooks/useRooms';
 
-interface VideoComponentProps {}
+interface VideoComponentProps {
+	peerStreams: PeerStream | undefined;
+}
 export interface RoomWrapper {
 	roomName: string;
 	_id: string;
 	room: Room | undefined;
 }
 
-export const VideoComponent: React.FunctionComponent<VideoComponentProps> = ({}) => {
+export const VideoComponent: React.FunctionComponent<VideoComponentProps> = ({ peerStreams }) => {
 	return (
 		<div className='videoComponent'>
-			<div id='videos'></div>
+			{/* map over peer streams */}
+			{peerStreams ? (
+				Object.keys(peerStreams).map((peerStream) => <ReactPlayer playing={true} controls={true} url={peerStream} />)
+			) : (
+				<>No peer streams exist</>
+			)}
 		</div>
 	);
 };

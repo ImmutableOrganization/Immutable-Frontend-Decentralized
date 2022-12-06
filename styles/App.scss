@@ -13,6 +13,22 @@
 // --altTextColor: black;
 // --boxShadowBottomRight: #070809;
 // }
+.socketMessages {
+	background-color: #090909;
+	height: 45vh;
+	margin-top: 0.5rem;
+	margin-left: 0.5rem;
+	margin-right: 0.5rem;
+
+	overflow-y: auto;
+	word-wrap: break-word;
+}
+
+@media screen and (min-width: 750px) {
+	.socketMessages {
+		height: 60vh;
+	}
+}
 
 :root {
 	--primary: #212121;

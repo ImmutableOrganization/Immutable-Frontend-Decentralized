@@ -5,14 +5,19 @@ import { Message } from '../MessageComponent';
 import { RoomWrapper } from '../RoomComponent';
 import * as trystero from 'trystero';
 import { v4 as uuidv4 } from 'uuid';
-import { faJetFighter } from '@fortawesome/free-solid-svg-icons';
 
 export let sendMessage: trystero.ActionSender<Message>;
 export let peerAudios: any = {};
-const peerVideos: any = {};
+export let peerVideos: any = {};
 
+export interface PeerStream {
+	[peerid: string]: MediaStream;
+}
 export const useRooms = (selectedRoomCallback: (room: RoomWrapper) => void, messageCallback: MessageCallback) => {
 	const [rooms, setRooms] = useState<RoomWrapper[]>();
+
+	const [streams, setStreams] = useState<PeerStream>();
+
 	// add room to state
 	const addRoom = (_roomName: string) => {
 		if (_roomName == '') {
@@ -52,14 +57,8 @@ export const useRooms = (selectedRoomCallback: (room: RoomWrapper) => void, mess
 		}
 	};
 
-	const connectStream = async (_room: RoomWrapper) => {
+	const connectStream = async (_room: RoomWrapper, _stream: MediaStream) => {
 		// this object can store audio instances for later
-
-		// get a local audio stream from the microphone
-		const selfStream = await navigator.mediaDevices.getUserMedia({
-			audio: true,
-			video: true,
-		});
 
 		if (rooms) {
 			// find _room in rooms
@@ -67,39 +66,13 @@ export const useRooms = (selectedRoomCallback: (room: RoomWrapper) => void, mess
 			if (room) {
 				if (room.room) {
 					// send stream to peers currently in the room
-					room.room.addStream(selfStream);
+					room.room.addStream(_stream);
 
 					// send stream to peers who join later
-					room.room.onPeerJoin((peerId) => room?.room.addStream(selfStream, peerId));
-
+					room.room.onPeerJoin((peerId) => room?.room.addStream(_stream, peerId));
 					// handle streams from other peers
 					room?.room.onPeerStream((stream, peerId) => {
-						// create an audio instance and set the incoming stream
-						const audio = new Audio();
-						audio.srcObject = stream;
-						audio.autoplay = true;
-
-						// add the audio to peerAudio object if you want to address it for something
-						// later (volume, etc.)
-						peerAudios[peerId] = audio;
-
-						let video = peerVideos[peerId];
-						const videoContainer = document.getElementById('videos');
-						if (!videoContainer) {
-							console.log('video container not found');
-							return;
-						}
-						// if this peer hasn't sent a stream before, create a video element
-						if (!video) {
-							video = document.createElement('video');
-							video.autoplay = true;
-
-							// add video element to the DOM
-							videoContainer.appendChild(video);
-						}
-
-						video.srcObject = stream;
-						peerVideos[peerId] = video;
+						setStreams((streams: any) => ({ ...streams, [peerId]: stream }));
 					});
 				}
 			}
@@ -226,5 +199,5 @@ export const useRooms = (selectedRoomCallback: (room: RoomWrapper) => void, mess
 		}
 	};
 
-	return { rooms, addRoom, removeRoom, selectRoom, connectToRoom, disconnectRoom, selfId, getPeers, callSendMessage, connectStream };
+	return { rooms, addRoom, removeRoom, selectRoom, connectToRoom, disconnectRoom, selfId, getPeers, callSendMessage, connectStream, streams };
 };

@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { Frame } from '../Frame';
 import { RoomWrapper } from './RoomComponent';
 
 interface MessageComponentProps {
@@ -54,15 +55,12 @@ export const MessageComponent: React.FunctionComponent<MessageComponentProps> = 
 				{messages ? (
 					<>
 						{messages[selectedRoom._id] ? (
-							<div className='messages'>
+							<div className='messages socketMessages'>
 								{messages[selectedRoom._id].map((message: Message) => (
-									<>
-										<ul key={message.timestamp}>
-											{selectedRoom.roomName} : {selectedRoom._id}
-											<li>{message.message}</li>
-											<li>{message.timestamp}</li>
-										</ul>
-									</>
+									<div className='socketMessage'>
+										{new Date(message.timestamp).toLocaleDateString() + ' ' + new Date(message.timestamp).toLocaleTimeString()}:{' '}
+										{message.message}
+									</div>
 								))}
 							</div>
 						) : (
@@ -76,34 +74,31 @@ export const MessageComponent: React.FunctionComponent<MessageComponentProps> = 
 		);
 	};
 
-	const messageForm = () => {
-		return (
-			<>
-				<input type={'text'} value={message} onChange={(e) => setMessage(e.target.value)} />
-				<input
-					type='button'
-					className='button'
-					value='Send Message'
-					onClick={() => addMessage({ message: message, timestamp: Date.now() }, selectedRoom._id, true)}
-				/>
-			</>
-		);
-	};
-
 	return (
-		<div className='MessageComponent'>
-			<h1>MessageComponent</h1>
-			{selectedRoom && selectedRoom._id != '' ? (
+		<Frame
+			className='MessageComponent'
+			headerText={'Messages'}
+			body={() => (
 				<>
-					{selectedRoom._id} : NAME: {selectedRoom.roomName}
-					{messageForm()}
-					{messageList()}
+					{selectedRoom && selectedRoom._id != '' ? (
+						<>
+							{selectedRoom._id}: NAME: {selectedRoom.roomName}
+							{messageList()}
+							<input type={'text'} className='text-input terminal-input' value={message} onChange={(e) => setMessage(e.target.value)} />
+							<input
+								type='button'
+								className='button'
+								value='Send Message'
+								onClick={() => addMessage({ message: message, timestamp: Date.now() }, selectedRoom._id, true)}
+							/>
+						</>
+					) : (
+						<div>
+							<div>No room selected</div>
+						</div>
+					)}
 				</>
-			) : (
-				<div>
-					<div>No room selected</div>
-				</div>
 			)}
-		</div>
+		/>
 	);
 };

@@ -1,10 +1,13 @@
 import { NextPage } from 'next';
 import { useEffect, useState } from 'react';
 import { EncryptionComponent } from '../components/ChatApp/EncryptionComponent';
-import { useRooms } from '../components/ChatApp/hooks/useRooms';
+import { peerAudios, peerVideos, useRooms } from '../components/ChatApp/hooks/useRooms';
 import { Message, MessageComponent, useMessages } from '../components/ChatApp/MessageComponent';
 import { RoomComponent, RoomWrapper } from '../components/ChatApp/RoomComponent';
 import { VideoComponent } from '../components/ChatApp/VideoComponent';
+import ReactPlayer from 'react-player';
+import { Frame } from '../components/Frame';
+
 let ranOnce = false;
 
 export interface MessageCallback {
@@ -26,7 +29,7 @@ const DecentralizedChat: NextPage = () => {
 		console.log('got message', message, 'from peer' + peerId);
 		addMessage(message, roomId, false);
 	};
-	const { rooms, addRoom, removeRoom, selectRoom, connectToRoom, disconnectRoom, selfId, getPeers, callSendMessage, connectStream } = useRooms(
+	const { rooms, addRoom, removeRoom, selectRoom, connectToRoom, disconnectRoom, selfId, getPeers, callSendMessage, connectStream, streams } = useRooms(
 		setSelectedRoom,
 		{
 			getMessageListener,
@@ -51,29 +54,11 @@ const DecentralizedChat: NextPage = () => {
 	useEffect(() => {
 		if (!ranOnce) {
 			// first just do unencrypted chat right lol.
-			// connectToRoom(selectedRoom);
-			// console.log('JOINING ROOM', selectedRoom);
-			// console.log('rooms', rooms);
-
-			// make conn
 
 			// CONFIG CAN TAKE A PASSWORD TO MASK PEERS TO NOT USERS OF THE APP
 			//password, encrypts the SID for peers , session descriptions will be encrypted using AES-CBC
 			// really no need i think, guess means only authed users can connect to the chat network.
 			// maybe set an env one for the org.
-
-			// other options params we can skip
-
-			// console.log(room);
-			// if (rooms) {
-			// should probably chekc if doesnt exist already
-			// setRooms((rooms: any) => [...rooms, room]);
-			// }
-
-			// room.leave();
-			// room.getPeers();
-			// room.onPeerJoin((peerId) => console.log(`${peerId} joined`));
-			// room.onPeerLeave((peerId) => console.log(`${peerId} left`));
 
 			ranOnce = true;
 		}
@@ -103,9 +88,78 @@ const DecentralizedChat: NextPage = () => {
 
 	// there are video streams and audio s
 
+	const fetchStream = async () => {
+		const selfStream = await navigator.mediaDevices.getUserMedia({
+			audio: useAudio,
+			video: useVideo,
+		});
+		setLocalStream(selfStream);
+	};
+
+	const disconnectStream = () => {
+		if (localStream) {
+			localStream.getTracks().forEach((track) => track.stop());
+		}
+
+		setLocalStream(undefined);
+		peerAudios[selfId].srcObject = undefined;
+		peerVideos[selfId].srcObject = undefined;
+	};
+	const [localStream, setLocalStream] = useState<MediaStream>();
+	const [useAudio, setUseAudio] = useState<boolean>(true);
+	const [useVideo, setUseVideo] = useState<boolean>(true);
+
+	const streamConnectionHandler = () => {
+		console.log('stream connected');
+		if (!localStream) {
+			fetchStream();
+		} else {
+			disconnectStream();
+		}
+	};
+
+	const [hideLocalStream, setHideLocalStream] = useState<boolean>(false);
+
 	return (
 		<>
 			<EncryptionComponent />
+			<Frame
+				headerText={'Local Stream Controls'}
+				body={() => (
+					<>
+						<label>
+							{`audio: ${useAudio ? 'on' : 'off'}`}
+							<input disabled={localStream != undefined} type='checkbox' checked={useAudio} onChange={(e) => setUseAudio(!useAudio)} />
+						</label>
+						<label>
+							{`video: ${useVideo ? 'on' : 'off'}`}
+							<input disabled={localStream != undefined} type='checkbox' checked={useVideo} onChange={(e) => setUseVideo(!useVideo)} />
+						</label>
+						<input
+							type='button'
+							className='button'
+							value={`${!localStream ? 'connect' : 'disconnect'} stream`}
+							onClick={() => streamConnectionHandler()}
+						/>
+
+						{/* local stream preview */}
+						{localStream && !hideLocalStream ? (
+							<>
+								<input type='button' className='button' value='hide local stream' onClick={() => setHideLocalStream(true)} />
+								<h1>LOCAL</h1>
+								<div>
+									<ReactPlayer playing={true} controls={true} url={localStream} />
+								</div>
+							</>
+						) : localStream && hideLocalStream ? (
+							<>
+								<input type='button' className='button' value='show local stream' onClick={() => setHideLocalStream(false)} />
+							</>
+						) : null}
+					</>
+				)}
+			/>
+
 			<RoomComponent
 				selectedRoomCallback={setSelectedRoom}
 				messageCallback={{ getMessageListener }}
@@ -119,7 +173,7 @@ const DecentralizedChat: NextPage = () => {
 				selectRoom={selectRoom}
 				connectStream={connectStream}
 			/>
-			<VideoComponent />
+			<VideoComponent peerStreams={streams} />
 			<MessageComponent selectedRoom={selectedRoom} messages={messages} addMessage={addMessage} />
 		</>
 	);
