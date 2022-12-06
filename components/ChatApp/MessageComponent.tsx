@@ -4,7 +4,7 @@ import { RoomWrapper } from './RoomComponent';
 interface MessageComponentProps {
 	selectedRoom: RoomWrapper;
 	messages: any;
-	addMessage: (_message: Message, _roomId: string) => void;
+	addMessage: (_message: Message, _roomId: string, isLocal: boolean) => void;
 }
 
 export interface Message {
@@ -20,13 +20,14 @@ interface MessageList {
 export const useMessages = (_sendMessageCallback: any) => {
 	const [messages, setMessages] = useState<MessageList>();
 
-	const addMessage = (_message: Message, _roomId: string) => {
+	const addMessage = (_message: Message, _roomId: string, isLocal: boolean) => {
 		if (_roomId == '') {
 			return;
 			// CALLBACK TO ERROR HANDLER
 		}
-		_sendMessageCallback(_message, _roomId);
-
+		if (isLocal) {
+			_sendMessageCallback(_message, _roomId);
+		}
 		if (messages) {
 			if (messages[_roomId]) {
 				setMessages({
@@ -83,7 +84,7 @@ export const MessageComponent: React.FunctionComponent<MessageComponentProps> = 
 					type='button'
 					className='button'
 					value='Send Message'
-					onClick={() => addMessage({ message: 'test passphrase', timestamp: Date.now() }, selectedRoom._id)}
+					onClick={() => addMessage({ message: message, timestamp: Date.now() }, selectedRoom._id, true)}
 				/>
 			</>
 		);
