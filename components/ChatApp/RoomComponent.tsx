@@ -7,6 +7,14 @@ import { MessageCallback, useRooms } from '../../pages/decentralizedchat';
 interface RoomComponentProps {
 	selectedRoomCallback: (room: RoomWrapper) => void;
 	messageCallback: MessageCallback;
+	addRoom: (roomName: string) => void;
+	removeRoom: (room: RoomWrapper) => void;
+	disconnectRoom: (room: RoomWrapper) => void;
+	rooms: RoomWrapper[] | undefined;
+	selfId: string;
+	selectRoom: (room: RoomWrapper) => void;
+	getPeers: (room: RoomWrapper) => void;
+	connectToRoom: (room: RoomWrapper) => void;
 }
 export interface RoomWrapper {
 	roomName: string;
@@ -16,9 +24,18 @@ export interface RoomWrapper {
 
 let ranOnce = false;
 
-export const RoomComponent: React.FunctionComponent<RoomComponentProps> = ({ selectedRoomCallback, messageCallback }) => {
-	const { rooms, addRoom, removeRoom, selectRoom, connectToRoom, disconnectRoom, selfId, getPeers } = useRooms(selectedRoomCallback, messageCallback);
-
+export const RoomComponent: React.FunctionComponent<RoomComponentProps> = ({
+	selectedRoomCallback,
+	messageCallback,
+	addRoom,
+	removeRoom,
+	disconnectRoom,
+	selectRoom,
+	rooms,
+	selfId,
+	getPeers,
+	connectToRoom,
+}) => {
 	useEffect(() => {
 		if (!ranOnce) {
 		}

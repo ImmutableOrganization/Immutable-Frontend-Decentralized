@@ -10,6 +10,7 @@ import { BaseRoomConfig, joinRoom, selfId } from 'trystero';
 
 export const useRooms = (selectedRoomCallback: (room: RoomWrapper) => void, messageCallback: MessageCallback) => {
 	const [rooms, setRooms] = useState<RoomWrapper[]>();
+	const [sendMessage, setSendMessage] = useState<trystero.ActionSender<Message>>();
 
 	// add room to state
 	const addRoom = (_roomName: string) => {
@@ -77,13 +78,15 @@ export const useRooms = (selectedRoomCallback: (room: RoomWrapper) => void, mess
 			// THEN ACTION TO SEND MESSAGE TO USERS IN ROOM
 
 			// const idsToNames = {};
-			const [sendName, getMessage] = room.makeAction('name');
+			const [_sendMessage, getMessage, onMessageProgress] = room.makeAction<Message>('message');
+			// console.log('sendMessage', _sendMessage);
 
+			its this line that breaks it
+			setSendMessage(_sendMessage);
 			// parse message
-			getMessage((data, peerId) => {
-				console.log('message received', data);
+			getMessage((_msg, peerId) => {
+				console.log('message received', _msg);
 
-				const _msg: Message = data as Message;
 				if (!_msg) {
 					console.log('message failed val');
 					// kick peer?
@@ -106,19 +109,14 @@ export const useRooms = (selectedRoomCallback: (room: RoomWrapper) => void, mess
 
 				messageCallback.getMessageListener(_msg, peerId, _room._id);
 			});
-			// // tell other peers currently in the room our name
-			sendName('Oedipa');
+
+			// need to pass sendMessage to message component
 
 			// need to show sends in progress somehow
 			// inprogressMessage((percent, peerId, metadata) => console.log(`${percent * 100}% done receiving  from ${peerId}`));
 
-			// // tell newcomers
-			room.onPeerJoin((peerId) => sendName('Oedipa', peerId));
-
 			// // listen for peers naming themselves
-			// messageReciever, need this to callback to update message list somehow
-			// getName((name, peerId) => (idsToNames[peerId] = name));
-
+			// room.onPeerJoin((peerId) => _sendMessage({ message: `${selfId} has joined the room`, timestamp: Date.now() }));
 			// room.onPeerLeave((peerId) => console.log(`${idsToNames[peerId] || 'a weird stranger'} left`));
 
 			// end of join room
@@ -162,11 +160,11 @@ export const useRooms = (selectedRoomCallback: (room: RoomWrapper) => void, mess
 		return [];
 	};
 
-	return { rooms, addRoom, removeRoom, selectRoom, connectToRoom, disconnectRoom, selfId, getPeers };
+	return { rooms, addRoom, removeRoom, selectRoom, connectToRoom, disconnectRoom, selfId, getPeers, sendMessage };
 };
 
 export interface MessageCallback {
-	sendMessageAction: (message: Message) => void;
+	// sendMessageAction: (message: Message) => void;
 	getMessageListener: (message: Message, peerId: string, roomId: string) => void;
 }
 const DecentralizedChat: NextPage = () => {
@@ -177,15 +175,32 @@ const DecentralizedChat: NextPage = () => {
 	};
 
 	const [selectedRoom, setSelectedRoom] = useState<RoomWrapper>(emptyRoom);
-	const { messages, addMessage } = useMessages();
+
+	// these hooks now being here couples everything too much
 
 	const getMessageListener = (message: Message, peerId: string, roomId: string) => {
 		console.log('got message', message, 'from peer' + peerId);
 		addMessage(message, roomId);
 	};
+	const { rooms, addRoom, removeRoom, selectRoom, connectToRoom, disconnectRoom, selfId, getPeers, sendMessage } = useRooms(setSelectedRoom, {
+		getMessageListener,
+	});
 	const sendMessageAction = (message: Message) => {
+		// callback recieved from message component
+		// how to notify room component of message sent?
 		console.log('sending message', message);
+		if (!sendMessage) {
+			console.log('no send message');
+			// means there is no connection to any room
+			// error popup prob.
+			return;
+		} else {
+			console.log('sending message');
+			// we cant really validate for room here, just assume the current one we are connected to is the one we want to send to
+			sendMessage(message);
+		}
 	};
+	const { messages, addMessage } = useMessages(sendMessageAction);
 
 	// const { sendMessage, getMessage, inprogressMessage } = useConnectToRoom();
 	// onload check if keys exist
@@ -257,7 +272,18 @@ const DecentralizedChat: NextPage = () => {
 	return (
 		<>
 			<EncryptionComponent />
-			<RoomComponent selectedRoomCallback={setSelectedRoom} messageCallback={{ getMessageListener, sendMessageAction }} />
+			<RoomComponent
+				selectedRoomCallback={setSelectedRoom}
+				messageCallback={{ getMessageListener }}
+				addRoom={addRoom}
+				removeRoom={removeRoom}
+				disconnectRoom={disconnectRoom}
+				rooms={rooms}
+				selfId={selfId}
+				getPeers={getPeers}
+				connectToRoom={connectToRoom}
+				selectRoom={selectRoom}
+			/>
 			<MessageComponent selectedRoom={selectedRoom} messages={messages} addMessage={addMessage} />
 		</>
 	);

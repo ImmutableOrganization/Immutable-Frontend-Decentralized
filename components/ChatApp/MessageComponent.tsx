@@ -17,7 +17,7 @@ interface MessageList {
 }
 
 // index in Messages is room id
-export const useMessages = () => {
+export const useMessages = (_sendMessageCallback: any) => {
 	const [messages, setMessages] = useState<MessageList>();
 
 	const addMessage = (_message: Message, _roomId: string) => {
@@ -25,6 +25,8 @@ export const useMessages = () => {
 			return;
 			// CALLBACK TO ERROR HANDLER
 		}
+		_sendMessageCallback(_message, _roomId);
+
 		if (messages) {
 			if (messages[_roomId]) {
 				setMessages({
