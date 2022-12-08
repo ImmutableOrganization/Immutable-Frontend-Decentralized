@@ -1,10 +1,11 @@
+import React from 'react';
 import { useState } from 'react';
 import { Frame } from '../Frame';
 import { RoomWrapper } from './RoomComponent';
 
 interface MessageComponentProps {
 	selectedRoom: RoomWrapper;
-	messages: any;
+	messages: React.MutableRefObject<MessageList | undefined>;
 	addMessage: (_message: Message, _roomId: string, isLocal: boolean) => void;
 }
 
@@ -13,7 +14,7 @@ export interface Message {
 	timestamp: number;
 }
 
-interface MessageList {
+export interface MessageList {
 	[roomId: string]: Message[];
 }
 
@@ -21,29 +22,44 @@ interface MessageList {
 export const useMessages = (_sendMessageCallback: any) => {
 	const [messages, setMessages] = useState<MessageList>();
 
-	const addMessage = (_message: Message, _roomId: string, isLocal: boolean) => {
-		if (_roomId == '') {
+	// we do a ref like this, and the messageHook should use the ref instead of state.
+	const messagesRef = React.useRef(messages);
+	const setMessagesRef = (data: MessageList) => {
+		messagesRef.current = data;
+		setMessages(data);
+	};
+
+	const addMessage = (_message: Message, _roomName: string, isLocal: boolean) => {
+		if (_roomName == '') {
 			return;
 			// CALLBACK TO ERROR HANDLER
 		}
 		if (isLocal) {
-			_sendMessageCallback(_message, _roomId);
+			_sendMessageCallback(_message, _roomName);
 		}
-		if (messages) {
-			if (messages[_roomId]) {
-				setMessages({
+
+		console.log('addMessage: _message = ', _message, ' _roomName = ', _roomName, ' isLocal = ', isLocal);
+		if (messagesRef.current) {
+			console.log('messages');
+			if (messagesRef.current[_roomName]) {
+				console.log('messages[_roomName] = ', messagesRef.current[_roomName]);
+
+				setMessagesRef({
 					...messages,
-					[_roomId]: [...messages[_roomId], { message: _message.message, timestamp: _message.timestamp }],
+					[_roomName]: [...messagesRef.current[_roomName], { message: _message.message, timestamp: _message.timestamp }],
 				});
 			} else {
-				setMessages({ ...messages, [_roomId]: [{ message: _message.message, timestamp: _message.timestamp }] });
+				console.log('no for room');
+				setMessagesRef({ ...messages, [_roomName]: [{ message: _message.message, timestamp: _message.timestamp }] });
 			}
 		} else {
-			setMessages({ [_roomId]: [{ message: _message.message, timestamp: _message.timestamp }] });
+			console.log('no messages');
+
+			setMessagesRef({ [_roomName]: [{ message: _message.message, timestamp: _message.timestamp }] });
 		}
 	};
 
-	return { messages, addMessage };
+	return { messagesRef, addMessage };
 };
 
 export const MessageComponent: React.FunctionComponent<MessageComponentProps> = ({ selectedRoom, messages, addMessage }) => {
@@ -52,11 +68,11 @@ export const MessageComponent: React.FunctionComponent<MessageComponentProps> = 
 	const messageList = () => {
 		return (
 			<>
-				{messages ? (
+				{messages.current ? (
 					<>
-						{messages[selectedRoom._id] ? (
+						{messages.current[selectedRoom.roomName] ? (
 							<div className='messages socketMessages'>
-								{messages[selectedRoom._id].map((message: Message) => (
+								{messages.current[selectedRoom.roomName].map((message: Message) => (
 									<div className='socketMessage'>
 										{new Date(message.timestamp).toLocaleDateString() + ' ' + new Date(message.timestamp).toLocaleTimeString()}:{' '}
 										{message.message}
@@ -80,16 +96,16 @@ export const MessageComponent: React.FunctionComponent<MessageComponentProps> = 
 			headerText={'Messages'}
 			body={() => (
 				<>
-					{selectedRoom && selectedRoom._id != '' ? (
+					{selectedRoom && selectedRoom.roomName != '' ? (
 						<>
-							{selectedRoom._id}: NAME: {selectedRoom.roomName}
+							NAME: {selectedRoom.roomName}
 							{messageList()}
 							<input type={'text'} className='text-input terminal-input' value={message} onChange={(e) => setMessage(e.target.value)} />
 							<input
 								type='button'
 								className='button'
 								value='Send Message'
-								onClick={() => addMessage({ message: message, timestamp: Date.now() }, selectedRoom._id, true)}
+								onClick={() => addMessage({ message: message, timestamp: Date.now() }, selectedRoom.roomName, true)}
 							/>
 						</>
 					) : (

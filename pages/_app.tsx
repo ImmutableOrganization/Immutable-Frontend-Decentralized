@@ -114,22 +114,22 @@ function MyApp({ Component, pageProps }: AppProps) {
 	const [toastMessage, setToastMessage] = useState<string>('');
 	const [openToast, setOpenToast] = useState<boolean>(false);
 	const [toastType, setToastType] = useState<string>('loading');
-	const {
-		getSocketId,
-		setUserWantsSocketOn,
-		disconnectSocket,
-		userCounter,
-		channelsRef,
-		socketConnected,
-		selectChannel,
-		setEnableChannelWhiteList,
-		enableChannelWhiteList,
-		channelInfo,
-		sendChatMessage,
-		joinRoom,
-		leaveRoom,
-		selectedChannel,
-	} = useSocket();
+	// const {
+	// 	getSocketId,
+	// 	setUserWantsSocketOn,
+	// 	disconnectSocket,
+	// 	userCounter,
+	// 	channelsRef,
+	// 	socketConnected,
+	// 	selectChannel,
+	// 	setEnableChannelWhiteList,
+	// 	enableChannelWhiteList,
+	// 	channelInfo,
+	// 	sendChatMessage,
+	// 	joinRoom,
+	// 	leaveRoom,
+	// 	selectedChannel,
+	// } = useSocket();
 
 	return (
 		<>
@@ -146,20 +146,20 @@ function MyApp({ Component, pageProps }: AppProps) {
 						<Component
 							{...pageProps}
 							// for chat
-							socketId={getSocketId()}
-							setUserWantsSocketOn={setUserWantsSocketOn}
-							disconnectSocket={disconnectSocket}
-							userCounter={userCounter}
-							channelsRef={channelsRef}
-							socketConnected={socketConnected}
-							selectChannel={selectChannel}
-							setEnableChannelWhiteList={setEnableChannelWhiteList}
-							enableChannelWhiteList={enableChannelWhiteList}
-							channelInfo={channelInfo}
-							sendChatMessage={sendChatMessage}
-							joinRoom={joinRoom}
-							leaveRoom={leaveRoom}
-							selectedChannel={selectedChannel}
+							// socketId={getSocketId()}
+							// setUserWantsSocketOn={setUserWantsSocketOn}
+							// disconnectSocket={disconnectSocket}
+							// userCounter={userCounter}
+							// channelsRef={channelsRef}
+							// socketConnected={socketConnected}
+							// selectChannel={selectChannel}
+							// setEnableChannelWhiteList={setEnableChannelWhiteList}
+							// enableChannelWhiteList={enableChannelWhiteList}
+							// channelInfo={channelInfo}
+							// sendChatMessage={sendChatMessage}
+							// joinRoom={joinRoom}
+							// leaveRoom={leaveRoom}
+							// selectedChannel={selectedChannel}
 						/>
 					</div>
 				</WagmiConfig>

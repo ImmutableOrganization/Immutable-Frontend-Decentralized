@@ -67,6 +67,13 @@ export const EncryptionComponent: React.FunctionComponent<EncryptionComponentPro
 
 	// how do i verify user is actually encrypted like has valid keys
 
+	// onload check if keys exist
+	// if not prompt user to create
+	// they can deny
+
+	// display encryption status at top of page
+	// display public key top of page with copy button
+
 	return (
 		<>
 			<Frame

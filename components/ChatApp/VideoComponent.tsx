@@ -3,7 +3,7 @@ import { Room } from 'trystero';
 import { PeerStream } from './hooks/useRooms';
 
 interface VideoComponentProps {
-	peerStreams: PeerStream | undefined;
+	peerStreams: React.MutableRefObject<PeerStream | undefined>;
 }
 export interface RoomWrapper {
 	roomName: string;
@@ -13,10 +13,18 @@ export interface RoomWrapper {
 
 export const VideoComponent: React.FunctionComponent<VideoComponentProps> = ({ peerStreams }) => {
 	return (
-		<div className='videoComponent'>
+		<div className='peerStreams'>
 			{/* map over peer streams */}
-			{peerStreams ? (
-				Object.keys(peerStreams).map((peerStream) => <ReactPlayer playing={true} controls={true} url={peerStream} />)
+			{peerStreams.current ? (
+				<>
+					{Object.values(peerStreams.current).map((peerStream, index) => {
+						return (
+							<div key={index} className='peerStream'>
+								<ReactPlayer playing={true} controls={true} url={peerStream} />
+							</div>
+						);
+					})}
+				</>
 			) : (
 				<>No peer streams exist</>
 			)}

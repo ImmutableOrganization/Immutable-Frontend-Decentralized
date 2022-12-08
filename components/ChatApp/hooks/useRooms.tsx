@@ -1,43 +1,48 @@
-import { useState } from 'react';
+import { useContext, useState } from 'react';
 import { BaseRoomConfig, joinRoom, selfId } from 'trystero';
 import { MessageCallback } from '../../../pages/decentralizedchat';
 import { Message } from '../MessageComponent';
 import { RoomWrapper } from '../RoomComponent';
 import * as trystero from 'trystero';
-import { v4 as uuidv4 } from 'uuid';
+import React from 'react';
+import { PopupContext } from '../../../pages/_app';
+import { FormError } from '../../Modals/Error';
 
 export let sendMessage: trystero.ActionSender<Message>;
-export let peerAudios: any = {};
-export let peerVideos: any = {};
 
 export interface PeerStream {
 	[peerid: string]: MediaStream;
 }
 export const useRooms = (selectedRoomCallback: (room: RoomWrapper) => void, messageCallback: MessageCallback) => {
 	const [rooms, setRooms] = useState<RoomWrapper[]>();
+	const { setFormError, setIsLoading } = useContext(PopupContext);
 
 	const [streams, setStreams] = useState<PeerStream>();
+	const streamsRef = React.useRef(streams);
+	const setStreamRef = (data: PeerStream) => {
+		streamsRef.current = data;
+		setStreams(data);
+	};
 
 	// add room to state
 	const addRoom = (_roomName: string) => {
 		if (_roomName == '') {
+			setFormError({ open: true, message: 'Room must have a name' });
 			return;
-			// CALLBACK TO ERROR HANDLER
 		}
 		// check if roomName is already in state
 		if (rooms) {
 			if (rooms.find((room) => room.roomName === _roomName)) {
+				setFormError({ open: true, message: 'Room must have a name' });
 				return;
-				// CALLBACK TO ERROR HANDLER
 			}
 		}
-
 		if (rooms) {
 			if (!rooms.find((room) => room.roomName === _roomName)) {
-				setRooms([...rooms, { roomName: _roomName, _id: uuidv4(), room: undefined }]);
+				setRooms([...rooms, { roomName: _roomName, room: undefined }]);
 			}
 		} else {
-			setRooms([{ roomName: _roomName, _id: uuidv4(), room: undefined }]);
+			setRooms([{ roomName: _roomName, room: undefined }]);
 		}
 	};
 
@@ -49,7 +54,7 @@ export const useRooms = (selectedRoomCallback: (room: RoomWrapper) => void, mess
 			const newItem: RoomWrapper = { ..._room, room: undefined };
 
 			if (rooms) {
-				setRooms((rooms: any) => rooms.map((room: RoomWrapper) => (room._id === _room._id ? newItem : room)));
+				setRooms((rooms: any) => rooms.map((room: RoomWrapper) => (room.roomName === _room.roomName ? newItem : room)));
 			} else {
 				console.log("error, can't disconnect from room");
 				// this should never be called
@@ -62,9 +67,11 @@ export const useRooms = (selectedRoomCallback: (room: RoomWrapper) => void, mess
 
 		if (rooms) {
 			// find _room in rooms
-			const room = rooms.find((room) => room._id === _room._id);
+			const room = rooms.find((room) => room.roomName === _room.roomName);
+			console.log('room', room);
 			if (room) {
 				if (room.room) {
+					console.log('stream', _stream);
 					// send stream to peers currently in the room
 					room.room.addStream(_stream);
 
@@ -72,7 +79,10 @@ export const useRooms = (selectedRoomCallback: (room: RoomWrapper) => void, mess
 					room.room.onPeerJoin((peerId) => room?.room.addStream(_stream, peerId));
 					// handle streams from other peers
 					room?.room.onPeerStream((stream, peerId) => {
-						setStreams((streams: any) => ({ ...streams, [peerId]: stream }));
+						console.log('stream received', stream, peerId);
+						const copy = { ...streamsRef.current };
+						copy[peerId] = stream;
+						setStreamRef(copy);
 					});
 				}
 			}
@@ -90,7 +100,7 @@ export const useRooms = (selectedRoomCallback: (room: RoomWrapper) => void, mess
 			const newItem: RoomWrapper = { ..._room, room };
 			// replace room in state with new room
 			if (rooms) {
-				setRooms((rooms: any) => rooms.map((room: RoomWrapper) => (room._id === _room._id ? newItem : room)));
+				setRooms((rooms: any) => rooms.map((room: RoomWrapper) => (room.roomName === _room.roomName ? newItem : room)));
 			} else {
 				setRooms([newItem]);
 			}
@@ -136,7 +146,7 @@ export const useRooms = (selectedRoomCallback: (room: RoomWrapper) => void, mess
 					return;
 				}
 
-				messageCallback.getMessageListener(_msg, peerId, _room._id);
+				messageCallback.getMessageListener(_msg, peerId, _room.roomName);
 			});
 
 			// need to pass sendMessage to message component
@@ -166,7 +176,7 @@ export const useRooms = (selectedRoomCallback: (room: RoomWrapper) => void, mess
 		_room.room.leave();
 
 		if (rooms) {
-			setRooms((rooms: any) => rooms.filter((room: RoomWrapper) => room._id !== _room._id));
+			setRooms((rooms: any) => rooms.filter((room: RoomWrapper) => room.roomName !== _room.roomName));
 		}
 	};
 
@@ -199,5 +209,5 @@ export const useRooms = (selectedRoomCallback: (room: RoomWrapper) => void, mess
 		}
 	};
 
-	return { rooms, addRoom, removeRoom, selectRoom, connectToRoom, disconnectRoom, selfId, getPeers, callSendMessage, connectStream, streams };
+	return { rooms, addRoom, removeRoom, selectRoom, connectToRoom, disconnectRoom, selfId, getPeers, callSendMessage, connectStream, streamsRef };
 };

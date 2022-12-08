@@ -1,13 +1,8 @@
-import { faBed } from '@fortawesome/free-solid-svg-icons';
-import { GoogleAnalytics } from 'nextjs-google-analytics';
 import { useEffect, useState } from 'react';
-import { BaseRoomConfig, joinRoom, Room } from 'trystero';
-import { MessageCallback, useRooms } from '../../pages/decentralizedchat';
+import { Room } from 'trystero';
 import { Frame } from '../Frame';
 
 interface RoomComponentProps {
-	selectedRoomCallback: (room: RoomWrapper) => void;
-	messageCallback: MessageCallback;
 	addRoom: (roomName: string) => void;
 	removeRoom: (room: RoomWrapper) => void;
 	disconnectRoom: (room: RoomWrapper) => void;
@@ -17,18 +12,16 @@ interface RoomComponentProps {
 	getPeers: (room: RoomWrapper) => void;
 	connectToRoom: (room: RoomWrapper) => void;
 	connectStream: (room: RoomWrapper, _stream: MediaStream) => void;
+	selfStream: MediaStream | undefined;
 }
 export interface RoomWrapper {
 	roomName: string;
-	_id: string;
 	room: Room | undefined;
 }
 
 let ranOnce = false;
 
 export const RoomComponent: React.FunctionComponent<RoomComponentProps> = ({
-	selectedRoomCallback,
-	messageCallback,
 	addRoom,
 	removeRoom,
 	disconnectRoom,
@@ -38,6 +31,7 @@ export const RoomComponent: React.FunctionComponent<RoomComponentProps> = ({
 	getPeers,
 	connectToRoom,
 	connectStream,
+	selfStream,
 }) => {
 	useEffect(() => {
 		if (!ranOnce) {
@@ -49,11 +43,11 @@ export const RoomComponent: React.FunctionComponent<RoomComponentProps> = ({
 		return (
 			<Frame
 				className='joinRoom'
-				headerText='Join Room'
+				headerText='ADD Room'
 				body={() => (
 					<>
 						<input type='text' className='text_input terminal-input' value={roomName} onChange={(e) => setRoomName(e.target.value)} />
-						<input type='button' className='button' onClick={() => addRoom(roomName)} value='join room' />
+						<input type='button' className='button' onClick={() => addRoom(roomName)} value='add room' />
 					</>
 				)}
 			></Frame>
@@ -64,11 +58,11 @@ export const RoomComponent: React.FunctionComponent<RoomComponentProps> = ({
 		return (
 			<div className='roomsList'>
 				{rooms ? (
-					<>
+					<div className='chat-channels'>
 						{rooms.map((room: RoomWrapper) => (
 							<>
 								<Frame
-									key={room._id}
+									key={room.roomName}
 									headerText={room.roomName}
 									body={() => (
 										<>
@@ -79,7 +73,18 @@ export const RoomComponent: React.FunctionComponent<RoomComponentProps> = ({
 													<li>ping</li>
 													<input type='button' className='button' onClick={() => disconnectRoom(room)} value='disconnect room' />
 													<input type='button' className='button' onClick={() => console.log(getPeers(room))} value='getpeers' />
-													<input type='button' className='button' onClick={() => connectStream(room)} value='connect stream' />
+													{selfStream ? (
+														<>
+															<input
+																type='button'
+																className='button'
+																onClick={() => connectStream(room, selfStream)}
+																value='connect stream'
+															/>
+														</>
+													) : (
+														<>No stream connected.</>
+													)}
 												</>
 											) : (
 												<>
@@ -87,7 +92,7 @@ export const RoomComponent: React.FunctionComponent<RoomComponentProps> = ({
 													<input
 														type='button'
 														className='button'
-														onClick={(e: any) => {
+														onClick={() => {
 															selectRoom(room);
 															connectToRoom(room);
 														}}
@@ -100,7 +105,7 @@ export const RoomComponent: React.FunctionComponent<RoomComponentProps> = ({
 								/>
 							</>
 						))}
-					</>
+					</div>
 				) : (
 					// <>Please join a room.</>
 					<></>
