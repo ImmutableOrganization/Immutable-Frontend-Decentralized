@@ -33,7 +33,7 @@ export const useRooms = (selectedRoomCallback: (room: RoomWrapper) => void, mess
 		// check if roomName is already in state
 		if (rooms) {
 			if (rooms.find((room) => room.roomName === _roomName)) {
-				setFormError({ open: true, message: 'Room must have a name' });
+				setFormError({ open: true, message: 'Room already exists in your local list' });
 				return;
 			}
 		}
@@ -52,19 +52,13 @@ export const useRooms = (selectedRoomCallback: (room: RoomWrapper) => void, mess
 			console.log('disconnecting from room executed', _room);
 			_room.room.leave();
 			const newItem: RoomWrapper = { ..._room, room: undefined };
-
 			if (rooms) {
 				setRooms((rooms: any) => rooms.map((room: RoomWrapper) => (room.roomName === _room.roomName ? newItem : room)));
-			} else {
-				console.log("error, can't disconnect from room");
-				// this should never be called
 			}
 		}
 	};
 
 	const connectStream = async (_room: RoomWrapper, _stream: MediaStream) => {
-		// this object can store audio instances for later
-
 		if (rooms) {
 			// find _room in rooms
 			const room = rooms.find((room) => room.roomName === _room.roomName);
@@ -72,13 +66,23 @@ export const useRooms = (selectedRoomCallback: (room: RoomWrapper) => void, mess
 			if (room) {
 				if (room.room) {
 					console.log('stream', _stream);
-					// send stream to peers currently in the room
-					room.room.addStream(_stream);
 
-					// send stream to peers who join later
-					room.room.onPeerJoin((peerId) => room?.room.addStream(_stream, peerId));
-					// handle streams from other peers
-					room?.room.onPeerStream((stream, peerId) => {
+					try {
+						room.room.addStream(_stream);
+					} catch (e) {
+						setFormError({ open: true, message: 'Error adding stream' });
+					}
+
+					room.room.onPeerJoin((peerId) => {
+						console.log('peer joined', peerId);
+						if (room.room) {
+							room.room.addStream(_stream, peerId);
+						} else {
+							setFormError({ open: true, message: 'Room no longer exists for peer to join' });
+						}
+					});
+
+					room.room.onPeerStream((stream, peerId) => {
 						console.log('stream received', stream, peerId);
 						const copy = { ...streamsRef.current };
 						copy[peerId] = stream;
@@ -90,8 +94,6 @@ export const useRooms = (selectedRoomCallback: (room: RoomWrapper) => void, mess
 	};
 
 	const connectToRoom = (_room: RoomWrapper) => {
-		// join room
-
 		try {
 			const config: BaseRoomConfig = { appId: '8AhTQ9k2K8nr' };
 			const room = joinRoom(config, _room.roomName);
@@ -106,73 +108,36 @@ export const useRooms = (selectedRoomCallback: (room: RoomWrapper) => void, mess
 			}
 
 			console.log('JOINING ROOM', room);
-			// replace room in state with new room
-
-			// NOW SETUP LISTENERS
-			// ON PEER JOIN AND ON PEER LEAVE I WANT TO EMIT MESSAGE TO ALL USERS IN ROOM
-			// room.onPeerJoin((peerId) => console.log(`${peerId} joined`));
-			// room.onPeerLeave((peerId) => console.log(`${peerId} left`));
-
-			// THEN ACTION TO SEND MESSAGE TO USERS IN ROOM
-
-			// const idsToNames = {};
 			const [_sendMessage, getMessage, onMessageProgress] = room.makeAction<Message>('message');
-			// console.log('sendMessage', _sendMessage);
-			// _sendMessage({ message: 'test', timestamp: Date.now() });
-			// its this line that breaks it
 			sendMessage = _sendMessage;
-			console.log('sendMessage', sendMessage);
-			// parse message
+
 			getMessage((_msg, peerId) => {
-				console.log('message received', _msg);
-
 				if (!_msg) {
-					console.log('message failed val');
-					// kick peer?
+					setFormError({ open: true, message: 'Message failed validation' });
 					return;
 				}
-				if (_msg.message) {
-					//
-				} else {
-					console.log('message failed val');
-					// kick peer?
+				if (_msg.message == undefined || _msg.message == null || _msg.message == '') {
+					setFormError({ open: true, message: 'Invalid message' });
 					return;
 				}
-				if (_msg.timestamp) {
-					//
-				} else {
-					console.log('timestamp failed val');
-					// kick peer?
+				if (_msg.timestamp == undefined || _msg.timestamp == null || _msg.timestamp <= 0) {
+					setFormError({ open: true, message: 'Invalid timestamp' });
 					return;
 				}
-
 				messageCallback.getMessageListener(_msg, peerId, _room.roomName);
 			});
-
-			// need to pass sendMessage to message component
-
-			// need to show sends in progress somehow
-			// inprogressMessage((percent, peerId, metadata) => console.log(`${percent * 100}% done receiving  from ${peerId}`));
-
-			// // listen for peers naming themselves
-			// room.onPeerJoin((peerId) => _sendMessage({ message: `${selfId} has joined the room`, timestamp: Date.now() }));
-			// room.onPeerLeave((peerId) => console.log(`${idsToNames[peerId] || 'a weird stranger'} left`));
-
-			// end of join room
 		} catch (e) {
 			console.log(e);
-			// error callback here, either throws when user is already connected to room
-			// might also when peer limit is too high
 		}
 	};
 
 	// remove room from state
 	const removeRoom = (_room: RoomWrapper) => {
 		if (!_room.room) {
+			setFormError({ open: true, message: 'Room is already disconnected' });
 			console.log('no room to leave');
 			return;
 		}
-		// NEED TO MAKE THIS LEAVE THE ROOM connection as well
 		_room.room.leave();
 
 		if (rooms) {
@@ -183,7 +148,7 @@ export const useRooms = (selectedRoomCallback: (room: RoomWrapper) => void, mess
 	// select room
 	const selectRoom = (_room: RoomWrapper) => {
 		if (_room.room) {
-			console.log('must disconnect to room');
+			setFormError({ open: true, message: 'Must disconnect to room' });
 			disconnectRoom(_room);
 			return;
 		}
