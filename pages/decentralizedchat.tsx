@@ -8,7 +8,7 @@ import { LocalStreamComponent } from '../components/ChatApp/LocalStreamComponent
 import { VideoComponent } from '../components/ChatApp/VideoComponent';
 
 export interface MessageCallback {
-	getMessageListener: (message: Message, peerId: string, roomId: string) => void;
+	getMessageListener: (message: Message, roomId: string) => void;
 }
 
 const emptyRoom: RoomWrapper = {
@@ -30,6 +30,7 @@ const DecentralizedChat: NextPage = () => {
 		setSelectedRoom,
 		{ getMessageListener },
 	);
+
 	const { messagesRef, addMessage } = useMessages(sendMessageAction);
 
 	// signing is for authentication, anyone with your public key can decrypt it and verify its you
@@ -59,6 +60,7 @@ const DecentralizedChat: NextPage = () => {
 				selectRoom={selectRoom}
 				connectStream={connectStream}
 				selfStream={localStream}
+				selectedRoom={selectedRoom}
 			/>
 			<VideoComponent peerStreams={streamsRef} />
 			<MessageComponent selectedRoom={selectedRoom} messages={messagesRef} addMessage={addMessage} />

@@ -9,10 +9,11 @@ interface RoomComponentProps {
 	rooms: RoomWrapper[] | undefined;
 	selfId: string;
 	selectRoom: (room: RoomWrapper) => void;
-	getPeers: (room: RoomWrapper) => void;
+	getPeers: (room: RoomWrapper) => string[];
 	connectToRoom: (room: RoomWrapper) => void;
 	connectStream: (room: RoomWrapper, _stream: MediaStream) => void;
 	selfStream: MediaStream | undefined;
+	selectedRoom: RoomWrapper | undefined;
 }
 export interface RoomWrapper {
 	roomName: string;
@@ -32,6 +33,7 @@ export const RoomComponent: React.FunctionComponent<RoomComponentProps> = ({
 	connectToRoom,
 	connectStream,
 	selfStream,
+	selectedRoom,
 }) => {
 	useEffect(() => {
 		if (!ranOnce) {
@@ -46,11 +48,51 @@ export const RoomComponent: React.FunctionComponent<RoomComponentProps> = ({
 				headerText='ADD Room'
 				body={() => (
 					<>
-						<input type='text' className='text_input terminal-input' value={roomName} onChange={(e) => setRoomName(e.target.value)} />
+						<input
+							type='text'
+							className='text_input terminal-input'
+							placeholder='Enter the room name'
+							value={roomName}
+							onChange={(e) => setRoomName(e.target.value)}
+						/>
 						<input type='button' className='button' onClick={() => addRoom(roomName)} value='add room' />
 					</>
 				)}
 			></Frame>
+		);
+	};
+
+	interface SingleRoomProps {
+		room: RoomWrapper;
+	}
+	const SingleRoom: React.FunctionComponent<SingleRoomProps> = ({ room }) => {
+		const [peers, setPeers] = useState<String[]>();
+
+		if (room.room) {
+			room.room.onPeerJoin(() => {
+				setPeers(getPeers(room));
+			});
+			room.room.onPeerLeave(() => {
+				setPeers(getPeers(room));
+			});
+		}
+		useEffect(() => {
+			setPeers(getPeers(room));
+		}, []);
+
+		return (
+			<>
+				{peers?.length}: peer's in this room.
+				<input type='button' className='button' onClick={() => disconnectRoom(room)} value='disconnect room' />
+				<input type='button' className='button' onClick={() => console.log(getPeers(room))} value='getpeers' />
+				{selfStream ? (
+					<>
+						<input type='button' className='button' onClick={() => connectStream(room, selfStream)} value='connect stream' />
+					</>
+				) : (
+					<>Your own stream is not connected.</>
+				)}
+			</>
 		);
 	};
 
@@ -59,36 +101,18 @@ export const RoomComponent: React.FunctionComponent<RoomComponentProps> = ({
 			<div className='roomsList'>
 				{rooms ? (
 					<div className='chat-channels'>
-						{rooms.map((room: RoomWrapper) => (
-							<>
-								<Frame
-									key={room.roomName}
-									headerText={room.roomName}
-									body={() => (
+						<Frame
+							headerText={'Rooms'}
+							body={() =>
+								rooms.map((room: RoomWrapper) => (
+									<div key={room.roomName}>
 										<>
-											<input type='button' className='button' onClick={() => removeRoom(room)} value='leave room' />
-											{room.room ? (
+											{room.roomName}
+											{room.room ? 'connected' : 'not connected'}
+											<br></br>
+											<input type='button' className='button' onClick={() => removeRoom(room)} value='REMOVE' />
+											{!room.room && (
 												<>
-													<li>peers {}</li>
-													<li>ping</li>
-													<input type='button' className='button' onClick={() => disconnectRoom(room)} value='disconnect room' />
-													<input type='button' className='button' onClick={() => console.log(getPeers(room))} value='getpeers' />
-													{selfStream ? (
-														<>
-															<input
-																type='button'
-																className='button'
-																onClick={() => connectStream(room, selfStream)}
-																value='connect stream'
-															/>
-														</>
-													) : (
-														<>No stream connected.</>
-													)}
-												</>
-											) : (
-												<>
-													<li>Not Connected</li>
 													<input
 														type='button'
 														className='button'
@@ -96,15 +120,15 @@ export const RoomComponent: React.FunctionComponent<RoomComponentProps> = ({
 															selectRoom(room);
 															connectToRoom(room);
 														}}
-														value='connect to room'
+														value='CONNECT'
 													/>
 												</>
 											)}
 										</>
-									)}
-								/>
-							</>
-						))}
+									</div>
+								))
+							}
+						/>
 					</div>
 				) : (
 					// <>Please join a room.</>
@@ -119,6 +143,7 @@ export const RoomComponent: React.FunctionComponent<RoomComponentProps> = ({
 			<Frame headerText={'connection info'} body={() => <>connection id: {selfId}</>} />
 			{joinRoom()}
 			{roomsList()}
+			{selectedRoom && <Frame headerText={'Current Room: ' + selectedRoom.roomName} body={() => <SingleRoom room={selectedRoom} />} />}
 		</div>
 	);
 };

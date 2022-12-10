@@ -20,13 +20,18 @@ export const VideoComponent: React.FunctionComponent<VideoComponentProps> = ({ p
 					{Object.values(peerStreams.current).map((peerStream, index) => {
 						return (
 							<div key={index} className='peerStream'>
-								<ReactPlayer playing={true} controls={true} url={peerStream} />
+								<>
+									{'Peer'}
+									<ReactPlayer playing={true} controls={true} url={peerStream} />
+								</>
 							</div>
 						);
 					})}
 				</>
 			) : (
-				<>No peer streams exist</>
+				<>
+					<>No peer streams exist</>
+				</>
 			)}
 		</div>
 	);

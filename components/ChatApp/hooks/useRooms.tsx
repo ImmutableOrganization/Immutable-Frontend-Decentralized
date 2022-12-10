@@ -72,7 +72,6 @@ export const useRooms = (selectedRoomCallback: (room: RoomWrapper) => void, mess
 					} catch (e) {
 						setFormError({ open: true, message: 'Error adding stream' });
 					}
-
 					room.room.onPeerJoin((peerId) => {
 						console.log('peer joined', peerId);
 						if (room.room) {
@@ -80,13 +79,6 @@ export const useRooms = (selectedRoomCallback: (room: RoomWrapper) => void, mess
 						} else {
 							setFormError({ open: true, message: 'Room no longer exists for peer to join' });
 						}
-					});
-
-					room.room.onPeerStream((stream, peerId) => {
-						console.log('stream received', stream, peerId);
-						const copy = { ...streamsRef.current };
-						copy[peerId] = stream;
-						setStreamRef(copy);
 					});
 				}
 			}
@@ -96,36 +88,56 @@ export const useRooms = (selectedRoomCallback: (room: RoomWrapper) => void, mess
 	const connectToRoom = (_room: RoomWrapper) => {
 		try {
 			const config: BaseRoomConfig = { appId: '8AhTQ9k2K8nr' };
-			const room = joinRoom(config, _room.roomName);
-			console.log('JOINING ROOM params', _room);
+			let room: trystero.Room;
+			try {
+				room = joinRoom(config, _room.roomName);
+				const newItem: RoomWrapper = { ..._room, room };
+				if (newItem.room) {
+					// send stream to peer when they join
 
-			const newItem: RoomWrapper = { ..._room, room };
-			// replace room in state with new room
-			if (rooms) {
-				setRooms((rooms: any) => rooms.map((room: RoomWrapper) => (room.roomName === _room.roomName ? newItem : room)));
-			} else {
-				setRooms([newItem]);
+					newItem.room.onPeerStream((stream, peerId) => {
+						console.log('stream received', stream, peerId);
+						const copy = { ...streamsRef.current };
+						copy[peerId] = stream;
+						setStreamRef(copy);
+					});
+				}
+
+				// replace room in state with new room
+				if (rooms) {
+					setRooms((rooms: any) => rooms.map((room: RoomWrapper) => (room.roomName === _room.roomName ? newItem : room)));
+				} else {
+					setRooms([newItem]);
+				}
+
+				console.log('JOINING ROOM', room);
+				if (room) {
+					const [_sendMessage, getMessage, onMessageProgress] = room.makeAction<Message>('message');
+					sendMessage = _sendMessage;
+					getMessage((_msg, peerId) => {
+						if (!_msg) {
+							setFormError({ open: true, message: 'Message failed validation' });
+							return;
+						}
+						if (_msg.message == undefined || _msg.message == null || _msg.message == '') {
+							setFormError({ open: true, message: 'Invalid message' });
+							return;
+						}
+						if (_msg.timestamp == undefined || _msg.timestamp == null || _msg.timestamp <= 0) {
+							setFormError({ open: true, message: 'Invalid timestamp' });
+							return;
+						}
+						_msg.peerId = peerId;
+						messageCallback.getMessageListener(_msg, _room.roomName);
+					});
+				} else {
+					setFormError({ open: true, message: 'Room is undefined' });
+				}
+			} catch (e) {
+				console.log('error joining room', e);
+				setFormError({ open: true, message: 'Error joining room, ' + e });
 			}
-
-			console.log('JOINING ROOM', room);
-			const [_sendMessage, getMessage, onMessageProgress] = room.makeAction<Message>('message');
-			sendMessage = _sendMessage;
-
-			getMessage((_msg, peerId) => {
-				if (!_msg) {
-					setFormError({ open: true, message: 'Message failed validation' });
-					return;
-				}
-				if (_msg.message == undefined || _msg.message == null || _msg.message == '') {
-					setFormError({ open: true, message: 'Invalid message' });
-					return;
-				}
-				if (_msg.timestamp == undefined || _msg.timestamp == null || _msg.timestamp <= 0) {
-					setFormError({ open: true, message: 'Invalid timestamp' });
-					return;
-				}
-				messageCallback.getMessageListener(_msg, peerId, _room.roomName);
-			});
+			console.log('JOINING ROOM params', _room);
 		} catch (e) {
 			console.log(e);
 		}
@@ -157,11 +169,10 @@ export const useRooms = (selectedRoomCallback: (room: RoomWrapper) => void, mess
 
 	const getPeers = (_room: RoomWrapper) => {
 		if (_room.room) {
-			console.log('peers');
 			return _room.room.getPeers();
+		} else {
+			return [];
 		}
-		console.log('no peers');
-		return [];
 	};
 
 	const callSendMessage = (message: Message) => {
@@ -170,6 +181,7 @@ export const useRooms = (selectedRoomCallback: (room: RoomWrapper) => void, mess
 			sendMessage(message);
 			console.log('success');
 		} else {
+			setFormError({ open: true, message: 'Unable to send message' });
 			console.log('fail');
 		}
 	};

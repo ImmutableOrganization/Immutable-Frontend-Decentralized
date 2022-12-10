@@ -1,5 +1,8 @@
+import { faCheckSquare, faSquare } from '@fortawesome/free-solid-svg-icons';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import React from 'react';
 import { useState } from 'react';
+import { selfId } from 'trystero';
 import { Frame } from '../Frame';
 import { RoomWrapper } from './RoomComponent';
 
@@ -12,6 +15,7 @@ interface MessageComponentProps {
 export interface Message {
 	message: string;
 	timestamp: number;
+	peerId: string;
 }
 
 export interface MessageList {
@@ -46,16 +50,16 @@ export const useMessages = (_sendMessageCallback: any) => {
 
 				setMessagesRef({
 					...messages,
-					[_roomName]: [...messagesRef.current[_roomName], { message: _message.message, timestamp: _message.timestamp }],
+					[_roomName]: [...messagesRef.current[_roomName], _message],
 				});
 			} else {
 				console.log('no for room');
-				setMessagesRef({ ...messages, [_roomName]: [{ message: _message.message, timestamp: _message.timestamp }] });
+				setMessagesRef({ ...messages, [_roomName]: [_message] });
 			}
 		} else {
 			console.log('no messages');
 
-			setMessagesRef({ [_roomName]: [{ message: _message.message, timestamp: _message.timestamp }] });
+			setMessagesRef({ [_roomName]: [_message] });
 		}
 	};
 
@@ -64,6 +68,9 @@ export const useMessages = (_sendMessageCallback: any) => {
 
 export const MessageComponent: React.FunctionComponent<MessageComponentProps> = ({ selectedRoom, messages, addMessage }) => {
 	const [message, setMessage] = useState<string>('');
+	const [dateHidden, setDateHidden] = useState<boolean>(true);
+	const [timeHidden, setTimeHidden] = useState<boolean>(true);
+	const [shortenPeerId, setShortenPeerId] = useState<boolean>(true);
 
 	const messageList = () => {
 		return (
@@ -74,7 +81,9 @@ export const MessageComponent: React.FunctionComponent<MessageComponentProps> = 
 							<div className='messages socketMessages'>
 								{messages.current[selectedRoom.roomName].map((message: Message) => (
 									<div className='socketMessage'>
-										{new Date(message.timestamp).toLocaleDateString() + ' ' + new Date(message.timestamp).toLocaleTimeString()}:{' '}
+										{shortenPeerId ? message.peerId.substring(0, 5) + ' ' : message.peerId + ' '}
+										{!dateHidden ? new Date(message.timestamp).toLocaleDateString() + ' ' : ''}
+										{!timeHidden ? new Date(message.timestamp).toLocaleTimeString() + ' ' : ''}
 										{message.message}
 									</div>
 								))}
@@ -99,13 +108,28 @@ export const MessageComponent: React.FunctionComponent<MessageComponentProps> = 
 					{selectedRoom && selectedRoom.roomName != '' ? (
 						<>
 							NAME: {selectedRoom.roomName}
+							<div className='options'>
+								{/* <u>MESSAGE OPTIONS:</u> */}
+								<label onClick={() => setDateHidden(!dateHidden)}>
+									HIDE DATE
+									<FontAwesomeIcon icon={dateHidden ? faCheckSquare : faSquare}></FontAwesomeIcon>
+								</label>
+								<label onClick={() => setTimeHidden(!timeHidden)}>
+									HIDE TIME
+									<FontAwesomeIcon icon={timeHidden ? faCheckSquare : faSquare}></FontAwesomeIcon>
+								</label>
+								<label onClick={() => setShortenPeerId(!shortenPeerId)}>
+									SHORTEN ID's
+									<FontAwesomeIcon icon={shortenPeerId ? faCheckSquare : faSquare}></FontAwesomeIcon>
+								</label>
+							</div>
 							{messageList()}
 							<input type={'text'} className='text-input terminal-input' value={message} onChange={(e) => setMessage(e.target.value)} />
 							<input
 								type='button'
 								className='button'
 								value='Send Message'
-								onClick={() => addMessage({ message: message, timestamp: Date.now() }, selectedRoom.roomName, true)}
+								onClick={() => addMessage({ message: message, timestamp: Date.now(), peerId: selfId }, selectedRoom.roomName, true)}
 							/>
 						</>
 					) : (

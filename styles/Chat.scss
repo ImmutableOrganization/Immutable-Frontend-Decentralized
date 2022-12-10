@@ -132,31 +132,6 @@
 		}
 	}
 
-	.options {
-		display: flex;
-		flex-direction: column;
-		margin-top: 1vh;
-		row-gap: 2vh;
-		padding-inline: 3vw;
-		padding-block: 1vh;
-
-		label {
-			display: flex;
-
-			svg {
-				margin-left: auto;
-				margin-right: 1vw;
-			}
-		}
-
-		svg {
-			path {
-				fill: white;
-				scale: 1.5;
-			}
-		}
-	}
-
 	.mainExplanation {
 		display: flex;
 		flex-direction: column;

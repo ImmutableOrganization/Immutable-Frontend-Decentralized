@@ -580,50 +580,12 @@ input[type='text']:hover {
 	}
 }
 
+// decentralized chat
 .chat-channels {
-	display: flex;
-	flex-wrap: wrap;
+	display: grid;
 	height: 50vh;
 	overflow-y: scroll;
-	align-content: flex-start;
 	width: 100%;
-
-	@media (min-width: 750px) {
-		width: 100% !important;
-		display: grid;
-		grid-template-columns: 1fr 1fr;
-		overflow-x: hidden;
-	}
-
-	.with-x {
-		display: flex;
-		align-items: center;
-		justify-content: space-between;
-		width: 100%;
-		padding-block: 1.5vh;
-		padding-inline: min(3vw, 10px);
-
-		div {
-			word-break: break-word;
-			text-align: start;
-
-			@media (max-width: 750px) {
-				.terminal .chat-channels .with-x div {
-					font-size: min(3.5vw, 18px);
-				}
-			}
-		}
-
-		.button {
-			box-shadow: inset 1px 1px 0px 1px #ccd2d2, inset 0 0 0 1px #1f2223, 1px 1px 0 0px var(--boxShadowBottomRight);
-
-			img.icon {
-				height: 3vh;
-				width: 7vw;
-				filter: invert(100%) sepia(100%) saturate(0%) hue-rotate(288deg) brightness(102%) contrast(102%);
-			}
-		}
-	}
 
 	.button {
 		// to see box shadows properly
@@ -638,13 +600,29 @@ input[type='text']:hover {
 		box-shadow: inset 1px 1px 0px 1px white, inset 0 0 0 1px #1f2223, 1px 1px 0 0px white;
 		text-decoration: underline;
 	}
+}
 
-	.selected {
-		box-shadow: inset 0px 0px 2px 2px black !important;
-		color: grey;
+.options {
+	display: flex;
+	flex-direction: column;
+	margin-top: 1vh;
+	row-gap: 2vh;
+	padding-inline: 3vw;
+	padding-block: 1vh;
 
-		div {
-			color: grey;
+	label {
+		display: flex;
+
+		svg {
+			margin-left: auto;
+			margin-right: 1vw;
+		}
+	}
+
+	svg {
+		path {
+			fill: white;
+			scale: 1.5;
 		}
 	}
 }
