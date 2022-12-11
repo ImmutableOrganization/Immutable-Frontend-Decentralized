@@ -100,45 +100,43 @@ export const MessageComponent: React.FunctionComponent<MessageComponentProps> = 
 	};
 
 	return (
-		<Frame
-			className='MessageComponent'
-			headerText={'Messages'}
-			body={() => (
-				<>
-					{selectedRoom && selectedRoom.roomName != '' ? (
+		<>
+			{selectedRoom && selectedRoom.roomName != '' && selectedRoom.roomName != '2d9227eb-bdd7-4dda-a1d1-d3a694b4195e' && (
+				<Frame
+					className='MessageComponent'
+					headerText={selectedRoom.roomName + ' Chat'}
+					body={() => (
 						<>
-							NAME: {selectedRoom.roomName}
-							<div className='options'>
-								{/* <u>MESSAGE OPTIONS:</u> */}
-								<label onClick={() => setDateHidden(!dateHidden)}>
-									HIDE DATE
-									<FontAwesomeIcon icon={dateHidden ? faCheckSquare : faSquare}></FontAwesomeIcon>
-								</label>
-								<label onClick={() => setTimeHidden(!timeHidden)}>
-									HIDE TIME
-									<FontAwesomeIcon icon={timeHidden ? faCheckSquare : faSquare}></FontAwesomeIcon>
-								</label>
-								<label onClick={() => setShortenPeerId(!shortenPeerId)}>
-									SHORTEN ID's
-									<FontAwesomeIcon icon={shortenPeerId ? faCheckSquare : faSquare}></FontAwesomeIcon>
-								</label>
-							</div>
-							{messageList()}
-							<input type={'text'} className='text-input terminal-input' value={message} onChange={(e) => setMessage(e.target.value)} />
-							<input
-								type='button'
-								className='button'
-								value='Send Message'
-								onClick={() => addMessage({ message: message, timestamp: Date.now(), peerId: selfId }, selectedRoom.roomName, true)}
-							/>
+							<>
+								NAME: {selectedRoom.roomName}
+								<div className='options'>
+									{/* <u>MESSAGE OPTIONS:</u> */}
+									<label onClick={() => setDateHidden(!dateHidden)}>
+										HIDE DATE
+										<FontAwesomeIcon icon={dateHidden ? faCheckSquare : faSquare}></FontAwesomeIcon>
+									</label>
+									<label onClick={() => setTimeHidden(!timeHidden)}>
+										HIDE TIME
+										<FontAwesomeIcon icon={timeHidden ? faCheckSquare : faSquare}></FontAwesomeIcon>
+									</label>
+									<label onClick={() => setShortenPeerId(!shortenPeerId)}>
+										SHORTEN ID's
+										<FontAwesomeIcon icon={shortenPeerId ? faCheckSquare : faSquare}></FontAwesomeIcon>
+									</label>
+								</div>
+								{messageList()}
+								<input type={'text'} className='text-input terminal-input' value={message} onChange={(e) => setMessage(e.target.value)} />
+								<input
+									type='button'
+									className='button'
+									value='Send Message'
+									onClick={() => addMessage({ message: message, timestamp: Date.now(), peerId: selfId }, selectedRoom.roomName, true)}
+								/>
+							</>
 						</>
-					) : (
-						<div>
-							<div>No room selected</div>
-						</div>
 					)}
-				</>
+				/>
 			)}
-		/>
+		</>
 	);
 };

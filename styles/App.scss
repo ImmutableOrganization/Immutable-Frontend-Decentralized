@@ -582,7 +582,6 @@ input[type='text']:hover {
 
 // decentralized chat
 .chat-channels {
-	display: grid;
 	height: 50vh;
 	overflow-y: scroll;
 	width: 100%;
@@ -625,4 +624,14 @@ input[type='text']:hover {
 			scale: 1.5;
 		}
 	}
+}
+.rooms-list-item {
+	display: grid;
+	grid-template-columns: 1fr 1fr;
+	padding-inline: 3vw;
+	padding-block: 2vh;
+	outline-style: auto;
+}
+.isSelected {
+	color: lime;
 }

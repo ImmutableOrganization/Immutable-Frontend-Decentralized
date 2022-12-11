@@ -14,6 +14,7 @@ interface RoomComponentProps {
 	connectStream: (room: RoomWrapper, _stream: MediaStream) => void;
 	selfStream: MediaStream | undefined;
 	selectedRoom: RoomWrapper | undefined;
+	disconnectStream: (room: RoomWrapper, _stream: MediaStream) => void;
 }
 export interface RoomWrapper {
 	roomName: string;
@@ -34,6 +35,7 @@ export const RoomComponent: React.FunctionComponent<RoomComponentProps> = ({
 	connectStream,
 	selfStream,
 	selectedRoom,
+	disconnectStream,
 }) => {
 	useEffect(() => {
 		if (!ranOnce) {
@@ -83,14 +85,21 @@ export const RoomComponent: React.FunctionComponent<RoomComponentProps> = ({
 		return (
 			<>
 				{peers?.length}: peer's in this room.
-				<input type='button' className='button' onClick={() => disconnectRoom(room)} value='disconnect room' />
-				<input type='button' className='button' onClick={() => console.log(getPeers(room))} value='getpeers' />
+				{/* <input type='button' className='button' onClick={() => console.log(getPeers(room))} value='getpeers' /> */}
 				{selfStream ? (
 					<>
 						<input type='button' className='button' onClick={() => connectStream(room, selfStream)} value='connect stream' />
+						<input
+							type='button'
+							className='button'
+							onClick={() => {
+								disconnectStream(room, selfStream);
+							}}
+							value='DISCONNECT'
+						/>
 					</>
 				) : (
-					<>Your own stream is not connected.</>
+					<>Your video stream is not connected.</>
 				)}
 			</>
 		);
@@ -100,36 +109,41 @@ export const RoomComponent: React.FunctionComponent<RoomComponentProps> = ({
 		return (
 			<div className='roomsList'>
 				{rooms ? (
-					<div className='chat-channels'>
-						<Frame
-							headerText={'Rooms'}
-							body={() =>
-								rooms.map((room: RoomWrapper) => (
-									<div key={room.roomName}>
+					<Frame
+						headerText={'Rooms'}
+						body={() => (
+							<div className='chat-channels'>
+								{rooms.map((room: RoomWrapper) => (
+									<div key={room.roomName} className='rooms-list-item'>
 										<>
 											{room.roomName}
-											{room.room ? 'connected' : 'not connected'}
-											<br></br>
 											<input type='button' className='button' onClick={() => removeRoom(room)} value='REMOVE' />
-											{!room.room && (
+											<div className={room.room ? 'isSelected' : ''}>{room.room ? 'Connected' : 'Not connected'}</div>
+
+											{!room.room ? (
 												<>
-													<input
-														type='button'
-														className='button'
-														onClick={() => {
-															selectRoom(room);
-															connectToRoom(room);
-														}}
-														value='CONNECT'
-													/>
+													{/* if no room is selected show connect button, if a room is already selected do not show button */}
+													{!selectedRoom?.room && (
+														<input
+															type='button'
+															className='button'
+															onClick={() => {
+																selectRoom(room);
+																connectToRoom(room);
+															}}
+															value='CONNECT'
+														/>
+													)}
 												</>
+											) : (
+												<input type='button' className='button' onClick={() => disconnectRoom(room)} value='disconnect' />
 											)}
 										</>
 									</div>
-								))
-							}
-						/>
-					</div>
+								))}
+							</div>
+						)}
+					/>
 				) : (
 					// <>Please join a room.</>
 					<></>
@@ -140,10 +154,12 @@ export const RoomComponent: React.FunctionComponent<RoomComponentProps> = ({
 
 	return (
 		<div className='roomComponent'>
-			<Frame headerText={'connection info'} body={() => <>connection id: {selfId}</>} />
 			{joinRoom()}
 			{roomsList()}
-			{selectedRoom && <Frame headerText={'Current Room: ' + selectedRoom.roomName} body={() => <SingleRoom room={selectedRoom} />} />}
+			{}
+			{selectedRoom && selectedRoom.roomName != '2d9227eb-bdd7-4dda-a1d1-d3a694b4195e' && (
+				<Frame headerText={'Current Room: ' + selectedRoom.roomName} body={() => <SingleRoom room={selectedRoom} />} />
+			)}
 		</div>
 	);
 };

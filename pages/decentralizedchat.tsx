@@ -11,8 +11,8 @@ export interface MessageCallback {
 	getMessageListener: (message: Message, roomId: string) => void;
 }
 
-const emptyRoom: RoomWrapper = {
-	roomName: 'default',
+export const emptyRoom: RoomWrapper = {
+	roomName: '2d9227eb-bdd7-4dda-a1d1-d3a694b4195e',
 	room: undefined,
 };
 
@@ -26,10 +26,20 @@ const DecentralizedChat: NextPage = () => {
 		callSendMessage(message);
 	};
 
-	const { rooms, addRoom, removeRoom, selectRoom, connectToRoom, disconnectRoom, selfId, getPeers, callSendMessage, connectStream, streamsRef } = useRooms(
-		setSelectedRoom,
-		{ getMessageListener },
-	);
+	const {
+		rooms,
+		addRoom,
+		removeRoom,
+		selectRoom,
+		connectToRoom,
+		disconnectRoom,
+		selfId,
+		getPeers,
+		callSendMessage,
+		connectStream,
+		streamsRef,
+		disconnectStream,
+	} = useRooms(setSelectedRoom, { getMessageListener });
 
 	const { messagesRef, addMessage } = useMessages(sendMessageAction);
 
@@ -61,8 +71,9 @@ const DecentralizedChat: NextPage = () => {
 				connectStream={connectStream}
 				selfStream={localStream}
 				selectedRoom={selectedRoom}
+				disconnectStream={disconnectStream}
 			/>
-			<VideoComponent peerStreams={streamsRef} />
+			<VideoComponent selectedRoom={selectedRoom} peerStreams={streamsRef} />
 			<MessageComponent selectedRoom={selectedRoom} messages={messagesRef} addMessage={addMessage} />
 		</>
 	);

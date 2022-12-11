@@ -1,6 +1,6 @@
 import { useContext, useState } from 'react';
 import { BaseRoomConfig, joinRoom, selfId } from 'trystero';
-import { MessageCallback } from '../../../pages/decentralizedchat';
+import { emptyRoom, MessageCallback } from '../../../pages/decentralizedchat';
 import { Message } from '../MessageComponent';
 import { RoomWrapper } from '../RoomComponent';
 import * as trystero from 'trystero';
@@ -48,12 +48,18 @@ export const useRooms = (selectedRoomCallback: (room: RoomWrapper) => void, mess
 
 	const disconnectRoom = (_room: RoomWrapper) => {
 		console.log('disconnecting from room', _room);
+		console.log("unselecting room because it's disconnected");
+		selectedRoomCallback(emptyRoom);
+
+		// ok this is the issue, selected room is reset but the _room.room is undefined so we never actually leave. why?
+
 		if (_room.room) {
 			console.log('disconnecting from room executed', _room);
 			_room.room.leave();
 			const newItem: RoomWrapper = { ..._room, room: undefined };
 			if (rooms) {
 				setRooms((rooms: any) => rooms.map((room: RoomWrapper) => (room.roomName === _room.roomName ? newItem : room)));
+				// unselect room
 			}
 		}
 	};
@@ -66,7 +72,6 @@ export const useRooms = (selectedRoomCallback: (room: RoomWrapper) => void, mess
 			if (room) {
 				if (room.room) {
 					console.log('stream', _stream);
-
 					try {
 						room.room.addStream(_stream);
 					} catch (e) {
@@ -85,6 +90,24 @@ export const useRooms = (selectedRoomCallback: (room: RoomWrapper) => void, mess
 		}
 	};
 
+	const disconnectStream = async (_room: RoomWrapper, _stream: MediaStream) => {
+		if (rooms) {
+			// find _room in rooms
+			const room = rooms.find((room) => room.roomName === _room.roomName);
+			console.log('room', room);
+			if (room) {
+				if (room.room) {
+					console.log('stream', _stream);
+					try {
+						room.room.removeStream(_stream);
+					} catch (e) {
+						setFormError({ open: true, message: 'Error removing stream' });
+					}
+				}
+			}
+		}
+	};
+
 	const connectToRoom = (_room: RoomWrapper) => {
 		try {
 			const config: BaseRoomConfig = { appId: '8AhTQ9k2K8nr' };
@@ -92,6 +115,7 @@ export const useRooms = (selectedRoomCallback: (room: RoomWrapper) => void, mess
 			try {
 				room = joinRoom(config, _room.roomName);
 				const newItem: RoomWrapper = { ..._room, room };
+				selectedRoomCallback(newItem);
 				if (newItem.room) {
 					// send stream to peer when they join
 
@@ -145,13 +169,10 @@ export const useRooms = (selectedRoomCallback: (room: RoomWrapper) => void, mess
 
 	// remove room from state
 	const removeRoom = (_room: RoomWrapper) => {
-		if (!_room.room) {
-			setFormError({ open: true, message: 'Room is already disconnected' });
+		if (_room.room) {
+			_room.room.leave();
 			console.log('no room to leave');
-			return;
 		}
-		_room.room.leave();
-
 		if (rooms) {
 			setRooms((rooms: any) => rooms.filter((room: RoomWrapper) => room.roomName !== _room.roomName));
 		}
@@ -160,7 +181,7 @@ export const useRooms = (selectedRoomCallback: (room: RoomWrapper) => void, mess
 	// select room
 	const selectRoom = (_room: RoomWrapper) => {
 		if (_room.room) {
-			setFormError({ open: true, message: 'Must disconnect to room' });
+			setFormError({ open: true, message: 'Already connected to room' });
 			disconnectRoom(_room);
 			return;
 		}
@@ -186,5 +207,18 @@ export const useRooms = (selectedRoomCallback: (room: RoomWrapper) => void, mess
 		}
 	};
 
-	return { rooms, addRoom, removeRoom, selectRoom, connectToRoom, disconnectRoom, selfId, getPeers, callSendMessage, connectStream, streamsRef };
+	return {
+		rooms,
+		addRoom,
+		removeRoom,
+		selectRoom,
+		connectToRoom,
+		disconnectRoom,
+		selfId,
+		getPeers,
+		callSendMessage,
+		connectStream,
+		streamsRef,
+		disconnectStream,
+	};
 };

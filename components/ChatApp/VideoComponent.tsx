@@ -1,37 +1,46 @@
 import ReactPlayer from 'react-player';
-import { Room } from 'trystero';
+import { Frame } from '../Frame';
 import { PeerStream } from './hooks/useRooms';
+import { RoomWrapper } from './RoomComponent';
 
 interface VideoComponentProps {
 	peerStreams: React.MutableRefObject<PeerStream | undefined>;
-}
-export interface RoomWrapper {
-	roomName: string;
-	_id: string;
-	room: Room | undefined;
+	selectedRoom: RoomWrapper;
 }
 
-export const VideoComponent: React.FunctionComponent<VideoComponentProps> = ({ peerStreams }) => {
+export const VideoComponent: React.FunctionComponent<VideoComponentProps> = ({ peerStreams, selectedRoom }) => {
 	return (
 		<div className='peerStreams'>
 			{/* map over peer streams */}
-			{peerStreams.current ? (
-				<>
-					{Object.values(peerStreams.current).map((peerStream, index) => {
-						return (
-							<div key={index} className='peerStream'>
+			{selectedRoom && selectedRoom.roomName != '2d9227eb-bdd7-4dda-a1d1-d3a694b4195e' && (
+				<Frame
+					headerText={'VIDEO'}
+					body={() => (
+						<>
+							{peerStreams.current ? (
 								<>
-									{'Peer'}
-									<ReactPlayer playing={true} controls={true} url={peerStream} />
+									<>
+										{peerStreams.current &&
+											Object.entries(peerStreams.current).map(([peerid, _stream], index) => {
+												return (
+													<div key={index} className='peerStream'>
+														<>
+															{peerid === 'self' ? 'self' : peerid}
+															<ReactPlayer width={'100%'} playing={true} controls={true} url={_stream} />
+														</>
+													</div>
+												);
+											})}
+									</>
 								</>
-							</div>
-						);
-					})}
-				</>
-			) : (
-				<>
-					<>No peer streams exist</>
-				</>
+							) : (
+								<>
+									<>No peer streams exist</>{' '}
+								</>
+							)}
+						</>
+					)}
+				/>
 			)}
 		</div>
 	);
