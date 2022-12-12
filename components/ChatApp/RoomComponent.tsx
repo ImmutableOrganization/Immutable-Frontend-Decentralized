@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { Dispatch, SetStateAction, useEffect, useState } from 'react';
 import { Room } from 'trystero';
 import { Frame } from '../Frame';
 
@@ -15,6 +15,12 @@ interface RoomComponentProps {
 	selfStream: MediaStream | undefined;
 	selectedRoom: RoomWrapper | undefined;
 	disconnectStream: (room: RoomWrapper, _stream: MediaStream) => void;
+	showChatFeed: boolean;
+	setShowChatFeed: Dispatch<SetStateAction<boolean>>;
+	showVideoFeed: boolean;
+	setShowVideoFeed: Dispatch<SetStateAction<boolean>>;
+	setLocalStream: Dispatch<SetStateAction<MediaStream | undefined>>;
+	setOpenMessageOptions: Dispatch<SetStateAction<boolean>>;
 }
 export interface RoomWrapper {
 	roomName: string;
@@ -36,12 +42,13 @@ export const RoomComponent: React.FunctionComponent<RoomComponentProps> = ({
 	selfStream,
 	selectedRoom,
 	disconnectStream,
+	showChatFeed,
+	setShowChatFeed,
+	showVideoFeed,
+	setShowVideoFeed,
+	setLocalStream,
+	setOpenMessageOptions,
 }) => {
-	useEffect(() => {
-		if (!ranOnce) {
-		}
-	}, []);
-
 	const joinRoom = () => {
 		const [roomName, setRoomName] = useState<string>('');
 		return (
@@ -49,7 +56,7 @@ export const RoomComponent: React.FunctionComponent<RoomComponentProps> = ({
 				className='joinRoom'
 				headerText='ADD Room'
 				body={() => (
-					<>
+					<div className='addRoom'>
 						<input
 							type='text'
 							className='text_input terminal-input'
@@ -57,8 +64,8 @@ export const RoomComponent: React.FunctionComponent<RoomComponentProps> = ({
 							value={roomName}
 							onChange={(e) => setRoomName(e.target.value)}
 						/>
-						<input type='button' className='button' onClick={() => addRoom(roomName)} value='add room' />
-					</>
+						<input type='button' className='button' onClick={() => addRoom(roomName)} value='add' />
+					</div>
 				)}
 			></Frame>
 		);
@@ -78,14 +85,28 @@ export const RoomComponent: React.FunctionComponent<RoomComponentProps> = ({
 				setPeers(getPeers(room));
 			});
 		}
+
 		useEffect(() => {
 			setPeers(getPeers(room));
 		}, []);
 
+		const fetchStreamAndAdd = async () => {
+			const _selfStream = await navigator.mediaDevices.getUserMedia({
+				audio: true,
+				video: true,
+			});
+			setLocalStream(_selfStream);
+			connectStream(room, _selfStream);
+		};
+
+		// hide connect button if already connected
+		// hide disconnect button if not connected
+		// auto connect stream when user clicks connect your video / audio
+
 		return (
 			<>
 				{peers?.length}: peer's in this room.
-				{/* <input type='button' className='button' onClick={() => console.log(getPeers(room))} value='getpeers' /> */}
+				<input type='button' className='button' value='Chat Options' onClick={() => setOpenMessageOptions(true)} />
 				{selfStream ? (
 					<>
 						<input type='button' className='button' onClick={() => connectStream(room, selfStream)} value='connect stream' />
@@ -99,8 +120,12 @@ export const RoomComponent: React.FunctionComponent<RoomComponentProps> = ({
 						/>
 					</>
 				) : (
-					<>Your video stream is not connected.</>
+					<>
+						<input type='button' className='button' onClick={() => fetchStreamAndAdd()} value='Connect your Video / Audio' />
+					</>
 				)}
+				<input type='button' className='button' onClick={() => setShowChatFeed(!showChatFeed)} value={!showChatFeed ? 'show chat' : 'hide chat'} />
+				<input type='button' className='button' onClick={() => setShowVideoFeed(!showVideoFeed)} value={!showVideoFeed ? 'show video' : 'hide video'} />
 			</>
 		);
 	};
@@ -156,7 +181,6 @@ export const RoomComponent: React.FunctionComponent<RoomComponentProps> = ({
 		<div className='roomComponent'>
 			{joinRoom()}
 			{roomsList()}
-			{}
 			{selectedRoom && selectedRoom.roomName != '2d9227eb-bdd7-4dda-a1d1-d3a694b4195e' && (
 				<Frame headerText={'Current Room: ' + selectedRoom.roomName} body={() => <SingleRoom room={selectedRoom} />} />
 			)}

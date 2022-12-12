@@ -601,6 +601,13 @@ input[type='text']:hover {
 	}
 }
 
+.message-options {
+	position: sticky;
+	top: 50%;
+	left: 50%;
+	transform: translate(-50%, -50%);
+	z-index: 999;
+}
 .options {
 	display: flex;
 	flex-direction: column;
@@ -634,4 +641,29 @@ input[type='text']:hover {
 }
 .isSelected {
 	color: lime;
+}
+
+.addRoom {
+	display: grid;
+	grid-template-columns: 1fr 1fr;
+	padding: 1vw;
+}
+
+.currRoom {
+	display: grid;
+	padding-inline: 3vw;
+	padding-block: 2vh;
+	row-gap: 1vh;
+}
+
+.peerStream {
+	padding-inline: 3vw;
+	padding-block: 1vh;
+	outline: solid;
+}
+.messageControls {
+	display: grid;
+	grid-template-columns: 1fr 0.2fr;
+	padding-inline: 1vw;
+	padding-block: 1vh;
 }

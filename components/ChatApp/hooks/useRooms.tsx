@@ -10,8 +10,15 @@ import { FormError } from '../../Modals/Error';
 
 export let sendMessage: trystero.ActionSender<Message>;
 
+export interface Peer {
+	mediaStream: MediaStream;
+	videoBlocked: boolean;
+	audioBlocked: boolean;
+	textBlocked: boolean;
+}
+
 export interface PeerStream {
-	[peerid: string]: MediaStream;
+	[peerid: string]: Peer;
 }
 export const useRooms = (selectedRoomCallback: (room: RoomWrapper) => void, messageCallback: MessageCallback) => {
 	const [rooms, setRooms] = useState<RoomWrapper[]>();
@@ -60,6 +67,36 @@ export const useRooms = (selectedRoomCallback: (room: RoomWrapper) => void, mess
 			if (rooms) {
 				setRooms((rooms: any) => rooms.map((room: RoomWrapper) => (room.roomName === _room.roomName ? newItem : room)));
 				// unselect room
+			}
+		}
+	};
+
+	const blockPeerVideoController = (peerId: string, block: boolean) => {
+		if (streams) {
+			const newStreams = { ...streams };
+			if (newStreams[peerId]) {
+				newStreams[peerId].videoBlocked = block;
+				setStreamRef(newStreams);
+			}
+		}
+	};
+
+	const blockPeerAudioController = (peerId: string, block: boolean) => {
+		if (streams) {
+			const newStreams = { ...streams };
+			if (newStreams[peerId]) {
+				newStreams[peerId].audioBlocked = block;
+				setStreamRef(newStreams);
+			}
+		}
+	};
+
+	const blockPeerTextController = (peerId: string, block: boolean) => {
+		if (streams) {
+			const newStreams = { ...streams };
+			if (newStreams[peerId]) {
+				newStreams[peerId].textBlocked = block;
+				setStreamRef(newStreams);
 			}
 		}
 	};
@@ -122,7 +159,7 @@ export const useRooms = (selectedRoomCallback: (room: RoomWrapper) => void, mess
 					newItem.room.onPeerStream((stream, peerId) => {
 						console.log('stream received', stream, peerId);
 						const copy = { ...streamsRef.current };
-						copy[peerId] = stream;
+						copy[peerId] = { mediaStream: stream, videoBlocked: false, audioBlocked: false, textBlocked: false };
 						setStreamRef(copy);
 					});
 				}
@@ -220,5 +257,8 @@ export const useRooms = (selectedRoomCallback: (room: RoomWrapper) => void, mess
 		connectStream,
 		streamsRef,
 		disconnectStream,
+		blockPeerAudioController,
+		blockPeerVideoController,
+		blockPeerTextController,
 	};
 };

@@ -1,6 +1,6 @@
 import { faCheckSquare, faSquare } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import React from 'react';
+import React, { Dispatch, SetStateAction, useEffect, useRef } from 'react';
 import { useState } from 'react';
 import { selfId } from 'trystero';
 import { Frame } from '../Frame';
@@ -10,6 +10,10 @@ interface MessageComponentProps {
 	selectedRoom: RoomWrapper;
 	messages: React.MutableRefObject<MessageList | undefined>;
 	addMessage: (_message: Message, _roomId: string, isLocal: boolean) => void;
+	shortenPeerId: boolean;
+	dateHidden: boolean;
+	timeHidden: boolean;
+	setOpenMessageOptions: Dispatch<SetStateAction<boolean>>;
 }
 
 export interface Message {
@@ -66,12 +70,27 @@ export const useMessages = (_sendMessageCallback: any) => {
 	return { messagesRef, addMessage };
 };
 
-export const MessageComponent: React.FunctionComponent<MessageComponentProps> = ({ selectedRoom, messages, addMessage }) => {
+export const MessageComponent: React.FunctionComponent<MessageComponentProps> = ({
+	selectedRoom,
+	messages,
+	addMessage,
+	shortenPeerId,
+	dateHidden,
+	timeHidden,
+	setOpenMessageOptions,
+}) => {
 	const [message, setMessage] = useState<string>('');
-	const [dateHidden, setDateHidden] = useState<boolean>(true);
-	const [timeHidden, setTimeHidden] = useState<boolean>(true);
-	const [shortenPeerId, setShortenPeerId] = useState<boolean>(true);
 
+	const messagesEndRef = useRef<null | HTMLDivElement>(null);
+
+	const scrollToBottom = () => {
+		console.log('scrolling to bottom');
+		messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
+	};
+
+	useEffect(() => {
+		scrollToBottom();
+	}, [messages.current]);
 	const messageList = () => {
 		return (
 			<>
@@ -87,13 +106,18 @@ export const MessageComponent: React.FunctionComponent<MessageComponentProps> = 
 										{message.message}
 									</div>
 								))}
+								<div ref={messagesEndRef} />
 							</div>
 						) : (
-							<p>no messages</p>
+							<div className='messages socketMessages'>
+								<div className='socketMessage'>No messages...</div>
+							</div>
 						)}
 					</>
 				) : (
-					<p>no messages</p>
+					<div className='messages socketMessages'>
+						<div className='socketMessage'>No messages...</div>
+					</div>
 				)}
 			</>
 		);
@@ -108,30 +132,16 @@ export const MessageComponent: React.FunctionComponent<MessageComponentProps> = 
 					body={() => (
 						<>
 							<>
-								NAME: {selectedRoom.roomName}
-								<div className='options'>
-									{/* <u>MESSAGE OPTIONS:</u> */}
-									<label onClick={() => setDateHidden(!dateHidden)}>
-										HIDE DATE
-										<FontAwesomeIcon icon={dateHidden ? faCheckSquare : faSquare}></FontAwesomeIcon>
-									</label>
-									<label onClick={() => setTimeHidden(!timeHidden)}>
-										HIDE TIME
-										<FontAwesomeIcon icon={timeHidden ? faCheckSquare : faSquare}></FontAwesomeIcon>
-									</label>
-									<label onClick={() => setShortenPeerId(!shortenPeerId)}>
-										SHORTEN ID's
-										<FontAwesomeIcon icon={shortenPeerId ? faCheckSquare : faSquare}></FontAwesomeIcon>
-									</label>
-								</div>
 								{messageList()}
-								<input type={'text'} className='text-input terminal-input' value={message} onChange={(e) => setMessage(e.target.value)} />
-								<input
-									type='button'
-									className='button'
-									value='Send Message'
-									onClick={() => addMessage({ message: message, timestamp: Date.now(), peerId: selfId }, selectedRoom.roomName, true)}
-								/>
+								<div className='messageControls'>
+									<input type={'text'} className='text-input terminal-input' value={message} onChange={(e) => setMessage(e.target.value)} />
+									<input
+										type='button'
+										className='button'
+										value='>'
+										onClick={() => addMessage({ message: message, timestamp: Date.now(), peerId: selfId }, selectedRoom.roomName, true)}
+									/>
+								</div>
 							</>
 						</>
 					)}
