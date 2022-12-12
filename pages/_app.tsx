@@ -19,7 +19,6 @@ import Header from '../components/Header/Header';
 import { FormError } from '../components/Modals/Error';
 import { Loading } from '../components/Modals/Loading';
 import { Toast } from '../components/Toast/Toast';
-import { useSocket } from '../hooks/useSocket';
 import { alchemyProvider } from 'wagmi/providers/alchemy';
 import { InjectedConnector } from 'wagmi/connectors/injected';
 import { GoogleAnalytics } from 'nextjs-google-analytics';
@@ -114,22 +113,6 @@ function MyApp({ Component, pageProps }: AppProps) {
 	const [toastMessage, setToastMessage] = useState<string>('');
 	const [openToast, setOpenToast] = useState<boolean>(false);
 	const [toastType, setToastType] = useState<string>('loading');
-	// const {
-	// 	getSocketId,
-	// 	setUserWantsSocketOn,
-	// 	disconnectSocket,
-	// 	userCounter,
-	// 	channelsRef,
-	// 	socketConnected,
-	// 	selectChannel,
-	// 	setEnableChannelWhiteList,
-	// 	enableChannelWhiteList,
-	// 	channelInfo,
-	// 	sendChatMessage,
-	// 	joinRoom,
-	// 	leaveRoom,
-	// 	selectedChannel,
-	// } = useSocket();
 
 	return (
 		<>

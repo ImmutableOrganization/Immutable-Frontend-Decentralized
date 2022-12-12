@@ -18,25 +18,19 @@
 		width: 100%;
 	}
 
-	svg {
+	img {
 		height: 10vh;
 	}
 
 	.spinner {
-		path {
-			fill: white;
-		}
+		filter: invert(100%) sepia(0%) saturate(7487%) hue-rotate(201deg) brightness(106%) contrast(100%);
 	}
 
 	.success {
-		path {
-			fill: #39ff14;
-		}
+		filter: invert(70%) sepia(41%) saturate(1477%) hue-rotate(61deg) brightness(113%) contrast(120%);
 	}
 
 	.failure {
-		path {
-			fill: #ffff33;
-		}
+		filter: invert(87%) sepia(80%) saturate(3287%) hue-rotate(348deg) brightness(107%) contrast(81%);
 	}
 }

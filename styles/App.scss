@@ -615,6 +615,7 @@ input[type='text']:hover {
 	row-gap: 2vh;
 	padding-inline: 3vw;
 	padding-block: 1vh;
+	text-align: center;
 
 	svg {
 		path {
@@ -678,4 +679,18 @@ input[type='text']:hover {
 .checkbox-item {
 	display: grid;
 	grid-template-columns: 1fr 1fr;
+}
+
+.addRoom {
+	display: grid;
+	grid-template-columns: 1fr 1fr;
+	padding-inline: 3vw;
+	padding-block: 1vh;
+}
+
+.chat-option-item {
+	display: grid;
+	grid-template-columns: 1fr 1fr;
+	padding-inline: 3vw;
+	justify-items: baseline;
 }

@@ -72,22 +72,30 @@ const DecentralizedChat: NextPage = () => {
 	const messageOptionsModal = () => {
 		return (
 			<Frame
-				headerText='Chat Options'
+				headerText='Options'
 				className='message-options'
 				body={() => (
 					<>
 						<div className='options'>
-							<label onClick={() => setDateHidden(!dateHidden)}>
+							<label className='chat-option-item' onClick={() => setDateHidden(!dateHidden)}>
 								HIDE DATE
 								<FontAwesomeIcon icon={dateHidden ? faCheckSquare : faSquare}></FontAwesomeIcon>
 							</label>
-							<label onClick={() => setTimeHidden(!timeHidden)}>
+							<label className='chat-option-item' onClick={() => setTimeHidden(!timeHidden)}>
 								HIDE TIME
 								<FontAwesomeIcon icon={timeHidden ? faCheckSquare : faSquare}></FontAwesomeIcon>
 							</label>
-							<label onClick={() => setShortenPeerId(!shortenPeerId)}>
+							<label className='chat-option-item' onClick={() => setShortenPeerId(!shortenPeerId)}>
 								SHORTEN ID's
 								<FontAwesomeIcon icon={shortenPeerId ? faCheckSquare : faSquare}></FontAwesomeIcon>
+							</label>
+							<label className='chat-option-item' onClick={() => setShowChatFeed(!showChatFeed)}>
+								Show Chat
+								<FontAwesomeIcon icon={showChatFeed ? faCheckSquare : faSquare}></FontAwesomeIcon>
+							</label>
+							<label className='chat-option-item' onClick={() => setShowVideoFeed(!showVideoFeed)}>
+								Show Video
+								<FontAwesomeIcon icon={showVideoFeed ? faCheckSquare : faSquare}></FontAwesomeIcon>
 							</label>
 							<input type='button' className='button' value='CLOSE' onClick={() => setOpenMessageOptions(false)} />
 						</div>
@@ -102,7 +110,7 @@ const DecentralizedChat: NextPage = () => {
 			{openMessageOptions && messageOptionsModal()}
 
 			{/* <EncryptionComponent /> */}
-			<LocalStreamComponent localStream={localStream} setLocalStream={setLocalStream} />
+			<LocalStreamComponent addRoom={addRoom} localStream={localStream} setLocalStream={setLocalStream} />
 
 			<RoomComponent
 				addRoom={addRoom}

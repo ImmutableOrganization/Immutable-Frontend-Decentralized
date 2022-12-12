@@ -43,7 +43,7 @@ export const ChatOptions: React.FunctionComponent<ChatOptionsProps> = ({
 	const chatOptionsBody = () => {
 		return (
 			<>
-				<div className='options'>
+				<div className='chat-options'>
 					{/* <u>MESSAGE OPTIONS:</u> */}
 					<label onClick={() => setDateHidden(!dateHidden)}>
 						HIDE DATE

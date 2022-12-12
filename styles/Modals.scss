@@ -211,20 +211,17 @@ a.button {
 			word-break: break-all;
 			align-items: center;
 			overflow: scroll;
-			height: 50vh;
-
+			text-align: center;
 			h2 {
-				color: rgb(255, 0, 0);
+				color: #e0e722;
 			}
 
-			svg {
+			img {
 				margin: auto;
 
 				height: 10vh;
 
-				path {
-					fill: yellow;
-				}
+				filter: invert(87%) sepia(80%) saturate(3287%) hue-rotate(348deg) brightness(107%) contrast(81%);
 			}
 		}
 	}

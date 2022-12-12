@@ -31,16 +31,22 @@ export const useRooms = (selectedRoomCallback: (room: RoomWrapper) => void, mess
 		setStreams(data);
 	};
 
+	const { setOpenToast, setToastMessage, setToastType } = useContext(PopupContext);
+
 	// add room to state
 	const addRoom = (_roomName: string) => {
 		if (_roomName == '') {
-			setFormError({ open: true, message: 'Room must have a name' });
+			setToastMessage('Room must have a name');
+			setOpenToast(true);
+			setToastType('failure');
 			return;
 		}
 		// check if roomName is already in state
 		if (rooms) {
 			if (rooms.find((room) => room.roomName === _roomName)) {
-				setFormError({ open: true, message: 'Room already exists in your local list' });
+				setToastMessage('Room exists');
+				setOpenToast(true);
+				setToastType('failure');
 				return;
 			}
 		}

@@ -1,7 +1,8 @@
 import { faCheckSquare, faSquare } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { Dispatch, SetStateAction, useEffect, useState } from 'react';
+import { Dispatch, SetStateAction, useContext, useEffect, useState } from 'react';
 import { Room } from 'trystero';
+import { PopupContext } from '../../pages/_app';
 import { Frame } from '../Frame';
 
 interface RoomComponentProps {
@@ -51,28 +52,6 @@ export const RoomComponent: React.FunctionComponent<RoomComponentProps> = ({
 	setLocalStream,
 	setOpenMessageOptions,
 }) => {
-	const joinRoom = () => {
-		const [roomName, setRoomName] = useState<string>('');
-		return (
-			<Frame
-				className='joinRoom'
-				headerText='ADD Room'
-				body={() => (
-					<div className='addRoom'>
-						<input
-							type='text'
-							className='text_input terminal-input'
-							placeholder='Enter the room name'
-							value={roomName}
-							onChange={(e) => setRoomName(e.target.value)}
-						/>
-						<input type='button' className='button' onClick={() => addRoom(roomName)} value='add' />
-					</div>
-				)}
-			></Frame>
-		);
-	};
-
 	interface SingleRoomProps {
 		room: RoomWrapper;
 	}
@@ -91,13 +70,19 @@ export const RoomComponent: React.FunctionComponent<RoomComponentProps> = ({
 		useEffect(() => {
 			setPeers(getPeers(room));
 		}, []);
+		const { setOpenToast, setToastMessage, setToastType } = useContext(PopupContext);
 
 		const connectStreamHandler = async () => {
 			if (!selfStream) {
+				setToastMessage('Connecting to stream...');
+				setOpenToast(true);
+				setToastType('loading');
 				const _selfStream = await navigator.mediaDevices.getUserMedia({
 					audio: true,
 					video: true,
 				});
+				setOpenToast(false);
+
 				setLocalStream(_selfStream);
 				connectStream(room, _selfStream);
 			} else {
@@ -111,36 +96,27 @@ export const RoomComponent: React.FunctionComponent<RoomComponentProps> = ({
 
 		return (
 			<div className='currRoom'>
-				{peers?.length}: peer's in this room.
-				<div className='options'>
-					<input type='button' className='button' value='Chat Options' onClick={() => setOpenMessageOptions(true)} />
-					<input type='button' className='button' onClick={() => setShowChatFeed(!showChatFeed)} value={showChatFeed ? 'Hide Chat' : 'Show Chat'} />
-					<input
-						type='button'
-						className='button'
-						onClick={() => setShowVideoFeed(!showVideoFeed)}
-						value={showVideoFeed ? 'Hide Video' : 'Show Video'}
-					/>
-
-					{selfStream ? (
-						<>
-							<input type='button' className='button' onClick={() => connectStreamHandler()} value='send stream' />
-							<input
-								type='button'
-								className='button'
-								onClick={() => {
-									disconnectRoom(room);
-									disconnectStream(room, selfStream);
-								}}
-								value='DISCONNECT'
-							/>
-						</>
-					) : (
-						<>
-							<input type='button' className='button' onClick={() => connectStreamHandler()} value='connect your video stream' />
-						</>
-					)}
-				</div>
+				Peers: {peers?.length}
+				<input type='button' className='button' value='Options' onClick={() => setOpenMessageOptions(true)} />
+				<span></span>
+				{selfStream ? (
+					<>
+						<input type='button' className='button' onClick={() => connectStreamHandler()} value='send stream' />
+						<input
+							type='button'
+							className='button'
+							onClick={() => {
+								disconnectRoom(room);
+								disconnectStream(room, selfStream);
+							}}
+							value='DISCONNECT'
+						/>
+					</>
+				) : (
+					<>
+						<input type='button' className='button' onClick={() => connectStreamHandler()} value='Broadcast Video' />
+					</>
+				)}
 			</div>
 		);
 	};
@@ -197,10 +173,7 @@ export const RoomComponent: React.FunctionComponent<RoomComponentProps> = ({
 			{selectedRoom && selectedRoom.roomName != '2d9227eb-bdd7-4dda-a1d1-d3a694b4195e' ? (
 				<Frame headerText={'Current Room: ' + selectedRoom.roomName} body={() => <SingleRoom room={selectedRoom} />} />
 			) : (
-				<>
-					{joinRoom()}
-					{roomsList()}
-				</>
+				<>{roomsList()}</>
 			)}
 		</div>
 	);
