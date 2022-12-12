@@ -72,7 +72,7 @@ const DecentralizedChat: NextPage = () => {
 	const messageOptionsModal = () => {
 		return (
 			<Frame
-				headerText='Message Options'
+				headerText='Chat Options'
 				className='message-options'
 				body={() => (
 					<>

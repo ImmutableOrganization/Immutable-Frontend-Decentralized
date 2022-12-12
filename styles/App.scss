@@ -19,7 +19,7 @@
 	margin-top: 0.5rem;
 	margin-left: 0.5rem;
 	margin-right: 0.5rem;
-
+	padding: 1%;
 	overflow-y: auto;
 	word-wrap: break-word;
 }
@@ -603,7 +603,7 @@ input[type='text']:hover {
 
 .message-options {
 	position: sticky;
-	top: 50%;
+	top: 33%;
 	left: 50%;
 	transform: translate(-50%, -50%);
 	z-index: 999;
@@ -615,15 +615,6 @@ input[type='text']:hover {
 	row-gap: 2vh;
 	padding-inline: 3vw;
 	padding-block: 1vh;
-
-	label {
-		display: flex;
-
-		svg {
-			margin-left: auto;
-			margin-right: 1vw;
-		}
-	}
 
 	svg {
 		path {
@@ -666,4 +657,25 @@ input[type='text']:hover {
 	grid-template-columns: 1fr 0.2fr;
 	padding-inline: 1vw;
 	padding-block: 1vh;
+}
+
+.socketMessage {
+	outline: dashed rgb(157, 0, 255, 0.5);
+	padding-inline: 2vw;
+	padding-block: 1vh;
+}
+
+.disabled {
+	opacity: 0.7;
+}
+
+.client-options {
+	display: grid;
+	grid-template-columns: 1fr 1fr;
+	margin-bottom: 1vh;
+}
+
+.checkbox-item {
+	display: grid;
+	grid-template-columns: 1fr 1fr;
 }

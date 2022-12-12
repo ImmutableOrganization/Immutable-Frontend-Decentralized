@@ -103,6 +103,7 @@ export const MessageComponent: React.FunctionComponent<MessageComponentProps> = 
 										{shortenPeerId ? message.peerId.substring(0, 5) + ' ' : message.peerId + ' '}
 										{!dateHidden ? new Date(message.timestamp).toLocaleDateString() + ' ' : ''}
 										{!timeHidden ? new Date(message.timestamp).toLocaleTimeString() + ' ' : ''}
+										{'>    '}
 										{message.message}
 									</div>
 								))}

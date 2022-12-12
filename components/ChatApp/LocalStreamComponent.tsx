@@ -1,3 +1,5 @@
+import { faCheckSquare, faSquare } from '@fortawesome/free-solid-svg-icons';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { useState } from 'react';
 import ReactPlayer from 'react-player';
 import { selfId } from 'trystero/torrent';
@@ -39,42 +41,54 @@ export const LocalStreamComponent: React.FunctionComponent<LocalStreamComponentP
 	return (
 		<div className='localStream'>
 			<Frame
-				headerText={'Stream Controls'}
+				headerText={'User Options'}
 				body={() => (
-					<>
+					<div className='options'>
 						<>Your id: {selfId}</>
 						<br></br>
-						<label>
-							{/* {`audio: ${useAudio ? 'on' : 'off'}`} */}
-							{`audio: `}
-							<input disabled={localStream != undefined} type='checkbox' checked={useAudio} onChange={(e) => setUseAudio(!useAudio)} />
-						</label>
-						<label>
-							{/* {`video: ${useVideo ? 'on' : 'off'}`} */}
-							{`video: `}
-							<input disabled={localStream != undefined} type='checkbox' checked={useVideo} onChange={(e) => setUseVideo(!useVideo)} />
-						</label>
-						<input
-							type='button'
-							className='button'
-							value={`${!localStream ? 'connect' : 'disconnect'} stream`}
-							onClick={() => streamConnectionHandler()}
-						/>
+						<div className='client-options'>
+							<label
+								className={'checkbox-item ' + (localStream ? 'disabled' : '')}
+								onClick={() => {
+									if (localStream != undefined) return;
+									setUseAudio(!useAudio);
+								}}
+							>
+								Audio
+								<FontAwesomeIcon icon={useAudio ? faCheckSquare : faSquare}></FontAwesomeIcon>
+							</label>
 
-						{/* local stream preview */}
-						{localStream && !hideLocalStream ? (
+							<input
+								type='button'
+								className='button'
+								value={`${!localStream ? 'connect' : 'disconnect'}`}
+								onClick={() => streamConnectionHandler()}
+							/>
+							<label
+								className={'checkbox-item ' + (localStream ? 'disabled' : '')}
+								onClick={() => {
+									if (localStream != undefined) return;
+									setUseVideo(!useVideo);
+								}}
+							>
+								Video
+								<FontAwesomeIcon icon={useVideo ? faCheckSquare : faSquare}></FontAwesomeIcon>
+							</label>
+							{localStream && hideLocalStream && (
+								<>
+									<input type='button' className='button' value='show' onClick={() => setHideLocalStream(false)} />
+								</>
+							)}
+						</div>
+						{localStream && !hideLocalStream && (
 							<>
-								<input type='button' className='button' value='hide local stream' onClick={() => setHideLocalStream(true)} />
-								<div>
-									<ReactPlayer width={'100%'} playing={true} controls={true} url={localStream} />
+								<input type='button' className='button' value='hide' onClick={() => setHideLocalStream(true)} />
+								<div className='peerStream'>
+									<ReactPlayer width={'100%'} height={'100%'} playing={true} controls={true} url={localStream} />
 								</div>
 							</>
-						) : localStream && hideLocalStream ? (
-							<>
-								<input type='button' className='button' value='show local stream' onClick={() => setHideLocalStream(false)} />
-							</>
-						) : null}
-					</>
+						)}
+					</div>
 				)}
 			/>
 		</div>
