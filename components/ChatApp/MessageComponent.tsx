@@ -99,12 +99,24 @@ export const MessageComponent: React.FunctionComponent<MessageComponentProps> = 
 						{messages.current[selectedRoom.roomName] ? (
 							<div className='messages socketMessages'>
 								{messages.current[selectedRoom.roomName].map((message: Message) => (
-									<div className='socketMessage'>
-										{shortenPeerId ? message.peerId.substring(0, 5) + ' ' : message.peerId + ' '}
-										{!dateHidden ? new Date(message.timestamp).toLocaleDateString() + ' ' : ''}
-										{!timeHidden ? new Date(message.timestamp).toLocaleTimeString() + ' ' : ''}
-										{'>    '}
-										{message.message}
+									<div className={`socketMessage ` + (message.peerId === selfId ? 'localMessage' : '')}>
+										{message.peerId === selfId ? (
+											<>
+												{message.message}
+												{'    <'}
+												{!timeHidden ? new Date(message.timestamp).toLocaleTimeString() + ' ' : ''}
+												{!dateHidden ? new Date(message.timestamp).toLocaleDateString() + ' ' : ''}
+												{shortenPeerId ? message.peerId.substring(0, 5) + ' ' : message.peerId + ' '}
+											</>
+										) : (
+											<>
+												{shortenPeerId ? message.peerId.substring(0, 5) + ' ' : message.peerId + ' '}
+												{!dateHidden ? new Date(message.timestamp).toLocaleDateString() + ' ' : ''}
+												{!timeHidden ? new Date(message.timestamp).toLocaleTimeString() + ' ' : ''}
+												{'>    '}
+												{message.message}
+											</>
+										)}
 									</div>
 								))}
 								<div ref={messagesEndRef} />

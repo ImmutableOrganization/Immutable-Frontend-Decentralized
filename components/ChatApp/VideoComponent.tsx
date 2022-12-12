@@ -70,9 +70,9 @@ export const VideoComponent: React.FunctionComponent<VideoComponentProps> = ({
 									</>
 								</>
 							) : (
-								<>
-									<>No peer streams exist</>{' '}
-								</>
+								<div className='options'>
+									<>No streams in room.</>
+								</div>
 							)}
 						</>
 					)}
