@@ -37,36 +37,40 @@ export const VideoComponent: React.FunctionComponent<VideoComponentProps> = ({
 							{peerStreams.current ? (
 								<>
 									<>
-										{peerStreams.current &&
-											Object.entries(peerStreams.current).map(([peerid, _stream], index) => {
-												return (
-													<>
-														{!_stream.videoBlocked && (
-															<div key={index} className='peerStream'>
-																<>
-																	{peerid}
-																	<input
-																		type='button'
-																		className='button'
-																		onClick={() => {
-																			blockPeerVideoController(peerid, true);
-																			blockPeerAudioController(peerid, true);
-																		}}
-																		value='block'
-																	/>
-																	<ReactPlayer
-																		height={'100%'}
-																		width={'100%'}
-																		playing={true}
-																		controls={true}
-																		url={_stream.mediaStream}
-																	/>
-																</>
-															</div>
-														)}
-													</>
-												);
-											})}
+										{peerStreams.current && (
+											<>
+												{'Receiving stream from ' + Object.keys(peerStreams.current).length + ' peers'}
+												{Object.entries(peerStreams.current).map(([peerid, _stream], index) => {
+													return (
+														<>
+															{!_stream.videoBlocked && (
+																<div key={index} className='peerStream'>
+																	<>
+																		{peerid}
+																		<input
+																			type='button'
+																			className='button'
+																			onClick={() => {
+																				blockPeerVideoController(peerid, true);
+																				blockPeerAudioController(peerid, true);
+																			}}
+																			value='block'
+																		/>
+																		<ReactPlayer
+																			height={'100%'}
+																			width={'100%'}
+																			playing={true}
+																			controls={true}
+																			url={_stream.mediaStream}
+																		/>
+																	</>
+																</div>
+															)}
+														</>
+													);
+												})}
+											</>
+										)}
 									</>
 								</>
 							) : (

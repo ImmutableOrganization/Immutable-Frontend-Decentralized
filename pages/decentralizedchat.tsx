@@ -10,6 +10,7 @@ import { faCheckSquare, faSquare } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { time } from 'console';
 import { Frame } from '../components/Frame';
+import { Stream } from 'stream';
 
 export interface MessageCallback {
 	getMessageListener: (message: Message, roomId: string) => void;
@@ -69,6 +70,44 @@ const DecentralizedChat: NextPage = () => {
 	const [showChatFeed, setShowChatFeed] = useState<boolean>(true);
 	const [showVideoFeed, setShowVideoFeed] = useState<boolean>(true);
 
+	const [showAllPeerOptions, setShowAllPeerOptions] = useState<boolean>(false);
+	const allPeerOptionsModal = () => {
+		return (
+			<Frame
+				headerText='Options'
+				className='message-options'
+				body={() => (
+					<div className='options'>
+						{streamsRef.current ? (
+							<>
+								{Object.entries(streamsRef.current).map(([peerid, _stream], index) => {
+									return (
+										<div className=''>
+											{peerid}:
+											<input
+												type='button'
+												value={_stream.textBlocked && _stream.audioBlocked && _stream.videoBlocked ? 'UNBLOCK' : 'BLOCK'}
+												className='button'
+												onClick={() => {
+													blockPeerTextController(peerid, !_stream.textBlocked);
+													blockPeerAudioController(peerid, !_stream.audioBlocked);
+													blockPeerVideoController(peerid, !_stream.videoBlocked);
+												}}
+											></input>
+										</div>
+									);
+								})}
+							</>
+						) : (
+							<>No streams available.</>
+						)}
+						<input type='button' className='button' value='CLOSE' onClick={() => setShowAllPeerOptions(false)} />
+					</div>
+				)}
+			/>
+		);
+	};
+
 	const messageOptionsModal = () => {
 		return (
 			<Frame
@@ -108,7 +147,7 @@ const DecentralizedChat: NextPage = () => {
 	return (
 		<>
 			{openMessageOptions && messageOptionsModal()}
-
+			{showAllPeerOptions && allPeerOptionsModal()}
 			{/* <EncryptionComponent /> */}
 			<LocalStreamComponent addRoom={addRoom} localStream={localStream} setLocalStream={setLocalStream} />
 
@@ -131,6 +170,8 @@ const DecentralizedChat: NextPage = () => {
 				setShowVideoFeed={setShowVideoFeed}
 				setLocalStream={setLocalStream}
 				setOpenMessageOptions={setOpenMessageOptions}
+				peerStreams={streamsRef}
+				setShowAllPeerOptions={setShowAllPeerOptions}
 			/>
 			{showVideoFeed && (
 				<VideoComponent

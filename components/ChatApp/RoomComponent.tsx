@@ -1,9 +1,10 @@
 import { faCheckSquare, faSquare } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { Dispatch, SetStateAction, useContext, useEffect, useState } from 'react';
+import { Dispatch, MutableRefObject, SetStateAction, useContext, useEffect, useState } from 'react';
 import { Room } from 'trystero';
 import { PopupContext } from '../../pages/_app';
 import { Frame } from '../Frame';
+import { PeerStream } from './hooks/useRooms';
 
 interface RoomComponentProps {
 	addRoom: (roomName: string) => void;
@@ -24,6 +25,8 @@ interface RoomComponentProps {
 	setShowVideoFeed: Dispatch<SetStateAction<boolean>>;
 	setLocalStream: Dispatch<SetStateAction<MediaStream | undefined>>;
 	setOpenMessageOptions: Dispatch<SetStateAction<boolean>>;
+	peerStreams: MutableRefObject<PeerStream | undefined>;
+	setShowAllPeerOptions: Dispatch<SetStateAction<boolean>>;
 }
 export interface RoomWrapper {
 	roomName: string;
@@ -51,6 +54,8 @@ export const RoomComponent: React.FunctionComponent<RoomComponentProps> = ({
 	setShowVideoFeed,
 	setLocalStream,
 	setOpenMessageOptions,
+	peerStreams,
+	setShowAllPeerOptions,
 }) => {
 	interface SingleRoomProps {
 		room: RoomWrapper;
@@ -98,7 +103,7 @@ export const RoomComponent: React.FunctionComponent<RoomComponentProps> = ({
 			<div className='currRoom'>
 				Peers: {peers?.length}
 				<input type='button' className='button' value='Options' onClick={() => setOpenMessageOptions(true)} />
-				<span></span>
+				<input type='button' className='button' value='Show Peer Options' onClick={() => setShowAllPeerOptions(true)} />
 				{selfStream ? (
 					<>
 						<input type='button' className='button' onClick={() => connectStreamHandler()} value='send stream' />

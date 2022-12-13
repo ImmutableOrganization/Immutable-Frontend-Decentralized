@@ -128,6 +128,12 @@ export const useRooms = (selectedRoomCallback: (room: RoomWrapper) => void, mess
 							setFormError({ open: true, message: 'Room no longer exists for peer to join' });
 						}
 					});
+					room.room.onPeerLeave((peerId) => {
+						console.log('peer left', peerId);
+						if (room.room) {
+							room.room.removeStream(_stream, peerId);
+						}
+					});
 				}
 			}
 		}
