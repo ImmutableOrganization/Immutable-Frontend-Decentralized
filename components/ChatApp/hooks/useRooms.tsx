@@ -1,14 +1,14 @@
 import { useContext, useState } from 'react';
-import { BaseRoomConfig, joinRoom, selfId } from 'trystero';
+import { ActionSender, BaseRoomConfig, joinRoom, Room, selfId } from 'trystero';
 import { emptyRoom, MessageCallback } from '../../../pages/decentralizedchat';
 import { Message } from '../MessageComponent';
 import { RoomWrapper } from '../RoomComponent';
-import * as trystero from 'trystero';
+import {} from 'trystero';
 import React from 'react';
 import { PopupContext } from '../../../pages/_app';
 import { FormError } from '../../Modals/Error';
 
-export let sendMessage: trystero.ActionSender<Message>;
+export let sendMessage: ActionSender<Message>;
 
 export interface Peer {
 	mediaStream: MediaStream;
@@ -160,7 +160,7 @@ export const useRooms = (selectedRoomCallback: (room: RoomWrapper) => void, mess
 	const connectToRoom = (_room: RoomWrapper) => {
 		try {
 			const config: BaseRoomConfig = { appId: '8AhTQ9k2K8nr' };
-			let room: trystero.Room;
+			let room: Room;
 			try {
 				room = joinRoom(config, _room.roomName);
 				const newItem: RoomWrapper = { ..._room, room };

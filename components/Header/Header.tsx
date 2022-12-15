@@ -2,7 +2,10 @@
 import { useEffect, useState } from 'react';
 import { BaseLink } from '../BaseLink';
 
-const Header: React.FC = () => {
+interface HeaderProps {
+	setHeaderExpanded: React.Dispatch<React.SetStateAction<boolean>>;
+}
+const Header: React.FC<HeaderProps> = ({ setHeaderExpanded }) => {
 	const [selectedPage, setSelectedPage] = useState<string>('');
 
 	useEffect(() => {
@@ -22,6 +25,9 @@ const Header: React.FC = () => {
 
 	return (
 		<div className='header nav-header'>
+			<a className={'button selected'} onClick={() => setHeaderExpanded(false)}>
+				<h2>CLOSE</h2>
+			</a>
 			<BaseLink href='/' passHref={true} as={undefined}>
 				<a className={'button ' + (selectedPage === 'posts' ? 'selected' : '')} onClick={() => setSelectedPage('posts')}>
 					<h2>POSTS</h2>

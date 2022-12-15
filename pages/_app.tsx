@@ -114,6 +114,7 @@ function MyApp({ Component, pageProps }: AppProps) {
 	const [openToast, setOpenToast] = useState<boolean>(false);
 	const [toastType, setToastType] = useState<string>('loading');
 
+	const [headerExpanded, setHeaderExpanded] = useState<boolean>(false);
 	return (
 		<>
 			<GoogleAnalytics trackPageViews gaMeasurementId={process.env.NEXT_PUBLIC_GA_ID} />
@@ -121,30 +122,25 @@ function MyApp({ Component, pageProps }: AppProps) {
 				value={{ formError, loading, setFormError, setIsLoading, openToast, toastMessage, setToastMessage, setOpenToast, toastType, setToastType }}
 			>
 				<WagmiConfig client={client}>
-					<Header />
-					<FormError formError={formError} setFormError={setFormError} />
-					<Loading isLoading={loading} />
-					<Toast openToast={openToast} message={toastMessage} type={toastType} setOpenToast={setOpenToast} />
-					<div key={router.asPath} className={'top-margin ' + (formError.open || loading ? 'blurred' : '')}>
-						<Component
-							{...pageProps}
-							// for chat
-							// socketId={getSocketId()}
-							// setUserWantsSocketOn={setUserWantsSocketOn}
-							// disconnectSocket={disconnectSocket}
-							// userCounter={userCounter}
-							// channelsRef={channelsRef}
-							// socketConnected={socketConnected}
-							// selectChannel={selectChannel}
-							// setEnableChannelWhiteList={setEnableChannelWhiteList}
-							// enableChannelWhiteList={enableChannelWhiteList}
-							// channelInfo={channelInfo}
-							// sendChatMessage={sendChatMessage}
-							// joinRoom={joinRoom}
-							// leaveRoom={leaveRoom}
-							// selectedChannel={selectedChannel}
-						/>
-					</div>
+					<>
+						{headerExpanded ? (
+							<Header setHeaderExpanded={setHeaderExpanded} />
+						) : (
+							<>
+								<div className='header nav-header'>
+									<a className={'button selected'} onClick={() => setHeaderExpanded(true)}>
+										<h2>MENU</h2>
+									</a>
+								</div>
+							</>
+						)}
+						<FormError formError={formError} setFormError={setFormError} />
+						<Loading isLoading={loading} />
+						<Toast openToast={openToast} message={toastMessage} type={toastType} setOpenToast={setOpenToast} />
+						<div key={router.asPath} className={'top-margin ' + (formError.open || loading ? 'blurred' : '')}>
+							<Component {...pageProps} />
+						</div>
+					</>
 				</WagmiConfig>
 			</PopupContext.Provider>
 		</>
