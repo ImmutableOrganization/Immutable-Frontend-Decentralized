@@ -1,4 +1,4 @@
-import { Dispatch, SetStateAction } from 'react';
+import { Dispatch, SetStateAction, useEffect } from 'react';
 import { Room } from 'trystero';
 import { Frame } from '../../Frame';
 import { RoomsList } from './RoomsList';

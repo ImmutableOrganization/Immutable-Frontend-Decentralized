@@ -288,7 +288,7 @@ input[type='text']:hover {
 	background-color: var(--alt);
 	box-shadow: inset 1px 1px 0px 1px var(--boxShadowBottomRight), inset 0 0 0 1px #1f2223, 1px 1px 0 0px var(--boxShadowBottomRight);
 	padding-inline: 3vw;
-	padding-block: 2vh;
+	padding-block: 1vh;
 	outline: none;
 }
 
@@ -582,7 +582,6 @@ input[type='text']:hover {
 
 // decentralized chat
 .chat-channels {
-	height: 50vh;
 	overflow-y: scroll;
 	width: 100%;
 

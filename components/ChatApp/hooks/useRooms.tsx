@@ -1,11 +1,12 @@
 import { useContext, useState } from 'react';
 import { ActionSender, BaseRoomConfig, joinRoom, Room, selfId } from 'trystero';
 import { emptyRoom, MessageCallback } from '../../../pages/decentralizedchat';
-import { Message } from '../MessageComponent';
+import { Message } from '../messages/MessageComponent';
 import { RoomWrapper } from '../rooms/RoomComponent';
 import {} from 'trystero';
 import React from 'react';
 import { PopupContext } from '../../../pages/_app';
+import { useLocalStorage } from 'usehooks-ts';
 
 export let sendMessage: ActionSender<Message>;
 
@@ -20,7 +21,7 @@ export interface PeerStream {
 	[peerid: string]: Peer;
 }
 export const useRooms = (selectedRoomCallback: (room: RoomWrapper) => void, messageCallback: MessageCallback) => {
-	const [rooms, setRooms] = useState<RoomWrapper[]>();
+	const [rooms, setRooms] = useLocalStorage<RoomWrapper[]>('rooms', []);
 	const { setFormError } = useContext(PopupContext);
 
 	const [streams, setStreams] = useState<PeerStream>();
@@ -109,30 +110,31 @@ export const useRooms = (selectedRoomCallback: (room: RoomWrapper) => void, mess
 	const connectStream = async (_room: RoomWrapper, _stream: MediaStream) => {
 		if (rooms) {
 			// find _room in rooms
-			const room = rooms.find((room) => room.roomName === _room.roomName);
-			console.log('room', room);
-			if (room) {
-				if (room.room) {
+			const _rooms = rooms.find((room) => room.roomName === _room.roomName);
+			console.log('room', _rooms);
+			if (_rooms) {
+				if (_rooms.room) {
 					console.log('stream', _stream);
 					try {
-						room.room.addStream(_stream);
+						_rooms.room.addStream(_stream);
+						_rooms.room.onPeerJoin((peerId) => {
+							console.log('peer joined', peerId);
+							if (_rooms.room) {
+								_rooms.room.addStream(_stream, peerId);
+							} else {
+								setFormError({ open: true, message: 'Room no longer exists for peer to join' });
+							}
+						});
+						_rooms.room.onPeerLeave((peerId) => {
+							console.log('peer left', peerId);
+							if (_rooms.room) {
+								_rooms.room.removeStream(_stream, peerId);
+							}
+						});
 					} catch (e) {
+						console.log('error adding stream', e);
 						setFormError({ open: true, message: 'Error adding stream' });
 					}
-					room.room.onPeerJoin((peerId) => {
-						console.log('peer joined', peerId);
-						if (room.room) {
-							room.room.addStream(_stream, peerId);
-						} else {
-							setFormError({ open: true, message: 'Room no longer exists for peer to join' });
-						}
-					});
-					room.room.onPeerLeave((peerId) => {
-						console.log('peer left', peerId);
-						if (room.room) {
-							room.room.removeStream(_stream, peerId);
-						}
-					});
 				}
 			}
 		}
@@ -177,7 +179,7 @@ export const useRooms = (selectedRoomCallback: (room: RoomWrapper) => void, mess
 
 				// replace room in state with new room
 				if (rooms) {
-					setRooms((rooms: any) => rooms.map((room: RoomWrapper) => (room.roomName === _room.roomName ? newItem : room)));
+					setRooms((rooms: any) => rooms.map((room: RoomWrapper) => (room.roomName === _room.roomName ? newItem : newItem)));
 				} else {
 					setRooms([newItem]);
 				}

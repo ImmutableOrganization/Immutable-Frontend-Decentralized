@@ -1,12 +1,13 @@
 import { NextPage } from 'next';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useRooms } from '../components/ChatApp/hooks/useRooms';
-import { Message, MessageComponent, useMessages } from '../components/ChatApp/MessageComponent';
+import { Message, MessageComponent, useMessages } from '../components/ChatApp/messages/MessageComponent';
 import { RoomComponent, RoomWrapper } from '../components/ChatApp/rooms/RoomComponent';
 import { LocalStreamComponent } from '../components/ChatApp/LocalStreamComponent';
 import { VideoComponent } from '../components/ChatApp/VideoComponent';
 import { AllPeerOptionsModal } from '../components/ChatApp/modals/AllPeerOptions';
 import { MessageOptionsModal } from '../components/ChatApp/modals/MessageOptions';
+import { useRouter } from 'next/router';
 
 export interface MessageCallback {
 	getMessageListener: (message: Message, roomId: string) => void;
@@ -18,6 +19,15 @@ export const emptyRoom: RoomWrapper = {
 };
 
 const DecentralizedChat: NextPage = () => {
+	const router = useRouter();
+	const { roomName } = router.query;
+
+	useEffect(() => {
+		if (roomName && typeof roomName === 'string') {
+			setSelectedRoom({ roomName, room: undefined });
+		}
+	}, [roomName]);
+
 	const [selectedRoom, setSelectedRoom] = useState<RoomWrapper>(emptyRoom);
 
 	const getMessageListener = (message: Message, roomName: string) => {
@@ -43,6 +53,12 @@ const DecentralizedChat: NextPage = () => {
 		blockPeerVideoController,
 		blockPeerTextController,
 	} = useRooms(setSelectedRoom, { getMessageListener });
+
+	useEffect(() => {
+		if (!rooms || rooms.length === 0) {
+			addRoom('GLOBAL');
+		}
+	}, []);
 
 	const { messagesRef, addMessage } = useMessages(sendMessageAction);
 
@@ -88,7 +104,6 @@ const DecentralizedChat: NextPage = () => {
 					setShowAllPeerOptions={setShowAllPeerOptions}
 				/>
 			)}
-
 			<LocalStreamComponent addRoom={addRoom} localStream={localStream} setLocalStream={setLocalStream} />
 			<RoomComponent
 				removeRoom={removeRoom}

@@ -1,8 +1,10 @@
-import React, { useEffect, useRef } from 'react';
+import React, { useRef } from 'react';
 import { useState } from 'react';
 import { selfId } from 'trystero';
-import { Frame } from '../Frame';
-import { RoomWrapper } from './rooms/RoomComponent';
+import { useLocalStorage } from 'usehooks-ts';
+import { Frame } from '../../Frame';
+import { RoomWrapper } from '../rooms/RoomComponent';
+import { MessagesList } from './MessageList';
 
 interface MessageComponentProps {
 	selectedRoom: RoomWrapper;
@@ -25,7 +27,7 @@ export interface MessageList {
 
 // index in Messages is room id
 export const useMessages = (_sendMessageCallback: any) => {
-	const [messages, setMessages] = useState<MessageList>();
+	const [messages, setMessages] = useLocalStorage<MessageList>('messages', {} as MessageList);
 
 	// we do a ref like this, and the messageHook should use the ref instead of state.
 	const messagesRef = React.useRef(messages);
@@ -79,60 +81,9 @@ export const MessageComponent: React.FunctionComponent<MessageComponentProps> = 
 
 	const messagesEndRef = useRef<null | HTMLDivElement>(null);
 
-	const scrollToBottom = () => {
-		messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
-	};
-
-	useEffect(() => {
-		scrollToBottom();
-	}, [messages.current]);
-	const messageList = () => {
-		return (
-			<>
-				{messages.current ? (
-					<>
-						{messages.current[selectedRoom.roomName] ? (
-							<div className='messages socketMessages'>
-								{messages.current[selectedRoom.roomName].map((message: Message) => (
-									<div className={`socketMessage ` + (message.peerId === selfId ? 'localMessage' : '')}>
-										{message.peerId === selfId ? (
-											<>
-												{message.message}
-												{'    <'}
-												{!timeHidden ? new Date(message.timestamp).toLocaleTimeString() + ' ' : ''}
-												{!dateHidden ? new Date(message.timestamp).toLocaleDateString() + ' ' : ''}
-												{shortenPeerId ? message.peerId.substring(0, 5) + ' ' : message.peerId + ' '}
-											</>
-										) : (
-											<>
-												{shortenPeerId ? message.peerId.substring(0, 5) + ' ' : message.peerId + ' '}
-												{!dateHidden ? new Date(message.timestamp).toLocaleDateString() + ' ' : ''}
-												{!timeHidden ? new Date(message.timestamp).toLocaleTimeString() + ' ' : ''}
-												{'>    '}
-												{message.message}
-											</>
-										)}
-									</div>
-								))}
-								<div ref={messagesEndRef} />
-							</div>
-						) : (
-							<div className='messages socketMessages'>
-								<div className='socketMessage'>No messages...</div>
-							</div>
-						)}
-					</>
-				) : (
-					<div className='messages socketMessages'>
-						<div className='socketMessage'>No messages...</div>
-					</div>
-				)}
-			</>
-		);
-	};
-
 	const handleSubmit = (event: any) => {
 		event.preventDefault();
+		if (message == '') return;
 		addMessage({ message: message, timestamp: Date.now(), peerId: selfId }, selectedRoom.roomName, true);
 		setMessage('');
 	};
@@ -145,7 +96,14 @@ export const MessageComponent: React.FunctionComponent<MessageComponentProps> = 
 					headerText={selectedRoom.roomName + ' Chat'}
 					body={() => (
 						<>
-							{messageList()}
+							<MessagesList
+								shortenPeerId={shortenPeerId}
+								dateHidden={dateHidden}
+								timeHidden={timeHidden}
+								messages={messages}
+								selectedRoom={selectedRoom}
+								messagesEndRef={messagesEndRef}
+							/>
 							<form className='messageControls' onSubmit={handleSubmit}>
 								<input type={'text'} className='text-input terminal-input' value={message} onChange={(e) => setMessage(e.target.value)} />
 								<input type='submit' className='button' value='>' />
