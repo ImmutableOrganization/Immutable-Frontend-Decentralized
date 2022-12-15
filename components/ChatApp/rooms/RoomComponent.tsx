@@ -1,8 +1,8 @@
 import { Dispatch, SetStateAction } from 'react';
 import { Room } from 'trystero';
-import { Frame } from '../Frame';
-import { RoomsList } from './rooms/RoomsList';
-import { SingleRoom } from './rooms/SingleRoom';
+import { Frame } from '../../Frame';
+import { RoomsList } from './RoomsList';
+import { SingleRoom } from './SingleRoom';
 
 interface RoomComponentProps {
 	removeRoom: (room: RoomWrapper) => void;

@@ -2,11 +2,10 @@ import { useContext, useState } from 'react';
 import { ActionSender, BaseRoomConfig, joinRoom, Room, selfId } from 'trystero';
 import { emptyRoom, MessageCallback } from '../../../pages/decentralizedchat';
 import { Message } from '../MessageComponent';
-import { RoomWrapper } from '../RoomComponent';
+import { RoomWrapper } from '../rooms/RoomComponent';
 import {} from 'trystero';
 import React from 'react';
 import { PopupContext } from '../../../pages/_app';
-import { FormError } from '../../Modals/Error';
 
 export let sendMessage: ActionSender<Message>;
 
@@ -22,7 +21,7 @@ export interface PeerStream {
 }
 export const useRooms = (selectedRoomCallback: (room: RoomWrapper) => void, messageCallback: MessageCallback) => {
 	const [rooms, setRooms] = useState<RoomWrapper[]>();
-	const { setFormError, setIsLoading } = useContext(PopupContext);
+	const { setFormError } = useContext(PopupContext);
 
 	const [streams, setStreams] = useState<PeerStream>();
 	const streamsRef = React.useRef(streams);
@@ -185,7 +184,7 @@ export const useRooms = (selectedRoomCallback: (room: RoomWrapper) => void, mess
 
 				console.log('JOINING ROOM', room);
 				if (room) {
-					const [_sendMessage, getMessage, onMessageProgress] = room.makeAction<Message>('message');
+					const [_sendMessage, getMessage] = room.makeAction<Message>('message');
 					sendMessage = _sendMessage;
 					getMessage((_msg, peerId) => {
 						if (!_msg) {

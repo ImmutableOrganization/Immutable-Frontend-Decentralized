@@ -38,12 +38,22 @@ const Header: React.FC<HeaderProps> = ({ setHeaderExpanded }) => {
 					<h2>CHAT</h2>
 				</a>
 			</BaseLink>
+			<BaseLink href='/decentralizedchat' passHref={true} as={undefined}>
+				<a className={'button ' + (selectedPage === 'chat' ? 'selected' : '')} onClick={() => setSelectedPage('chat')}>
+					<h2>PEER 2 PEER</h2>
+				</a>
+			</BaseLink>
 			{/* <Link href="/nft" passHref={true}>
                 <a className={'button ' + (selectedPage === 'nft' ? 'selected' : '')} onClick={() => setSelectedPage('nft')} ><h2>NFT</h2></a>
             </Link> */}
 			<BaseLink href='/token' passHref={true} as={undefined}>
 				<a className={'button ' + (selectedPage === 'token' ? 'selected' : '')} onClick={() => setSelectedPage('token')}>
 					<h2>ORG</h2>
+				</a>
+			</BaseLink>
+			<BaseLink href='/whitepaper' passHref={true} as={undefined}>
+				<a className={'button ' + (selectedPage === 'whitepaper' ? 'selected' : '')} onClick={() => setSelectedPage('whitepaper')}>
+					<h2>WHITEPAPER</h2>
 				</a>
 			</BaseLink>
 		</div>

@@ -1,5 +1,5 @@
 import { Frame } from '../../Frame';
-import { RoomWrapper } from '../RoomComponent';
+import { RoomWrapper } from './RoomComponent';
 
 interface RoomsListProps {
 	removeRoom: (room: RoomWrapper) => void;

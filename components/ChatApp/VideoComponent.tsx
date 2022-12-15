@@ -1,7 +1,7 @@
 import ReactPlayer from 'react-player';
 import { Frame } from '../Frame';
 import { PeerStream } from './hooks/useRooms';
-import { RoomWrapper } from './RoomComponent';
+import { RoomWrapper } from './rooms/RoomComponent';
 
 interface VideoComponentProps {
 	peerStreams: React.MutableRefObject<PeerStream | undefined>;
@@ -9,7 +9,6 @@ interface VideoComponentProps {
 	selfStream: MediaStream | undefined;
 	blockPeerAudioController: (peerId: string, block: boolean) => void;
 	blockPeerVideoController: (peerId: string, block: boolean) => void;
-	blockPeerTextController: (peerId: string, block: boolean) => void;
 }
 
 export const VideoComponent: React.FunctionComponent<VideoComponentProps> = ({
@@ -18,7 +17,6 @@ export const VideoComponent: React.FunctionComponent<VideoComponentProps> = ({
 	selectedRoom,
 	blockPeerAudioController,
 	blockPeerVideoController,
-	blockPeerTextController,
 }) => {
 	return (
 		<div className='peerStreams'>

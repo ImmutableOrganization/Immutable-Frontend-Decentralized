@@ -5,6 +5,7 @@ import ReactPlayer from 'react-player';
 import { selfId } from 'trystero/torrent';
 import { PopupContext } from '../../pages/_app';
 import { Frame } from '../Frame';
+import { JoinRoom } from './rooms/JoinRoom';
 
 interface LocalStreamComponentProps {
 	setLocalStream: React.Dispatch<React.SetStateAction<MediaStream | undefined>>;
@@ -47,24 +48,6 @@ export const LocalStreamComponent: React.FunctionComponent<LocalStreamComponentP
 		setLocalStream(undefined);
 	};
 
-	const joinRoom = () => {
-		const [roomName, setRoomName] = useState<string>('');
-		return (
-			<div className='addRoom'>
-				<h2>Add Room</h2>
-				<span></span>
-				<input
-					type='text'
-					className='text_input terminal-input'
-					placeholder='Enter room name'
-					value={roomName}
-					onChange={(e) => setRoomName(e.target.value)}
-				/>
-				<input type='button' className='button' onClick={() => addRoom(roomName)} value='add' />
-			</div>
-		);
-	};
-
 	return (
 		<div className='localStream'>
 			<Frame
@@ -85,7 +68,6 @@ export const LocalStreamComponent: React.FunctionComponent<LocalStreamComponentP
 									Audio
 									<FontAwesomeIcon icon={useAudio ? faCheckSquare : faSquare}></FontAwesomeIcon>
 								</label>
-
 								<input
 									type='button'
 									className='button'
@@ -117,7 +99,7 @@ export const LocalStreamComponent: React.FunctionComponent<LocalStreamComponentP
 								</>
 							)}
 						</div>
-						{joinRoom()}
+						<JoinRoom addRoom={addRoom} />
 					</>
 				)}
 			/>

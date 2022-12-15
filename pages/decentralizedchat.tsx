@@ -2,7 +2,7 @@ import { NextPage } from 'next';
 import { useState } from 'react';
 import { useRooms } from '../components/ChatApp/hooks/useRooms';
 import { Message, MessageComponent, useMessages } from '../components/ChatApp/MessageComponent';
-import { RoomComponent, RoomWrapper } from '../components/ChatApp/RoomComponent';
+import { RoomComponent, RoomWrapper } from '../components/ChatApp/rooms/RoomComponent';
 import { LocalStreamComponent } from '../components/ChatApp/LocalStreamComponent';
 import { VideoComponent } from '../components/ChatApp/VideoComponent';
 import { AllPeerOptionsModal } from '../components/ChatApp/modals/AllPeerOptions';
@@ -64,10 +64,6 @@ const DecentralizedChat: NextPage = () => {
 
 	return (
 		<>
-			{/* <EncryptionComponent /> */}
-
-			{/* make a modal parent component? */}
-
 			{openMessageOptions && (
 				<MessageOptionsModal
 					setDateHidden={setDateHidden}
@@ -115,7 +111,6 @@ const DecentralizedChat: NextPage = () => {
 					selectedRoom={selectedRoom}
 					peerStreams={streamsRef}
 					blockPeerAudioController={blockPeerAudioController}
-					blockPeerTextController={blockPeerTextController}
 					blockPeerVideoController={blockPeerVideoController}
 				/>
 			)}
@@ -127,7 +122,6 @@ const DecentralizedChat: NextPage = () => {
 					shortenPeerId={shortenPeerId}
 					dateHidden={dateHidden}
 					timeHidden={timeHidden}
-					setOpenMessageOptions={setOpenMessageOptions}
 				/>
 			)}
 		</>

@@ -1,6 +1,6 @@
 import { useState, useEffect, useContext, Dispatch, SetStateAction } from 'react';
 import { PopupContext } from '../../../pages/_app';
-import { RoomWrapper } from '../RoomComponent';
+import { RoomWrapper } from './RoomComponent';
 
 interface SingleRoomProps {
 	room: RoomWrapper;

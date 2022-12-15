@@ -1,9 +1,7 @@
 import { useLocalStorage } from 'usehooks-ts';
-import { Frame } from '../Frame';
+import { Frame } from '../components/Frame';
 import * as openpgp from 'openpgp';
 import { useEffect, useState } from 'react';
-
-interface EncryptionComponentProps {}
 
 const useKeyRing = () => {
 	const [publicKey, setPublicKey] = useLocalStorage<string>('publicKey', '0x');
@@ -34,12 +32,18 @@ const useKeyRing = () => {
 		setPrivateKey(privateKey);
 	};
 
+	const getPrivateKey = () => {
+		// unimplemented
+		console.log(privateKey);
+		return '-----BEGIN';
+	};
+
 	const deleteKeyPair = () => {
 		setPublicKey('');
 		setPrivateKey('');
 	};
 
-	return { publicKey, genKeyPair, deleteKeyPair };
+	return { publicKey, getPrivateKey, genKeyPair, deleteKeyPair };
 };
 
 const defaultProperties: openpgp.UserID = {
@@ -56,7 +60,7 @@ const useIsClient = () => {
 	return isClient;
 };
 
-export const EncryptionComponent: React.FunctionComponent<EncryptionComponentProps> = ({}) => {
+const KeyPair = () => {
 	const [encryptionEnabled, setEncryptionEnabled] = useLocalStorage<boolean>('encryptionEnabled', false);
 
 	// does this need to be in the component itself
@@ -80,6 +84,7 @@ export const EncryptionComponent: React.FunctionComponent<EncryptionComponentPro
 				headerText={'ENCRYPTED'}
 				body={() => (
 					<>
+						{}
 						<input
 							type='button'
 							className='button'
@@ -118,3 +123,5 @@ export const EncryptionComponent: React.FunctionComponent<EncryptionComponentPro
 		</>
 	);
 };
+
+export default KeyPair;

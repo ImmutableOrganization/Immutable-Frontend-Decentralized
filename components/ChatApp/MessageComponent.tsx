@@ -1,10 +1,8 @@
-import { faCheckSquare, faSquare } from '@fortawesome/free-solid-svg-icons';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import React, { Dispatch, SetStateAction, useEffect, useRef } from 'react';
+import React, { useEffect, useRef } from 'react';
 import { useState } from 'react';
 import { selfId } from 'trystero';
 import { Frame } from '../Frame';
-import { RoomWrapper } from './RoomComponent';
+import { RoomWrapper } from './rooms/RoomComponent';
 
 interface MessageComponentProps {
 	selectedRoom: RoomWrapper;
@@ -13,7 +11,6 @@ interface MessageComponentProps {
 	shortenPeerId: boolean;
 	dateHidden: boolean;
 	timeHidden: boolean;
-	setOpenMessageOptions: Dispatch<SetStateAction<boolean>>;
 }
 
 export interface Message {
@@ -77,14 +74,12 @@ export const MessageComponent: React.FunctionComponent<MessageComponentProps> = 
 	shortenPeerId,
 	dateHidden,
 	timeHidden,
-	setOpenMessageOptions,
 }) => {
 	const [message, setMessage] = useState<string>('');
 
 	const messagesEndRef = useRef<null | HTMLDivElement>(null);
 
 	const scrollToBottom = () => {
-		console.log('scrolling to bottom');
 		messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
 	};
 
@@ -136,6 +131,12 @@ export const MessageComponent: React.FunctionComponent<MessageComponentProps> = 
 		);
 	};
 
+	const handleSubmit = (event: any) => {
+		event.preventDefault();
+		addMessage({ message: message, timestamp: Date.now(), peerId: selfId }, selectedRoom.roomName, true);
+		setMessage('');
+	};
+
 	return (
 		<>
 			{selectedRoom && selectedRoom.roomName != '' && selectedRoom.roomName != '2d9227eb-bdd7-4dda-a1d1-d3a694b4195e' && (
@@ -144,18 +145,11 @@ export const MessageComponent: React.FunctionComponent<MessageComponentProps> = 
 					headerText={selectedRoom.roomName + ' Chat'}
 					body={() => (
 						<>
-							<>
-								{messageList()}
-								<div className='messageControls'>
-									<input type={'text'} className='text-input terminal-input' value={message} onChange={(e) => setMessage(e.target.value)} />
-									<input
-										type='button'
-										className='button'
-										value='>'
-										onClick={() => addMessage({ message: message, timestamp: Date.now(), peerId: selfId }, selectedRoom.roomName, true)}
-									/>
-								</div>
-							</>
+							{messageList()}
+							<form className='messageControls' onSubmit={handleSubmit}>
+								<input type={'text'} className='text-input terminal-input' value={message} onChange={(e) => setMessage(e.target.value)} />
+								<input type='submit' className='button' value='>' />
+							</form>
 						</>
 					)}
 				/>
