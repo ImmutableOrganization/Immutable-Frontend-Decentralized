@@ -6,10 +6,10 @@ import { useAccount, useConnect } from 'wagmi';
 import { BaseLink } from '../components/BaseLink';
 import { Frame } from '../components/Frame';
 import { MetaMask } from '../components/Modals/MetaMask';
-import { WalletHeader } from '../components/wallet/WalletHeader';
-import { useNewPost } from '../ContractHooks/useNewPost';
-import { chainID_from_chain_name, contracts, contract_exists_on_chain, default_chain } from '../utils/contract_data';
+import { WalletHeader } from '../components/Header/WalletHeader';
+import { chainID_from_chain_name, contracts, contract_exists_on_chain, default_chain } from '../Contracts/contract_data';
 import { company_name } from '../utils/globals';
+import { useNewPost } from '../Contracts/hooks/useNewPost';
 
 const Boards: NextPage = () => {
 	const [title, setTitle] = useState<string>('');

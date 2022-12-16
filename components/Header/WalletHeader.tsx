@@ -1,7 +1,7 @@
 import { useContext, useEffect, useState } from 'react';
 import { useAccount, useNetwork, useSwitchNetwork } from 'wagmi';
 import { Account, PopupContext } from '../../pages/_app';
-import { contracts } from '../../utils/contract_data';
+import { contracts } from '../../Contracts/contract_data';
 import { Frame } from '../Frame';
 import { WalletOptions } from './Wallet_Options';
 

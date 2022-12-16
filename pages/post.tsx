@@ -4,9 +4,9 @@ import { useRouter } from 'next/router';
 import { useEffect, useState } from 'react';
 import { Frame } from '../components/Frame';
 import { PostFrame } from '../components/Post/PostFrame';
-import { WalletHeader } from '../components/wallet/WalletHeader';
-import { useGetPost } from '../ContractHooks/useGetPost';
-import { ContractPost, contractPostSerializer } from '../interfaces/interfaces';
+import { WalletHeader } from '../components/Header/WalletHeader';
+import { useGetPost } from '../Contracts/hooks/useGetPost';
+import { ContractPost, contractPostSerializer } from '../Contracts/contacts';
 
 const Post: NextPage = () => {
 	const router = useRouter();

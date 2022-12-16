@@ -18,8 +18,6 @@ const Header: React.FC<HeaderProps> = ({ setHeaderExpanded }) => {
 			setSelectedPage('token');
 		} else if (path_name.includes('/nft')) {
 			setSelectedPage('nft');
-		} else if (path_name.includes('/chat')) {
-			setSelectedPage('chat');
 		}
 	}, []);
 
@@ -31,11 +29,6 @@ const Header: React.FC<HeaderProps> = ({ setHeaderExpanded }) => {
 			<BaseLink href='/' passHref={true} as={undefined}>
 				<a className={'button ' + (selectedPage === 'posts' ? 'selected' : '')} onClick={() => setSelectedPage('posts')}>
 					<h2>POSTS</h2>
-				</a>
-			</BaseLink>
-			<BaseLink href='/chat' passHref={true} as={undefined}>
-				<a className={'button ' + (selectedPage === 'chat' ? 'selected' : '')} onClick={() => setSelectedPage('chat')}>
-					<h2>CHAT</h2>
 				</a>
 			</BaseLink>
 			<BaseLink href='/decentralizedchat' passHref={true} as={undefined}>

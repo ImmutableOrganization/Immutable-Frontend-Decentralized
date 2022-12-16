@@ -1,17 +1,17 @@
 import { useContext, useEffect } from 'react';
 import { usePrepareContractWrite, useContractWrite, useWaitForTransaction } from 'wagmi';
-import { contracts } from '../utils/contract_data';
-import { PopupContext } from '../pages/_app';
+import { PopupContext } from '../../pages/_app';
+import { contracts } from '../contract_data';
 
-export const useTogglePostLock = (postId: number, lock: boolean) => {
+export const useNewPost = (parent: number, title: string, body: string) => {
 	const { setFormError, setIsLoading } = useContext(PopupContext);
 	const { setOpenToast, setToastMessage, setToastType } = useContext(PopupContext);
 
 	const { config } = usePrepareContractWrite({
 		addressOrName: contracts.PostContract.address,
 		contractInterface: contracts.abi.BoardContract,
-		functionName: 'togglePostLock',
-		args: [postId, lock],
+		functionName: 'newPost',
+		args: [parent, title, body],
 		chainId: contracts.PostContract.networkID,
 		onError(error) {
 			setFormError({ open: true, message: error.message });
@@ -21,7 +21,7 @@ export const useTogglePostLock = (postId: number, lock: boolean) => {
 		...config,
 
 		onSuccess() {
-			setToastMessage(`${lock ? 'Locking' : 'Unlocking'}...`);
+			setToastMessage(`Posting...`);
 			setOpenToast(true);
 			setToastType('loading');
 		},
@@ -32,7 +32,7 @@ export const useTogglePostLock = (postId: number, lock: boolean) => {
 	});
 	useEffect(() => {
 		if (isSuccess) {
-			setToastMessage(`${lock ? 'Locked' : 'Unlocked'}.`);
+			setToastMessage(`Posted`);
 			setOpenToast(true);
 			setToastType('success');
 		}

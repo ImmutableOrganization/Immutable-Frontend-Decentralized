@@ -1,16 +1,17 @@
 import { useContractRead } from 'wagmi';
-import { contracts } from '../utils/contract_data';
+import { contracts } from '../contract_data';
 
-export const useGetReplies = (postId: number, startingIndex: number, replyLimit: number) => {
+export const useGetPostLocked = (postId: number) => {
 	const { refetch } = useContractRead({
 		addressOrName: contracts.PostContract.address,
 		contractInterface: contracts.abi.BoardContract,
-		functionName: 'getReplies',
+		functionName: 'getPostLocked',
 		enabled: false,
 		chainId: contracts.PostContract.networkID,
-		args: [postId, startingIndex, replyLimit],
+		args: [postId],
 		onError(error) {
 			console.log(error);
+			// setFormError({ open: true, message: error.message });
 		},
 	});
 

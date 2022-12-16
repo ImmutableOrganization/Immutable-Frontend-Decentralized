@@ -1,5 +1,5 @@
 import { useContractRead } from 'wagmi';
-import { contracts } from '../utils/contract_data';
+import { contracts } from '../contract_data';
 
 export const useGetPost = (postId: number) => {
 	const { refetch } = useContractRead({
