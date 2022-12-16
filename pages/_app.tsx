@@ -18,7 +18,7 @@ import { useRouter } from 'next/router';
 import Header from '../components/Header/Header';
 import { FormError } from '../components/Modals/Error';
 import { Loading } from '../components/Modals/Loading';
-import { Toast } from '../components/Toast/Toast';
+import { Toast } from '../components/Modals/Toast';
 import { alchemyProvider } from 'wagmi/providers/alchemy';
 import { InjectedConnector } from 'wagmi/connectors/injected';
 import { GoogleAnalytics } from 'nextjs-google-analytics';
