@@ -1,37 +1,30 @@
 import { useContext, useState } from 'react';
-import { ActionSender, BaseRoomConfig, joinRoom, Room, selfId } from 'trystero';
-import { emptyRoom, MessageCallback } from '../../../pages/decentralizedchat';
-import { Message } from '../messages/MessageComponent';
-import { RoomWrapper } from '../rooms/RoomComponent';
-import {} from 'trystero';
+import { ActionSender, BaseRoomConfig, joinRoom, selfId } from 'trystero';
 import React from 'react';
 import { PopupContext } from '../../../pages/_app';
 import { useLocalStorage } from 'usehooks-ts';
+import { Messages } from '../messages/messages';
+import { Room } from '../rooms/room';
+import * as trystero from 'trystero';
 
-export let sendMessage: ActionSender<Message>;
+export let sendMessage: ActionSender<Messages.Message>;
 
-export interface Peer {
-	mediaStream: MediaStream;
-	videoBlocked: boolean;
-	audioBlocked: boolean;
-	textBlocked: boolean;
-}
-
-export interface PeerStream {
-	[peerid: string]: Peer;
-}
-export const useRooms = (selectedRoomCallback: (room: RoomWrapper) => void, messageCallback: MessageCallback) => {
-	const [rooms, setRooms] = useLocalStorage<RoomWrapper[]>('rooms', []);
+export const useRooms = (selectedRoomCallback: (_room: Room.RoomWrapper) => void, messageCallback: Messages.MessageCallback) => {
+	const [rooms, setRooms] = useState<Room.RoomWrapper[]>();
+	const [savedRooms, setSavedRooms] = useLocalStorage<string[]>('roomNames', []);
 	const { setFormError } = useContext(PopupContext);
 
-	const [streams, setStreams] = useState<PeerStream>();
+	const [streams, setStreams] = useState<Room.PeerStream>();
 	const streamsRef = React.useRef(streams);
-	const setStreamRef = (data: PeerStream) => {
+	const setStreamRef = (data: Room.PeerStream) => {
 		streamsRef.current = data;
 		setStreams(data);
 	};
 
 	const { setOpenToast, setToastMessage, setToastType } = useContext(PopupContext);
+
+	// separate code for updating room state vs stream state
+	// organization and functionality
 
 	// add room to state
 	const addRoom = (_roomName: string) => {
@@ -41,6 +34,8 @@ export const useRooms = (selectedRoomCallback: (room: RoomWrapper) => void, mess
 			setToastType('failure');
 			return;
 		}
+
+		console.log('useROoom addRoom', _roomName);
 		// check if roomName is already in state
 		if (rooms) {
 			if (rooms.find((room) => room.roomName === _roomName)) {
@@ -51,27 +46,54 @@ export const useRooms = (selectedRoomCallback: (room: RoomWrapper) => void, mess
 			}
 		}
 		if (rooms) {
+			console.log(1);
 			if (!rooms.find((room) => room.roomName === _roomName)) {
+				console.log(2);
 				setRooms([...rooms, { roomName: _roomName, room: undefined }]);
+				setSavedRooms([...savedRooms, _roomName]);
 			}
 		} else {
+			console.log(4);
 			setRooms([{ roomName: _roomName, room: undefined }]);
+			setSavedRooms([...savedRooms, _roomName]);
 		}
 	};
 
-	const disconnectRoom = (_room: RoomWrapper) => {
+	const addMultipleRoomsFromStorage = (_roomNames: string[]) => {
+		if (_roomNames.length == 0) {
+			setToastMessage('Room must have a name');
+			setOpenToast(true);
+			setToastType('failure');
+			return;
+		}
+
+		let roomsCopy = rooms ? [...rooms] : [];
+		if (roomsCopy) {
+			_roomNames.forEach((roomName) => {
+				if (!roomsCopy.find((room) => room.roomName === roomName)) {
+					roomsCopy.push({ roomName: roomName, room: undefined });
+				}
+			});
+			setRooms(roomsCopy);
+		} else {
+			setRooms(_roomNames.map((roomName) => ({ roomName: roomName, room: undefined })));
+		}
+	};
+
+	const disconnectRoom = (_room: Room.RoomWrapper) => {
 		console.log('disconnecting from room', _room);
 		console.log("unselecting room because it's disconnected");
-		selectedRoomCallback(emptyRoom);
+		selectedRoomCallback(Room.emptyRoom);
 
 		// ok this is the issue, selected room is reset but the _room.room is undefined so we never actually leave. why?
 
 		if (_room.room) {
 			console.log('disconnecting from room executed', _room);
 			_room.room.leave();
-			const newItem: RoomWrapper = { ..._room, room: undefined };
+			const newItem: Room.RoomWrapper = { ..._room, room: undefined };
 			if (rooms) {
-				setRooms((rooms: any) => rooms.map((room: RoomWrapper) => (room.roomName === _room.roomName ? newItem : room)));
+				setRooms((rooms: any) => rooms.map((room: Room.RoomWrapper) => (room.roomName === _room.roomName ? newItem : room)));
+				setSavedRooms(savedRooms.filter((roomName) => roomName !== _room.roomName));
 				// unselect room
 			}
 		}
@@ -107,7 +129,7 @@ export const useRooms = (selectedRoomCallback: (room: RoomWrapper) => void, mess
 		}
 	};
 
-	const connectStream = async (_room: RoomWrapper, _stream: MediaStream) => {
+	const connectStream = async (_room: Room.RoomWrapper, _stream: MediaStream) => {
 		if (rooms) {
 			// find _room in rooms
 			const _rooms = rooms.find((room) => room.roomName === _room.roomName);
@@ -140,7 +162,7 @@ export const useRooms = (selectedRoomCallback: (room: RoomWrapper) => void, mess
 		}
 	};
 
-	const disconnectStream = async (_room: RoomWrapper, _stream: MediaStream) => {
+	const disconnectStream = async (_room: Room.RoomWrapper, _stream: MediaStream) => {
 		if (rooms) {
 			// find _room in rooms
 			const room = rooms.find((room) => room.roomName === _room.roomName);
@@ -158,13 +180,14 @@ export const useRooms = (selectedRoomCallback: (room: RoomWrapper) => void, mess
 		}
 	};
 
-	const connectToRoom = (_room: RoomWrapper) => {
+	const connectToRoom = (_room: Room.RoomWrapper) => {
 		try {
 			const config: BaseRoomConfig = { appId: '8AhTQ9k2K8nr' };
-			let room: Room;
+			let room: trystero.Room;
 			try {
 				room = joinRoom(config, _room.roomName);
-				const newItem: RoomWrapper = { ..._room, room };
+				console.log('joined room: ', room);
+				const newItem: Room.RoomWrapper = { ..._room, room };
 				selectedRoomCallback(newItem);
 				if (newItem.room) {
 					// send stream to peer when they join
@@ -179,14 +202,14 @@ export const useRooms = (selectedRoomCallback: (room: RoomWrapper) => void, mess
 
 				// replace room in state with new room
 				if (rooms) {
-					setRooms((rooms: any) => rooms.map((room: RoomWrapper) => (room.roomName === _room.roomName ? newItem : newItem)));
+					setRooms((rooms: any) => rooms.map((room: Room.RoomWrapper) => (room.roomName === _room.roomName ? newItem : newItem)));
 				} else {
 					setRooms([newItem]);
 				}
 
 				console.log('JOINING ROOM', room);
 				if (room) {
-					const [_sendMessage, getMessage] = room.makeAction<Message>('message');
+					const [_sendMessage, getMessage] = room.makeAction<Messages.Message>('message');
 					sendMessage = _sendMessage;
 					getMessage((_msg, peerId) => {
 						if (!_msg) {
@@ -218,18 +241,19 @@ export const useRooms = (selectedRoomCallback: (room: RoomWrapper) => void, mess
 	};
 
 	// remove room from state
-	const removeRoom = (_room: RoomWrapper) => {
+	const removeRoom = (_room: Room.RoomWrapper) => {
 		if (_room.room) {
 			_room.room.leave();
 			console.log('no room to leave');
 		}
 		if (rooms) {
-			setRooms((rooms: any) => rooms.filter((room: RoomWrapper) => room.roomName !== _room.roomName));
+			setRooms((rooms: any) => rooms.filter((room: Room.RoomWrapper) => room.roomName !== _room.roomName));
+			setSavedRooms((rooms: any) => rooms.filter((room: Room.RoomWrapper) => room.roomName !== _room.roomName));
 		}
 	};
 
 	// select room
-	const selectRoom = (_room: RoomWrapper) => {
+	const selectRoom = (_room: Room.RoomWrapper) => {
 		if (_room.room) {
 			setFormError({ open: true, message: 'Already connected to room' });
 			disconnectRoom(_room);
@@ -238,7 +262,7 @@ export const useRooms = (selectedRoomCallback: (room: RoomWrapper) => void, mess
 		selectedRoomCallback(_room);
 	};
 
-	const getPeers = (_room: RoomWrapper) => {
+	const getPeers = (_room: Room.RoomWrapper) => {
 		if (_room.room) {
 			return _room.room.getPeers();
 		} else {
@@ -246,7 +270,7 @@ export const useRooms = (selectedRoomCallback: (room: RoomWrapper) => void, mess
 		}
 	};
 
-	const callSendMessage = (message: Message) => {
+	const callSendMessage = (message: Messages.Message) => {
 		console.log('calling send message', message);
 		if (sendMessage) {
 			sendMessage(message);
@@ -260,6 +284,7 @@ export const useRooms = (selectedRoomCallback: (room: RoomWrapper) => void, mess
 	return {
 		rooms,
 		addRoom,
+		addMultipleRoomsFromStorage,
 		removeRoom,
 		selectRoom,
 		connectToRoom,
@@ -273,5 +298,6 @@ export const useRooms = (selectedRoomCallback: (room: RoomWrapper) => void, mess
 		blockPeerAudioController,
 		blockPeerVideoController,
 		blockPeerTextController,
+		savedRooms,
 	};
 };

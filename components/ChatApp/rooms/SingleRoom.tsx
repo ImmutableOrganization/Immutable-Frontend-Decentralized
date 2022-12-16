@@ -1,15 +1,15 @@
 import { useState, useEffect, useContext, Dispatch, SetStateAction } from 'react';
 import { PopupContext } from '../../../pages/_app';
-import { RoomWrapper } from './RoomComponent';
+import { Room } from './room';
 
 interface SingleRoomProps {
-	room: RoomWrapper;
-	getPeers: (room: RoomWrapper) => string[];
-	disconnectRoom: (room: RoomWrapper) => void;
+	room: Room.RoomWrapper;
+	getPeers: (room: Room.RoomWrapper) => string[];
+	disconnectRoom: (room: Room.RoomWrapper) => void;
 	selfStream: MediaStream | undefined;
 	setLocalStream: Dispatch<SetStateAction<MediaStream | undefined>>;
-	connectStream: (room: RoomWrapper, _stream: MediaStream) => void;
-	disconnectStream: (room: RoomWrapper, _stream: MediaStream) => void;
+	connectStream: (room: Room.RoomWrapper, _stream: MediaStream) => void;
+	disconnectStream: (room: Room.RoomWrapper, _stream: MediaStream) => void;
 	setOpenMessageOptions: Dispatch<SetStateAction<boolean>>;
 	setShowAllPeerOptions: Dispatch<SetStateAction<boolean>>;
 }

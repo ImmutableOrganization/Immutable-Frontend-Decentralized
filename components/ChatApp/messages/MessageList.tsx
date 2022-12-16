@@ -1,14 +1,14 @@
 import { useEffect } from 'react';
 import { selfId } from 'trystero';
-import { RoomWrapper } from '../rooms/RoomComponent';
-import { Message, MessageList } from './MessageComponent';
+import { Room } from '../rooms/room';
+import { Messages } from './messages';
 
 interface MessageListProps {
 	shortenPeerId: boolean;
 	dateHidden: boolean;
 	timeHidden: boolean;
-	messages: React.MutableRefObject<MessageList | undefined>;
-	selectedRoom: RoomWrapper;
+	messages: React.MutableRefObject<Messages.MessageList | undefined>;
+	selectedRoom: Room.RoomWrapper;
 	messagesEndRef: React.MutableRefObject<HTMLDivElement | null>;
 }
 export const MessagesList: React.FC<MessageListProps> = ({ shortenPeerId, dateHidden, timeHidden, messages, selectedRoom, messagesEndRef }) => {
@@ -26,7 +26,7 @@ export const MessagesList: React.FC<MessageListProps> = ({ shortenPeerId, dateHi
 				<>
 					{messages.current[selectedRoom.roomName] ? (
 						<div className='messages socketMessages'>
-							{messages.current[selectedRoom.roomName].map((message: Message) => (
+							{messages.current[selectedRoom.roomName].map((message: Messages.Message) => (
 								<div className={`socketMessage ` + (message.peerId === selfId ? 'localMessage' : '')}>
 									{message.peerId === selfId ? (
 										<>

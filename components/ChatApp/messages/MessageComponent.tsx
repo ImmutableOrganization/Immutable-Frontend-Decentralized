@@ -3,40 +3,31 @@ import { useState } from 'react';
 import { selfId } from 'trystero';
 import { useLocalStorage } from 'usehooks-ts';
 import { Frame } from '../../Frame';
-import { RoomWrapper } from '../rooms/RoomComponent';
+import { Room } from '../rooms/room';
 import { MessagesList } from './MessageList';
+import { Messages } from './messages';
 
 interface MessageComponentProps {
-	selectedRoom: RoomWrapper;
-	messages: React.MutableRefObject<MessageList | undefined>;
-	addMessage: (_message: Message, _roomId: string, isLocal: boolean) => void;
+	selectedRoom: Room.RoomWrapper;
+	messages: React.MutableRefObject<Messages.MessageList | undefined>;
+	addMessage: (_message: Messages.Message, _roomId: string, isLocal: boolean) => void;
 	shortenPeerId: boolean;
 	dateHidden: boolean;
 	timeHidden: boolean;
 }
 
-export interface Message {
-	message: string;
-	timestamp: number;
-	peerId: string;
-}
-
-export interface MessageList {
-	[roomId: string]: Message[];
-}
-
 // index in Messages is room id
 export const useMessages = (_sendMessageCallback: any) => {
-	const [messages, setMessages] = useLocalStorage<MessageList>('messages', {} as MessageList);
+	const [messages, setMessages] = useLocalStorage<Messages.MessageList>('messages', {} as Messages.MessageList);
 
 	// we do a ref like this, and the messageHook should use the ref instead of state.
 	const messagesRef = React.useRef(messages);
-	const setMessagesRef = (data: MessageList) => {
+	const setMessagesRef = (data: Messages.MessageList) => {
 		messagesRef.current = data;
 		setMessages(data);
 	};
 
-	const addMessage = (_message: Message, _roomName: string, isLocal: boolean) => {
+	const addMessage = (_message: Messages.Message, _roomName: string, isLocal: boolean) => {
 		if (_roomName == '') {
 			return;
 			// CALLBACK TO ERROR HANDLER

@@ -1,11 +1,10 @@
 import ReactPlayer from 'react-player';
 import { Frame } from '../Frame';
-import { PeerStream } from './hooks/useRooms';
-import { RoomWrapper } from './rooms/RoomComponent';
+import { Room } from './rooms/room';
 
 interface VideoComponentProps {
-	peerStreams: React.MutableRefObject<PeerStream | undefined>;
-	selectedRoom: RoomWrapper;
+	peerStreams: React.MutableRefObject<Room.PeerStream | undefined>;
+	selectedRoom: Room.RoomWrapper;
 	selfStream: MediaStream | undefined;
 	blockPeerAudioController: (peerId: string, block: boolean) => void;
 	blockPeerVideoController: (peerId: string, block: boolean) => void;

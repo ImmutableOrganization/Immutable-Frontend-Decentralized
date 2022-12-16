@@ -1,12 +1,12 @@
 import { Dispatch, SetStateAction } from 'react';
 import { Frame } from '../../Frame';
-import { PeerStream } from '../hooks/useRooms';
+import { Room } from '../rooms/room';
 
 interface AllPeerOptionsModalProps {
 	blockPeerTextController: (peerId: string, block: boolean) => void;
 	blockPeerAudioController: (peerId: string, block: boolean) => void;
 	blockPeerVideoController: (peerId: string, block: boolean) => void;
-	peerStreams: PeerStream | undefined;
+	peerStreams: Room.PeerStream | undefined;
 	setShowAllPeerOptions: Dispatch<SetStateAction<boolean>>;
 }
 

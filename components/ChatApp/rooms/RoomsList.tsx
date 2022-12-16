@@ -1,13 +1,13 @@
 import { Frame } from '../../Frame';
-import { RoomWrapper } from './RoomComponent';
+import { Room } from './room';
 
 interface RoomsListProps {
-	removeRoom: (room: RoomWrapper) => void;
-	disconnectRoom: (room: RoomWrapper) => void;
-	selectRoom: (room: RoomWrapper) => void;
-	connectToRoom: (room: RoomWrapper) => void;
-	rooms: RoomWrapper[] | undefined;
-	selectedRoom: RoomWrapper | undefined;
+	removeRoom: (room: Room.RoomWrapper) => void;
+	disconnectRoom: (room: Room.RoomWrapper) => void;
+	selectRoom: (room: Room.RoomWrapper) => void;
+	connectToRoom: (room: Room.RoomWrapper) => void;
+	rooms: Room.RoomWrapper[] | undefined;
+	selectedRoom: Room.RoomWrapper | undefined;
 }
 export const RoomsList: React.FunctionComponent<RoomsListProps> = ({ removeRoom, disconnectRoom, selectRoom, connectToRoom, rooms, selectedRoom }) => {
 	return (
@@ -17,7 +17,7 @@ export const RoomsList: React.FunctionComponent<RoomsListProps> = ({ removeRoom,
 					headerText={'Rooms'}
 					body={() => (
 						<div className='chat-channels'>
-							{rooms.map((room: RoomWrapper) => (
+							{rooms.map((room: Room.RoomWrapper) => (
 								<div key={room.roomName} className='rooms-list-item'>
 									<>
 										{room.roomName}

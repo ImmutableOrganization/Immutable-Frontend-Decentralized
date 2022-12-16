@@ -1,27 +1,23 @@
-import { Dispatch, SetStateAction, useEffect } from 'react';
-import { Room } from 'trystero';
+import { Dispatch, SetStateAction } from 'react';
 import { Frame } from '../../Frame';
+import { Room } from './room';
 import { RoomsList } from './RoomsList';
 import { SingleRoom } from './SingleRoom';
 
 interface RoomComponentProps {
-	removeRoom: (room: RoomWrapper) => void;
-	disconnectRoom: (room: RoomWrapper) => void;
-	rooms: RoomWrapper[] | undefined;
-	selectRoom: (room: RoomWrapper) => void;
-	getPeers: (room: RoomWrapper) => string[];
-	connectToRoom: (room: RoomWrapper) => void;
-	connectStream: (room: RoomWrapper, _stream: MediaStream) => void;
+	removeRoom: (room: Room.RoomWrapper) => void;
+	disconnectRoom: (room: Room.RoomWrapper) => void;
+	rooms: Room.RoomWrapper[] | undefined;
+	selectRoom: (room: Room.RoomWrapper) => void;
+	getPeers: (room: Room.RoomWrapper) => string[];
+	connectToRoom: (room: Room.RoomWrapper) => void;
+	connectStream: (room: Room.RoomWrapper, _stream: MediaStream) => void;
 	selfStream: MediaStream | undefined;
-	selectedRoom: RoomWrapper | undefined;
-	disconnectStream: (room: RoomWrapper, _stream: MediaStream) => void;
+	selectedRoom: Room.RoomWrapper | undefined;
+	disconnectStream: (room: Room.RoomWrapper, _stream: MediaStream) => void;
 	setLocalStream: Dispatch<SetStateAction<MediaStream | undefined>>;
 	setOpenMessageOptions: Dispatch<SetStateAction<boolean>>;
 	setShowAllPeerOptions: Dispatch<SetStateAction<boolean>>;
-}
-export interface RoomWrapper {
-	roomName: string;
-	room: Room | undefined;
 }
 
 export const RoomComponent: React.FunctionComponent<RoomComponentProps> = ({
