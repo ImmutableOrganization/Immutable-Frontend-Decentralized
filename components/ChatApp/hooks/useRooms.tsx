@@ -1,4 +1,4 @@
-import { useContext, useState } from 'react';
+import { useContext, useEffect, useState } from 'react';
 import { ActionSender, BaseRoomConfig, joinRoom, selfId } from 'trystero';
 import React from 'react';
 import { PopupContext } from '../../../pages/_app';
@@ -14,6 +14,17 @@ export const useRooms = (selectedRoomCallback: (_room: Room.RoomWrapper) => void
 	const [savedRooms, setSavedRooms] = useLocalStorage<string[]>('roomNames', []);
 	const { setFormError } = useContext(PopupContext);
 
+	useEffect(() => {
+		if (!rooms || rooms.length === 0) {
+			addRoom('GLOBAL');
+		}
+	}, [rooms]);
+	useEffect(() => {
+		setRooms(savedRooms.map((roomName) => ({ roomName, room: undefined })));
+		// console.log('savedRooms', savedRooms);
+		// addMultipleRoomsFromStorage(savedRooms);
+	}, []);
+
 	const [streams, setStreams] = useState<Room.PeerStream>();
 	const streamsRef = React.useRef(streams);
 	const setStreamRef = (data: Room.PeerStream) => {
@@ -25,6 +36,21 @@ export const useRooms = (selectedRoomCallback: (_room: Room.RoomWrapper) => void
 
 	// separate code for updating room state vs stream state
 	// organization and functionality
+
+	const addToSavedRooms = (roomName: string) => {
+		if (savedRooms) {
+			if (!savedRooms.find((room) => room === roomName)) {
+				setSavedRooms([...savedRooms, roomName]);
+			}
+		} else {
+			setSavedRooms([roomName]);
+		}
+	};
+	const removedFromSavedRooms = (roomName: string) => {
+		if (savedRooms) {
+			setSavedRooms(savedRooms.filter((room) => room !== roomName));
+		}
+	};
 
 	// add room to state
 	const addRoom = (_roomName: string) => {
@@ -50,12 +76,12 @@ export const useRooms = (selectedRoomCallback: (_room: Room.RoomWrapper) => void
 			if (!rooms.find((room) => room.roomName === _roomName)) {
 				console.log(2);
 				setRooms([...rooms, { roomName: _roomName, room: undefined }]);
-				setSavedRooms([...savedRooms, _roomName]);
+				addToSavedRooms(_roomName);
 			}
 		} else {
 			console.log(4);
 			setRooms([{ roomName: _roomName, room: undefined }]);
-			setSavedRooms([...savedRooms, _roomName]);
+			addToSavedRooms(_roomName);
 		}
 	};
 
@@ -93,7 +119,7 @@ export const useRooms = (selectedRoomCallback: (_room: Room.RoomWrapper) => void
 			const newItem: Room.RoomWrapper = { ..._room, room: undefined };
 			if (rooms) {
 				setRooms((rooms: any) => rooms.map((room: Room.RoomWrapper) => (room.roomName === _room.roomName ? newItem : room)));
-				setSavedRooms(savedRooms.filter((roomName) => roomName !== _room.roomName));
+				removedFromSavedRooms(_room.roomName);
 				// unselect room
 			}
 		}
@@ -200,6 +226,7 @@ export const useRooms = (selectedRoomCallback: (_room: Room.RoomWrapper) => void
 					});
 				}
 
+				console.log('updating room with new item ', newItem, rooms);
 				// replace room in state with new room
 				if (rooms) {
 					setRooms((rooms: any) => rooms.map((room: Room.RoomWrapper) => (room.roomName === _room.roomName ? newItem : newItem)));
@@ -248,7 +275,7 @@ export const useRooms = (selectedRoomCallback: (_room: Room.RoomWrapper) => void
 		}
 		if (rooms) {
 			setRooms((rooms: any) => rooms.filter((room: Room.RoomWrapper) => room.roomName !== _room.roomName));
-			setSavedRooms((rooms: any) => rooms.filter((room: Room.RoomWrapper) => room.roomName !== _room.roomName));
+			removedFromSavedRooms(_room.roomName);
 		}
 	};
 

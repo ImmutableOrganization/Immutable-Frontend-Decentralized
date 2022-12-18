@@ -646,12 +646,27 @@ input[type='text']:hover {
 	padding-block: 2vh;
 	row-gap: 1vh;
 }
-
+.streams {
+	display: grid;
+	grid-template-columns: 1fr 1fr;
+}
 .peerStream {
 	padding-inline: 3vw;
 	padding-block: 1vh;
 	outline: solid;
 }
+
+.streamHeader {
+	display: flex;
+	text-align: left;
+	align-items: self-end;
+	justify-content: space-between;
+}
+
+.streamHeaderButtons {
+	display: flex;
+}
+
 .messageControls {
 	display: grid;
 	grid-template-columns: 1fr 0.2fr;

@@ -1,6 +1,8 @@
+import { useState } from 'react';
 import ReactPlayer from 'react-player';
 import { Frame } from '../Frame';
 import { Room } from './rooms/room';
+import Dropdown from 'react-dropdown';
 
 interface VideoComponentProps {
 	peerStreams: React.MutableRefObject<Room.PeerStream | undefined>;
@@ -10,6 +12,17 @@ interface VideoComponentProps {
 	blockPeerVideoController: (peerId: string, block: boolean) => void;
 }
 
+const options = [
+	{ value: '1', label: 'One' },
+	{ value: '2', label: 'Two' },
+	{ value: '3', label: 'Three' },
+	{ value: '4', label: 'Four' },
+	{ value: '5', label: 'Five' },
+	{ value: '6', label: 'Six' },
+	{ value: '7', label: 'Seven' },
+	{ value: '8', label: 'Eight' },
+	{ value: '9', label: 'Nine' },
+];
 export const VideoComponent: React.FunctionComponent<VideoComponentProps> = ({
 	selfStream,
 	peerStreams,
@@ -17,6 +30,8 @@ export const VideoComponent: React.FunctionComponent<VideoComponentProps> = ({
 	blockPeerAudioController,
 	blockPeerVideoController,
 }) => {
+	const [columnCount, setColumnCount] = useState<number>(1);
+
 	return (
 		<div className='peerStreams'>
 			{/* map over peer streams */}
@@ -25,56 +40,84 @@ export const VideoComponent: React.FunctionComponent<VideoComponentProps> = ({
 					headerText={selectedRoom.roomName + ' AUDIO / VIDEO'}
 					body={() => (
 						<>
-							{selfStream && (
-								<div className='peerStream'>
-									{'YOU'}
-									<ReactPlayer height={'100%'} width={'100%'} playing={true} controls={true} url={selfStream} />
-								</div>
-							)}
-							{peerStreams.current ? (
-								<>
+							what if i do a dropdown for amount of columns, prob can never see more than 10
+							<Dropdown
+								options={options}
+								onChange={(e) => {
+									setColumnCount(Number(e.value));
+								}}
+								value={options[columnCount + 1]}
+								placeholder='Select an option'
+							/>
+							;
+							<div className='streams'>
+								{selfStream && (
+									<div className='peerStream'>
+										{'YOU'}
+										<ReactPlayer height={'auto'} width={'100%'} playing={true} controls={true} url={selfStream} />
+									</div>
+								)}
+								{peerStreams.current ? (
 									<>
-										{peerStreams.current && (
-											<>
-												{'Receiving stream from ' + Object.keys(peerStreams.current).length + ' peers'}
-												{Object.entries(peerStreams.current).map(([peerid, _stream], index) => {
-													return (
-														<>
-															{!_stream.videoBlocked && (
-																<div key={index} className='peerStream'>
-																	<>
-																		{peerid}
-																		<input
-																			type='button'
-																			className='button'
-																			onClick={() => {
-																				blockPeerVideoController(peerid, true);
-																				blockPeerAudioController(peerid, true);
-																			}}
-																			value='block'
-																		/>
-																		<ReactPlayer
-																			height={'100%'}
-																			width={'100%'}
-																			playing={true}
-																			controls={true}
-																			url={_stream.mediaStream}
-																		/>
-																	</>
-																</div>
-															)}
-														</>
-													);
-												})}
-											</>
-										)}
+										<>
+											{peerStreams.current && (
+												<>
+													{/* {'Receiving stream from ' + Object.keys(peerStreams.current).length + ' peers'} */}
+													{Object.entries(peerStreams.current).map(([peerid, _stream], index) => {
+														return (
+															<>
+																{!_stream.videoBlocked && (
+																	<div
+																		key={index}
+																		className='peerStream'
+																		style={{ gridTemplateColumns: '#'.repeat(columnCount) }}
+																	>
+																		<>
+																			<div className='streamHeader'>
+																				{peerid}
+																				<div className='streamHeaderButtons'>
+																					<input
+																						type='button'
+																						className='button'
+																						onClick={() => {
+																							console.log('clicked');
+																						}}
+																						value='record'
+																					/>
+																					<input
+																						type='button'
+																						className='button'
+																						onClick={() => {
+																							blockPeerVideoController(peerid, true);
+																							blockPeerAudioController(peerid, true);
+																						}}
+																						value='block'
+																					/>
+																				</div>
+																			</div>
+																			<ReactPlayer
+																				height={'auto'}
+																				width={'100%'}
+																				playing={true}
+																				controls={true}
+																				url={_stream.mediaStream}
+																			/>
+																		</>
+																	</div>
+																)}
+															</>
+														);
+													})}
+												</>
+											)}
+										</>
 									</>
-								</>
-							) : (
-								<div className='options'>
-									<>No streams in room.</>
-								</div>
-							)}
+								) : (
+									<div className='options'>
+										<>Waiting for streams...</>
+									</div>
+								)}
+							</div>
 						</>
 					)}
 				/>

@@ -19,6 +19,8 @@ export const DecentralizedChat: NextPage = () => {
 	useEffect(() => {
 		if (roomName && typeof roomName === 'string') {
 			setSelectedRoom({ roomName, room: undefined });
+		} else {
+			console.log('HI NO ROOM');
 		}
 	}, [roomName]);
 
@@ -49,16 +51,6 @@ export const DecentralizedChat: NextPage = () => {
 		savedRooms,
 		addMultipleRoomsFromStorage,
 	} = useRooms(setSelectedRoom, { getMessageListener });
-
-	useEffect(() => {
-		if (!rooms || rooms.length === 0) {
-			if (!rooms && savedRooms && savedRooms.length > 0) {
-				console.log('savedRooms', savedRooms);
-				addMultipleRoomsFromStorage(savedRooms);
-			}
-			addRoom('GLOBAL');
-		}
-	}, [rooms]);
 
 	const { messagesRef, addMessage } = useMessages(sendMessageAction);
 
