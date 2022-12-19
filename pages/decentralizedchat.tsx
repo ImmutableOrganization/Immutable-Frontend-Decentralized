@@ -13,12 +13,16 @@ import { Messages } from '../components/ChatApp/messages/messages';
 
 export const DecentralizedChat: NextPage = () => {
 	const router = useRouter();
-	const { roomName } = router.query;
+	const { roomName, password } = router.query;
 
 	// load room from url params
 	useEffect(() => {
 		if (roomName && typeof roomName === 'string') {
-			setSelectedRoom({ roomName, room: undefined });
+			if (password && typeof password === 'string') {
+				setSelectedRoom({ roomName, room: undefined, password });
+			} else {
+				setSelectedRoom({ roomName, room: undefined, password: '' });
+			}
 		} else {
 			console.log('HI NO ROOM');
 		}
@@ -49,7 +53,6 @@ export const DecentralizedChat: NextPage = () => {
 		blockPeerVideoController,
 		blockPeerTextController,
 		savedRooms,
-		addMultipleRoomsFromStorage,
 	} = useRooms(setSelectedRoom, { getMessageListener });
 
 	const { messagesRef, addMessage } = useMessages(sendMessageAction);
@@ -97,7 +100,7 @@ export const DecentralizedChat: NextPage = () => {
 					setShowAllPeerOptions={setShowAllPeerOptions}
 				/>
 			)}
-			<LocalStreamComponent addRoom={addRoom} localStream={localStream} setLocalStream={setLocalStream} />
+			<LocalStreamComponent selectedRoom={selectedRoom} addRoom={addRoom} localStream={localStream} setLocalStream={setLocalStream} />
 			<RoomComponent
 				removeRoom={removeRoom}
 				disconnectRoom={disconnectRoom}

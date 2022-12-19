@@ -2,18 +2,19 @@ import { faCheckSquare, faSquare } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { useContext, useState } from 'react';
 import ReactPlayer from 'react-player';
-import { selfId } from 'trystero/torrent';
 import { PopupContext } from '../../pages/_app';
 import { Frame } from '../Frame';
 import { JoinRoom } from './rooms/JoinRoom';
+import { Room } from './rooms/room';
 
 interface LocalStreamComponentProps {
 	setLocalStream: React.Dispatch<React.SetStateAction<MediaStream | undefined>>;
 	localStream: MediaStream | undefined;
-	addRoom: (roomName: string) => void;
+	addRoom: (roomName: string, password: string) => void;
+	selectedRoom: Room.RoomWrapper;
 }
 
-export const LocalStreamComponent: React.FunctionComponent<LocalStreamComponentProps> = ({ localStream, setLocalStream, addRoom }) => {
+export const LocalStreamComponent: React.FunctionComponent<LocalStreamComponentProps> = ({ localStream, setLocalStream, addRoom, selectedRoom }) => {
 	const [useAudio, setUseAudio] = useState<boolean>(true);
 	const [useVideo, setUseVideo] = useState<boolean>(true);
 	const { setOpenToast, setToastMessage, setToastType } = useContext(PopupContext);
@@ -55,8 +56,6 @@ export const LocalStreamComponent: React.FunctionComponent<LocalStreamComponentP
 				body={() => (
 					<>
 						<div className='options'>
-							<>Your id: {selfId}</>
-							<br></br>
 							<div className='client-options'>
 								<label
 									className={'checkbox-item ' + (localStream ? 'disabled' : '')}
@@ -99,7 +98,7 @@ export const LocalStreamComponent: React.FunctionComponent<LocalStreamComponentP
 								</>
 							)}
 						</div>
-						<JoinRoom addRoom={addRoom} />
+						{!selectedRoom || (selectedRoom.roomName == '2d9227eb-bdd7-4dda-a1d1-d3a694b4195e' && <JoinRoom addRoom={addRoom} />)}
 					</>
 				)}
 			/>

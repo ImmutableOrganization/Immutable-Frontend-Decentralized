@@ -11,18 +11,16 @@ export let sendMessage: ActionSender<Messages.Message>;
 
 export const useRooms = (selectedRoomCallback: (_room: Room.RoomWrapper) => void, messageCallback: Messages.MessageCallback) => {
 	const [rooms, setRooms] = useState<Room.RoomWrapper[]>();
-	const [savedRooms, setSavedRooms] = useLocalStorage<string[]>('roomNames', []);
+	const [savedRooms, setSavedRooms] = useLocalStorage<Room.SavedRoom[]>('roomNames', []);
 	const { setFormError } = useContext(PopupContext);
 
 	useEffect(() => {
 		if (!rooms || rooms.length === 0) {
-			addRoom('GLOBAL');
+			addRoom('GLOBAL', '');
 		}
 	}, [rooms]);
 	useEffect(() => {
-		setRooms(savedRooms.map((roomName) => ({ roomName, room: undefined })));
-		// console.log('savedRooms', savedRooms);
-		// addMultipleRoomsFromStorage(savedRooms);
+		setRooms(savedRooms.map((_room) => ({ roomName: _room.roomName, room: undefined, password: _room.password })));
 	}, []);
 
 	const [streams, setStreams] = useState<Room.PeerStream>();
@@ -36,24 +34,23 @@ export const useRooms = (selectedRoomCallback: (_room: Room.RoomWrapper) => void
 
 	// separate code for updating room state vs stream state
 	// organization and functionality
-
-	const addToSavedRooms = (roomName: string) => {
+	const addToSavedRooms = (roomName: string, _password: string) => {
 		if (savedRooms) {
-			if (!savedRooms.find((room) => room === roomName)) {
-				setSavedRooms([...savedRooms, roomName]);
+			if (!savedRooms.find((room) => room.roomName === roomName)) {
+				setSavedRooms([...savedRooms, { roomName, password: _password }]);
 			}
 		} else {
-			setSavedRooms([roomName]);
+			setSavedRooms([{ roomName, password: _password }]);
 		}
 	};
 	const removedFromSavedRooms = (roomName: string) => {
 		if (savedRooms) {
-			setSavedRooms(savedRooms.filter((room) => room !== roomName));
+			setSavedRooms(savedRooms.filter((room) => room.roomName !== roomName));
 		}
 	};
 
 	// add room to state
-	const addRoom = (_roomName: string) => {
+	const addRoom = (_roomName: string, _password: string) => {
 		if (_roomName == '') {
 			setToastMessage('Room must have a name');
 			setOpenToast(true);
@@ -75,34 +72,13 @@ export const useRooms = (selectedRoomCallback: (_room: Room.RoomWrapper) => void
 			console.log(1);
 			if (!rooms.find((room) => room.roomName === _roomName)) {
 				console.log(2);
-				setRooms([...rooms, { roomName: _roomName, room: undefined }]);
-				addToSavedRooms(_roomName);
+				setRooms([...rooms, { roomName: _roomName, room: undefined, password: _password }]);
+				addToSavedRooms(_roomName, _password);
 			}
 		} else {
 			console.log(4);
-			setRooms([{ roomName: _roomName, room: undefined }]);
-			addToSavedRooms(_roomName);
-		}
-	};
-
-	const addMultipleRoomsFromStorage = (_roomNames: string[]) => {
-		if (_roomNames.length == 0) {
-			setToastMessage('Room must have a name');
-			setOpenToast(true);
-			setToastType('failure');
-			return;
-		}
-
-		let roomsCopy = rooms ? [...rooms] : [];
-		if (roomsCopy) {
-			_roomNames.forEach((roomName) => {
-				if (!roomsCopy.find((room) => room.roomName === roomName)) {
-					roomsCopy.push({ roomName: roomName, room: undefined });
-				}
-			});
-			setRooms(roomsCopy);
-		} else {
-			setRooms(_roomNames.map((roomName) => ({ roomName: roomName, room: undefined })));
+			setRooms([{ roomName: _roomName, room: undefined, password: _password }]);
+			addToSavedRooms(_roomName, _password);
 		}
 	};
 
@@ -119,8 +95,6 @@ export const useRooms = (selectedRoomCallback: (_room: Room.RoomWrapper) => void
 			const newItem: Room.RoomWrapper = { ..._room, room: undefined };
 			if (rooms) {
 				setRooms((rooms: any) => rooms.map((room: Room.RoomWrapper) => (room.roomName === _room.roomName ? newItem : room)));
-				removedFromSavedRooms(_room.roomName);
-				// unselect room
 			}
 		}
 	};
@@ -208,7 +182,7 @@ export const useRooms = (selectedRoomCallback: (_room: Room.RoomWrapper) => void
 
 	const connectToRoom = (_room: Room.RoomWrapper) => {
 		try {
-			const config: BaseRoomConfig = { appId: '8AhTQ9k2K8nr' };
+			const config: BaseRoomConfig = { appId: '63f7ef007b534d6bb42e9c02650f3901', password: _room.password };
 			let room: trystero.Room;
 			try {
 				room = joinRoom(config, _room.roomName);
@@ -217,7 +191,6 @@ export const useRooms = (selectedRoomCallback: (_room: Room.RoomWrapper) => void
 				selectedRoomCallback(newItem);
 				if (newItem.room) {
 					// send stream to peer when they join
-
 					newItem.room.onPeerStream((stream, peerId) => {
 						console.log('stream received', stream, peerId);
 						const copy = { ...streamsRef.current };
@@ -229,7 +202,7 @@ export const useRooms = (selectedRoomCallback: (_room: Room.RoomWrapper) => void
 				console.log('updating room with new item ', newItem, rooms);
 				// replace room in state with new room
 				if (rooms) {
-					setRooms((rooms: any) => rooms.map((room: Room.RoomWrapper) => (room.roomName === _room.roomName ? newItem : newItem)));
+					setRooms((rooms: any) => rooms.map((room: Room.RoomWrapper) => (room.roomName === _room.roomName ? newItem : room)));
 				} else {
 					setRooms([newItem]);
 				}
@@ -311,7 +284,6 @@ export const useRooms = (selectedRoomCallback: (_room: Room.RoomWrapper) => void
 	return {
 		rooms,
 		addRoom,
-		addMultipleRoomsFromStorage,
 		removeRoom,
 		selectRoom,
 		connectToRoom,

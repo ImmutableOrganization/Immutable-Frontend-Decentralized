@@ -1,4 +1,5 @@
 import { useState, useEffect, useContext, Dispatch, SetStateAction } from 'react';
+import { selfId } from 'trystero';
 import { PopupContext } from '../../../pages/_app';
 import { Room } from './room';
 
@@ -65,7 +66,8 @@ export const SingleRoom: React.FunctionComponent<SingleRoomProps> = ({
 
 	return (
 		<div className='currRoom'>
-			Peers: {peers?.length}
+			<span>You: {selfId}.</span>
+			{peers?.length} peers in room.
 			<input type='button' className='button' value='Options' onClick={() => setOpenMessageOptions(true)} />
 			<input type='button' className='button' value='Show Peer Options' onClick={() => setShowAllPeerOptions(true)} />
 			{selfStream ? (

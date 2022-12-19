@@ -14,9 +14,13 @@ interface VideoComponentProps {
 
 const options = [
 	{ value: '1', label: '100%' },
-	{ value: '2', label: '75%' },
-	{ value: '3', label: '50%' },
-	{ value: '4', label: '25%' },
+	{ value: '2', label: '90%' },
+	{ value: '3', label: '75%' },
+	{ value: '4', label: '60%' },
+	{ value: '5', label: '50%' },
+	{ value: '6', label: '40%' },
+	{ value: '7', label: '25%' },
+	{ value: '8', label: '10%' },
 	// { value: '5', label: 'Five' },
 	// { value: '6', label: 'Six' },
 	// { value: '7', label: 'Seven' },
@@ -26,9 +30,13 @@ const options = [
 
 const widths = [
 	'100%',
+	'90vw',
 	'75vw',
+	'60vw',
 	'50vw',
+	'40vw',
 	'25vw',
+	'10vw',
 	// , '30vw', '35vw', '40vw', '45vw', '50vw'
 ];
 
@@ -55,7 +63,7 @@ export const VideoComponent: React.FunctionComponent<VideoComponentProps> = ({
 	blockPeerAudioController,
 	blockPeerVideoController,
 }) => {
-	const [columnCount, setColumnCount] = useState<number>(1);
+	const [columnCount, setColumnCount] = useState<number>(100);
 
 	return (
 		<div className='peerStreams'>
@@ -66,19 +74,31 @@ export const VideoComponent: React.FunctionComponent<VideoComponentProps> = ({
 					body={() => (
 						<>
 							<div className='video-column-count'>
-								Player width:
-								<Dropdown
+								{'Width: ' + columnCount + '%'}
+								<input
+									type={'range'}
+									className='text-input terminal-input'
+									value={columnCount}
+									onChange={(e) => {
+										if (Number(e.target.value) > 100) {
+											setColumnCount(100);
+										} else {
+											setColumnCount(Number(e.target.value));
+										}
+									}}
+								/>
+								{/* <Dropdown
 									options={options}
 									onChange={(e) => {
 										setColumnCount(Number(e.value));
 									}}
 									value={options[columnCount - 1]}
 									placeholder='Select the number of columns'
-								/>
+								/> */}
 							</div>
 							<div className='streams'>
 								{selfStream && (
-									<div className='peerStream' style={{ width: `${widths[columnCount - 1]}` }}>
+									<div className='peerStream' style={{ width: `${columnCount}vw` }}>
 										<div className='streamHeader'>
 											<div className='overflow-text'>{'YOU'}</div>
 										</div>
@@ -95,7 +115,7 @@ export const VideoComponent: React.FunctionComponent<VideoComponentProps> = ({
 														return (
 															<>
 																{!_stream.videoBlocked && (
-																	<div key={index} className='peerStream' style={{ width: `${widths[columnCount - 1]}` }}>
+																	<div key={index} className='peerStream' style={{ width: `${columnCount}vw` }}>
 																		<>
 																			<div className='streamHeader'>
 																				<div className='overflow-text'>{peerid}</div>

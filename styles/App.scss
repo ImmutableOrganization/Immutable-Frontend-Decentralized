@@ -629,6 +629,8 @@ input[type='text']:hover {
 	padding-inline: 3vw;
 	padding-block: 2vh;
 	outline-style: auto;
+	grid-auto-rows: 1fr;
+	align-items: center;
 }
 .isSelected {
 	color: lime;
@@ -636,8 +638,6 @@ input[type='text']:hover {
 
 .addRoom {
 	display: grid;
-	grid-template-columns: 1fr 1fr;
-	padding: 1vw;
 }
 
 .currRoom {
@@ -649,9 +649,10 @@ input[type='text']:hover {
 
 .streams {
 	display: flex;
-	height: 80vh;
+	max-height: 80vh;
 	overflow-y: scroll;
 	flex-wrap: wrap;
+	padding-block: 1vh;
 }
 
 .peerStream {
@@ -702,13 +703,18 @@ input[type='text']:hover {
 .checkbox-item {
 	display: grid;
 	grid-template-columns: 1fr 1fr;
+	text-align: start;
+	width: fit-content;
+	column-gap: 3vw;
+
+	span {
+		display: flex;
+		column-gap: 4vw;
+	}
 }
 
 .addRoom {
 	display: grid;
-	grid-template-columns: 1fr 1fr;
-	padding-inline: 3vw;
-	padding-block: 1vh;
 }
 
 .chat-option-item {
