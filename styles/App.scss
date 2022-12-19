@@ -646,14 +646,23 @@ input[type='text']:hover {
 	padding-block: 2vh;
 	row-gap: 1vh;
 }
+
 .streams {
-	display: grid;
-	grid-template-columns: 1fr 1fr;
+	display: flex;
+	height: 80vh;
+	overflow-y: scroll;
+	flex-wrap: wrap;
 }
+
 .peerStream {
-	padding-inline: 3vw;
-	padding-block: 1vh;
+	padding-inline: 1vw;
 	outline: solid;
+	height: fit-content;
+	width: fit-content;
+
+	.button {
+		padding-block: 0;
+	}
 }
 
 .streamHeader {
@@ -710,4 +719,47 @@ input[type='text']:hover {
 }
 .localMessage {
 	text-align: end;
+}
+.Dropdown-root {
+	background-color: var(--alt);
+	box-shadow: inset 1px 1px 0px 1px var(--boxShadowBottomRight), inset 0 0 0 1px #1f2223, 1px 1px 0 0px var(--boxShadowBottomRight);
+	margin-inline: 3vw;
+	padding: 1vw;
+	margin-block: 1vh;
+	padding-block: 1vh;
+	outline: none;
+	width: fit-content;
+	z-index: 999;
+
+	.Dropdown-menu {
+		position: fixed;
+		background-color: var(--alt);
+		box-shadow: inset 1px 1px 0px 1px var(--boxShadowBottomRight), inset 0 0 0 1px #1f2223, 1px 1px 0 0px var(--boxShadowBottomRight);
+		outline: none;
+		padding-inline: 1vw;
+		width: fit-content;
+	}
+
+	.Dropdown-option {
+		padding-block: 0.5vh;
+	}
+	.Dropdown-option:hover {
+		color: grey;
+	}
+
+	.is-selected {
+		color: #9d00ff;
+	}
+}
+
+.video-column-count {
+	display: flex;
+	align-items: center;
+	margin-inline: 3vw;
+}
+
+.overflow-text {
+	overflow-x: scroll;
+	text-overflow: ellipsis;
+	white-space: nowrap;
 }

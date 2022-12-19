@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import ReactPlayer from 'react-player';
 import { Frame } from '../Frame';
 import { Room } from './rooms/room';
@@ -13,16 +13,41 @@ interface VideoComponentProps {
 }
 
 const options = [
-	{ value: '1', label: 'One' },
-	{ value: '2', label: 'Two' },
-	{ value: '3', label: 'Three' },
-	{ value: '4', label: 'Four' },
-	{ value: '5', label: 'Five' },
-	{ value: '6', label: 'Six' },
-	{ value: '7', label: 'Seven' },
-	{ value: '8', label: 'Eight' },
-	{ value: '9', label: 'Nine' },
+	{ value: '1', label: '100%' },
+	{ value: '2', label: '75%' },
+	{ value: '3', label: '50%' },
+	{ value: '4', label: '25%' },
+	// { value: '5', label: 'Five' },
+	// { value: '6', label: 'Six' },
+	// { value: '7', label: 'Seven' },
+	// { value: '8', label: 'Eight' },
+	// { value: '9', label: 'Nine' },
 ];
+
+const widths = [
+	'100%',
+	'75vw',
+	'50vw',
+	'25vw',
+	// , '30vw', '35vw', '40vw', '45vw', '50vw'
+];
+
+const RepeatingPeriod: React.FunctionComponent = ({}) => {
+	const [count, setCount] = useState<number>(0);
+
+	useEffect(() => {
+		const interval = setInterval(() => {
+			if (count < 5) {
+				setCount(count + 1);
+			} else {
+				setCount(1);
+			}
+		}, 1000);
+		return () => clearInterval(interval);
+	}, [count]);
+
+	return <>{'.'.repeat(count)}</>;
+};
 export const VideoComponent: React.FunctionComponent<VideoComponentProps> = ({
 	selfStream,
 	peerStreams,
@@ -40,20 +65,23 @@ export const VideoComponent: React.FunctionComponent<VideoComponentProps> = ({
 					headerText={selectedRoom.roomName + ' AUDIO / VIDEO'}
 					body={() => (
 						<>
-							what if i do a dropdown for amount of columns, prob can never see more than 10
-							<Dropdown
-								options={options}
-								onChange={(e) => {
-									setColumnCount(Number(e.value));
-								}}
-								value={options[columnCount + 1]}
-								placeholder='Select an option'
-							/>
-							;
+							<div className='video-column-count'>
+								Player width:
+								<Dropdown
+									options={options}
+									onChange={(e) => {
+										setColumnCount(Number(e.value));
+									}}
+									value={options[columnCount - 1]}
+									placeholder='Select the number of columns'
+								/>
+							</div>
 							<div className='streams'>
 								{selfStream && (
-									<div className='peerStream'>
-										{'YOU'}
+									<div className='peerStream' style={{ width: `${widths[columnCount - 1]}` }}>
+										<div className='streamHeader'>
+											<div className='overflow-text'>{'YOU'}</div>
+										</div>
 										<ReactPlayer height={'auto'} width={'100%'} playing={true} controls={true} url={selfStream} />
 									</div>
 								)}
@@ -67,33 +95,19 @@ export const VideoComponent: React.FunctionComponent<VideoComponentProps> = ({
 														return (
 															<>
 																{!_stream.videoBlocked && (
-																	<div
-																		key={index}
-																		className='peerStream'
-																		style={{ gridTemplateColumns: '#'.repeat(columnCount) }}
-																	>
+																	<div key={index} className='peerStream' style={{ width: `${widths[columnCount - 1]}` }}>
 																		<>
 																			<div className='streamHeader'>
-																				{peerid}
-																				<div className='streamHeaderButtons'>
-																					<input
-																						type='button'
-																						className='button'
-																						onClick={() => {
-																							console.log('clicked');
-																						}}
-																						value='record'
-																					/>
-																					<input
-																						type='button'
-																						className='button'
-																						onClick={() => {
-																							blockPeerVideoController(peerid, true);
-																							blockPeerAudioController(peerid, true);
-																						}}
-																						value='block'
-																					/>
-																				</div>
+																				<div className='overflow-text'>{peerid}</div>
+																				<input
+																					type='button'
+																					className='button'
+																					onClick={() => {
+																						blockPeerVideoController(peerid, true);
+																						blockPeerAudioController(peerid, true);
+																					}}
+																					value='X'
+																				/>
 																			</div>
 																			<ReactPlayer
 																				height={'auto'}
@@ -114,7 +128,10 @@ export const VideoComponent: React.FunctionComponent<VideoComponentProps> = ({
 									</>
 								) : (
 									<div className='options'>
-										<>Waiting for streams...</>
+										<>
+											Waiting for streams
+											<RepeatingPeriod />
+										</>
 									</div>
 								)}
 							</div>
