@@ -20,7 +20,7 @@ export const useRooms = (selectedRoomCallback: (_room: Room.RoomWrapper) => void
 		}
 	}, [rooms]);
 	useEffect(() => {
-		setRooms(savedRooms.map((_room) => ({ roomName: _room.roomName, room: undefined, password: _room.password })));
+		setRooms(savedRooms.map((_room) => ({ roomName: _room.roomName, room: undefined, password: _room.password, allowStreams: false })));
 	}, []);
 
 	const [streams, setStreams] = useState<Room.PeerStream>();
@@ -72,12 +72,12 @@ export const useRooms = (selectedRoomCallback: (_room: Room.RoomWrapper) => void
 			console.log(1);
 			if (!rooms.find((room) => room.roomName === _roomName)) {
 				console.log(2);
-				setRooms([...rooms, { roomName: _roomName, room: undefined, password: _password }]);
+				setRooms([...rooms, { roomName: _roomName, room: undefined, password: _password, allowStreams: false }]);
 				addToSavedRooms(_roomName, _password);
 			}
 		} else {
 			console.log(4);
-			setRooms([{ roomName: _roomName, room: undefined, password: _password }]);
+			setRooms([{ roomName: _roomName, room: undefined, password: _password, allowStreams: false }]);
 			addToSavedRooms(_roomName, _password);
 		}
 	};
@@ -105,7 +105,11 @@ export const useRooms = (selectedRoomCallback: (_room: Room.RoomWrapper) => void
 			if (newStreams[peerId]) {
 				newStreams[peerId].videoBlocked = block;
 				setStreamRef(newStreams);
+			} else {
+				setStreamRef({ [peerId]: { mediaStream: undefined, videoBlocked: block, audioBlocked: block, textBlocked: block } });
 			}
+		} else {
+			setStreamRef({ [peerId]: { mediaStream: undefined, videoBlocked: block, audioBlocked: block, textBlocked: block } });
 		}
 	};
 
@@ -115,7 +119,11 @@ export const useRooms = (selectedRoomCallback: (_room: Room.RoomWrapper) => void
 			if (newStreams[peerId]) {
 				newStreams[peerId].audioBlocked = block;
 				setStreamRef(newStreams);
+			} else {
+				setStreamRef({ [peerId]: { mediaStream: undefined, videoBlocked: block, audioBlocked: block, textBlocked: block } });
 			}
+		} else {
+			setStreamRef({ [peerId]: { mediaStream: undefined, videoBlocked: block, audioBlocked: block, textBlocked: block } });
 		}
 	};
 
@@ -125,7 +133,11 @@ export const useRooms = (selectedRoomCallback: (_room: Room.RoomWrapper) => void
 			if (newStreams[peerId]) {
 				newStreams[peerId].textBlocked = block;
 				setStreamRef(newStreams);
+			} else {
+				setStreamRef({ [peerId]: { mediaStream: undefined, videoBlocked: block, audioBlocked: block, textBlocked: block } });
 			}
+		} else {
+			setStreamRef({ [peerId]: { mediaStream: undefined, videoBlocked: block, audioBlocked: block, textBlocked: block } });
 		}
 	};
 
@@ -192,6 +204,9 @@ export const useRooms = (selectedRoomCallback: (_room: Room.RoomWrapper) => void
 				if (newItem.room) {
 					// send stream to peer when they join
 					newItem.room.onPeerStream((stream, peerId) => {
+						if (streamsRef.current && streamsRef.current[peerId] && streamsRef.current[peerId].videoBlocked) {
+							return;
+						}
 						console.log('stream received', stream, peerId);
 						const copy = { ...streamsRef.current };
 						copy[peerId] = { mediaStream: stream, videoBlocked: false, audioBlocked: false, textBlocked: false };
@@ -212,6 +227,10 @@ export const useRooms = (selectedRoomCallback: (_room: Room.RoomWrapper) => void
 					const [_sendMessage, getMessage] = room.makeAction<Messages.Message>('message');
 					sendMessage = _sendMessage;
 					getMessage((_msg, peerId) => {
+						if (streamsRef.current && streamsRef.current[peerId] && streamsRef.current[peerId].textBlocked) {
+							return;
+						}
+
 						if (!_msg) {
 							setFormError({ open: true, message: 'Message failed validation' });
 							return;

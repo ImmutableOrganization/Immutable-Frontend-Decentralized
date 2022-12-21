@@ -7,36 +7,43 @@ interface AllPeerOptionsModalProps {
 	blockPeerAudioController: (peerId: string, block: boolean) => void;
 	blockPeerVideoController: (peerId: string, block: boolean) => void;
 	peerStreams: Room.PeerStream | undefined;
+	selectedRoom: Room.RoomWrapper;
 	setShowAllPeerOptions: Dispatch<SetStateAction<boolean>>;
 }
 
 export const AllPeerOptionsModal: React.FC<AllPeerOptionsModalProps> = ({
 	blockPeerTextController,
 	peerStreams,
+	selectedRoom,
 	blockPeerAudioController,
 	blockPeerVideoController,
 	setShowAllPeerOptions,
 }) => {
+	// selectedRoom.room?.getPeers();
 	return (
 		<Frame
 			headerText='Options'
 			className='message-options'
 			body={() => (
 				<div className='options'>
-					{peerStreams ? (
+					{selectedRoom.room && selectedRoom.room?.getPeers().length > 0 ? (
 						<>
-							{Object.entries(peerStreams).map(([peerid, _stream]) => {
+							{selectedRoom.room?.getPeers().map((peer) => {
 								return (
-									<div className='' key={peerid}>
-										{peerid}:
+									<div className='' key={peer}>
+										{peer}:
 										<input
 											type='button'
-											value={_stream.textBlocked && _stream.audioBlocked && _stream.videoBlocked ? 'UNBLOCK' : 'BLOCK'}
+											value={
+												peerStreams?.[peer]?.textBlocked && peerStreams?.[peer]?.audioBlocked && peerStreams?.[peer]?.videoBlocked
+													? 'UNBLOCK'
+													: 'BLOCK'
+											}
 											className='button'
 											onClick={() => {
-												blockPeerTextController(peerid, !_stream.textBlocked);
-												blockPeerAudioController(peerid, !_stream.audioBlocked);
-												blockPeerVideoController(peerid, !_stream.videoBlocked);
+												blockPeerTextController(peer, !peerStreams?.[peer]?.textBlocked);
+												blockPeerAudioController(peer, !peerStreams?.[peer]?.audioBlocked);
+												blockPeerVideoController(peer, !peerStreams?.[peer]?.videoBlocked);
 											}}
 										></input>
 									</div>

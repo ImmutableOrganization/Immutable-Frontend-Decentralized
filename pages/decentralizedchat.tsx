@@ -19,9 +19,9 @@ export const DecentralizedChat: NextPage = () => {
 	useEffect(() => {
 		if (roomName && typeof roomName === 'string') {
 			if (password && typeof password === 'string') {
-				setSelectedRoom({ roomName, room: undefined, password });
+				setSelectedRoom({ roomName, room: undefined, password, allowStreams: true });
 			} else {
-				setSelectedRoom({ roomName, room: undefined, password: '' });
+				setSelectedRoom({ roomName, room: undefined, password: '', allowStreams: true });
 			}
 		} else {
 			console.log('HI NO ROOM');
@@ -98,6 +98,7 @@ export const DecentralizedChat: NextPage = () => {
 					blockPeerVideoController={blockPeerVideoController}
 					peerStreams={streamsRef.current}
 					setShowAllPeerOptions={setShowAllPeerOptions}
+					selectedRoom={selectedRoom}
 				/>
 			)}
 			<LocalStreamComponent selectedRoom={selectedRoom} addRoom={addRoom} localStream={localStream} setLocalStream={setLocalStream} />

@@ -4,6 +4,7 @@ export namespace Room {
 	export interface RoomWrapper {
 		roomName: string;
 		password: string;
+		allowStreams: boolean;
 		room: trystero.Room | undefined;
 	}
 
@@ -13,7 +14,7 @@ export namespace Room {
 	}
 
 	export interface Peer {
-		mediaStream: MediaStream;
+		mediaStream: MediaStream | undefined;
 		videoBlocked: boolean;
 		audioBlocked: boolean;
 		textBlocked: boolean;
@@ -27,5 +28,6 @@ export namespace Room {
 		roomName: '2d9227eb-bdd7-4dda-a1d1-d3a694b4195e',
 		room: undefined,
 		password: '',
+		allowStreams: false,
 	};
 }
