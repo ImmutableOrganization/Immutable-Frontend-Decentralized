@@ -1,194 +1,194 @@
 // CHAT
 .chat {
-	img.check-icon {
-		filter: invert(42%) sepia(93%) saturate(1352%) hue-rotate(87deg) brightness(119%) contrast(119%);
-		height: 5vh;
-	}
-	.exclamation-triangle {
-		filter: invert(100%) sepia(31%) saturate(4216%) hue-rotate(353deg) brightness(101%) contrast(115%);
-		height: 5vh;
-	}
+  img.check-icon {
+    filter: invert(42%) sepia(93%) saturate(1352%) hue-rotate(87deg) brightness(119%) contrast(119%);
+    height: 5vh;
+  }
+  .exclamation-triangle {
+    filter: invert(100%) sepia(31%) saturate(4216%) hue-rotate(353deg) brightness(101%) contrast(115%);
+    height: 5vh;
+  }
 
-	h1 {
-		position: relative;
-		font-size: min(8vw, 40px);
-		letter-spacing: 0.02em;
-		text-transform: uppercase;
-		text-shadow: 5px 5px 5px #9d00ff;
-		color: white;
-		user-select: none;
-		animation: shake 20s steps(2, start) infinite;
-	}
+  h1 {
+    position: relative;
+    font-size: min(8vw, 40px);
+    letter-spacing: 0.02em;
+    text-transform: uppercase;
+    text-shadow: 5px 5px 5px #9d00ff;
+    color: white;
+    user-select: none;
+    animation: shake 20s steps(2, start) infinite;
+  }
 
-	display: flex;
-	flex-wrap: wrap;
+  display: flex;
+  flex-wrap: wrap;
 
-	.explanation {
-		padding-inline: 3vw;
-		padding-block: 1vh;
-	}
+  .explanation {
+    padding-inline: 3vw;
+    padding-block: 1vh;
+  }
 
-	.channels {
-		padding-inline: 3vw;
-		padding-block: 1vh;
+  .channels {
+    padding-inline: 3vw;
+    padding-block: 1vh;
 
-		.terminal-input {
-			width: 100%;
-		}
-	}
+    .terminal-input {
+      width: 100%;
+    }
+  }
 
-	.send-message-form {
-		display: grid;
-		margin-inline: 1vw;
-		margin-block: 1vh;
-		grid-template-columns: 10fr 60px;
-	}
+  .send-message-form {
+    display: grid;
+    margin-inline: 1vw;
+    margin-block: 1vh;
+    grid-template-columns: 10fr 60px;
+  }
 
-	.no-padding {
-		padding: 0;
-	}
+  .no-padding {
+    padding: 0;
+  }
 
-	.max-width {
-		width: 100%;
-	}
+  .max-width {
+    width: 100%;
+  }
 
-	.join-channel {
-		width: 100%;
-	}
+  .join-channel {
+    width: 100%;
+  }
 
-	.messages {
-		width: 100%;
-	}
+  .messages {
+    width: 100%;
+  }
 
-	.chat-options {
-		// width: 100%;
-		label {
-			display: flex;
-			align-items: center;
-			justify-content: space-between;
-			width: 100%;
-			padding-block: 1.5vh;
-		}
-	}
+  .chat-options {
+    // width: 100%;
+    label {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      width: 100%;
+      padding-block: 1.5vh;
+    }
+  }
 
-	.chat-info {
-		width: 100%;
+  .chat-info {
+    width: 100%;
 
-		.terminalBody {
-			display: flex;
-			flex-direction: column;
-			padding-inline: 3vw;
-			padding-block: 1vh;
-			grid-row-gap: 1vh;
-			row-gap: 2vh;
+    .terminalBody {
+      display: flex;
+      flex-direction: column;
+      padding-inline: 3vw;
+      padding-block: 1vh;
+      grid-row-gap: 1vh;
+      row-gap: 2vh;
 
-			span {
-				display: flex;
-				align-items: center;
-				justify-content: space-between;
-			}
-		}
-	}
+      span {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+      }
+    }
+  }
 
-	@media (min-width: 660px) {
-		.join-channel {
-			margin-inline: auto;
-		}
+  @media (min-width: 660px) {
+    .join-channel {
+      margin-inline: auto;
+    }
 
-		.chat-info {
-			width: 50%;
-			margin-inline: auto;
-		}
-	}
+    .chat-info {
+      width: 50%;
+      margin-inline: auto;
+    }
+  }
 
-	.onechannel {
-		grid-template-columns: 1fr !important;
-		height: auto !important;
-	}
+  .onechannel {
+    grid-template-columns: 1fr !important;
+    height: auto !important;
+  }
 
-	.with-x {
-		display: flex;
-		align-items: center;
-		justify-content: space-between;
-		width: 100%;
-		padding-block: 1.5vh;
-	}
+  .with-x {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    width: 100%;
+    padding-block: 1.5vh;
+  }
 
-	.nopadding {
-		padding: 0 !important;
-	}
+  .nopadding {
+    padding: 0 !important;
+  }
 
-	.channelHeader {
-		display: grid;
-		margin-bottom: 2rem;
-		grid-row-gap: 1rem;
-		row-gap: 1rem;
-		padding-inline: 3vw;
-		padding-block: 1vh;
+  .channelHeader {
+    display: grid;
+    margin-bottom: 2rem;
+    grid-row-gap: 1rem;
+    row-gap: 1rem;
+    padding-inline: 3vw;
+    padding-block: 1vh;
 
-		span {
-			display: flex;
-			align-items: center;
-			justify-content: space-between;
+    span {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
 
-			svg {
-				path {
-					fill: #39ff14;
-				}
-			}
-		}
-	}
+      svg {
+        path {
+          fill: #39ff14;
+        }
+      }
+    }
+  }
 
-	.mainExplanation {
-		display: flex;
-		flex-direction: column;
-		row-gap: 1rem;
-	}
+  .mainExplanation {
+    display: flex;
+    flex-direction: column;
+    row-gap: 1rem;
+  }
 
-	.whitelist {
-		max-height: 30vh;
-		overflow: auto;
-		padding-right: 1rem;
+  .whitelist {
+    max-height: 30vh;
+    overflow: auto;
+    padding-right: 1rem;
 
-		ul {
-			padding-bottom: 1rem;
-			padding-left: 0.5rem;
-			margin-top: 0;
-		}
+    ul {
+      padding-bottom: 1rem;
+      padding-left: 0.5rem;
+      margin-top: 0;
+    }
 
-		li {
-			display: flex;
-			justify-content: space-between;
-			margin-block: 0.5rem;
+    li {
+      display: flex;
+      justify-content: space-between;
+      margin-block: 0.5rem;
 
-			.whitelist-text {
-				word-wrap: break-word;
-				width: 75%;
-			}
+      .whitelist-text {
+        word-wrap: break-word;
+        width: 75%;
+      }
 
-			.whitelist-delete {
-			}
-		}
-	}
+      .whitelist-delete {
+      }
+    }
+  }
 }
 
 .chat-footer {
-	display: grid;
-	grid-template-columns: 1fr 1fr;
-	width: 100%;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  width: 100%;
 }
 
 @media screen and (max-width: 660px) {
-	.chat-footer {
-		grid-template-columns: 1fr;
-	}
+  .chat-footer {
+    grid-template-columns: 1fr;
+  }
 }
 
 @media (min-width: 800px) {
-	.socials {
-		display: flex !important;
-		justify-content: flex-start;
-		flex-wrap: wrap;
-		width: 100% !important;
-	}
+  .socials {
+    display: flex !important;
+    justify-content: flex-start;
+    flex-wrap: wrap;
+    width: 100% !important;
+  }
 }

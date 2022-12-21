@@ -1,228 +1,228 @@
 MODALS .chat-explanation {
-	position: fixed;
-	top: 25vh;
-	left: 10vw;
-	width: 75vw;
-	z-index: 999;
-	text-align: center;
-	padding-bottom: 1vh;
+  position: fixed;
+  top: 25vh;
+  left: 10vw;
+  width: 75vw;
+  z-index: 999;
+  text-align: center;
+  padding-bottom: 1vh;
 
-	.explanation-button {
-		width: 100%;
-	}
+  .explanation-button {
+    width: 100%;
+  }
 
-	.terminalBody {
-		padding-inline: 3vw;
-	}
+  .terminalBody {
+    padding-inline: 3vw;
+  }
 }
 
 .metamask {
-	z-index: 999;
-	font-size: min(8vw, 25px);
-	position: sticky;
+  z-index: 999;
+  font-size: min(8vw, 25px);
+  position: sticky;
 
-	.frameBody {
-		padding-inline: 3vw;
-		padding-block: 1vh;
-	}
+  .frameBody {
+    padding-inline: 3vw;
+    padding-block: 1vh;
+  }
 
-	.frameHeader {
-		font-size: 1.3rem;
-	}
+  .frameHeader {
+    font-size: 1.3rem;
+  }
 
-	.download {
-		width: auto !important;
-	}
+  .download {
+    width: auto !important;
+  }
 
-	.button {
-		padding: 0.5rem;
-		padding-block: 3vh;
-		width: 100%;
-		white-space: normal;
-		font-size: min(8vw, 20px);
-	}
+  .button {
+    padding: 0.5rem;
+    padding-block: 3vh;
+    width: 100%;
+    white-space: normal;
+    font-size: min(8vw, 20px);
+  }
 
-	a {
-		width: 30vw;
-	}
+  a {
+    width: 30vw;
+  }
 
-	.icon_button {
-		display: grid;
-		grid-template-columns: 0.5fr 0.5fr;
-		align-items: center;
-		margin-block: 2vh;
-	}
+  .icon_button {
+    display: grid;
+    grid-template-columns: 0.5fr 0.5fr;
+    align-items: center;
+    margin-block: 2vh;
+  }
 }
 
 .owner-controls {
-	z-index: 999;
-	position: sticky;
+  z-index: 999;
+  position: sticky;
 
-	.frameBody {
-		display: grid;
-		padding-inline: 3vw;
-		padding-block: 1vh;
+  .frameBody {
+    display: grid;
+    padding-inline: 3vw;
+    padding-block: 1vh;
 
-		span {
-			display: flex;
-			align-items: center;
-			margin-bottom: 1vh;
-			justify-content: space-between;
+    span {
+      display: flex;
+      align-items: center;
+      margin-bottom: 1vh;
+      justify-content: space-between;
 
-			svg {
-				height: 5vh;
-				fill: var(--textColor);
-			}
-		}
-	}
+      svg {
+        height: 5vh;
+        fill: var(--textColor);
+      }
+    }
+  }
 
-	.ThreadLockControl {
-		display: grid;
-		grid-template-columns: 2fr 1fr;
-		align-items: center;
-	}
+  .ThreadLockControl {
+    display: grid;
+    grid-template-columns: 2fr 1fr;
+    align-items: center;
+  }
 
-	.updateList {
-		display: grid;
-		margin-block: 1vh;
-	}
+  .updateList {
+    display: grid;
+    margin-block: 1vh;
+  }
 }
 
 .catalog {
-	z-index: 999;
-	position: sticky;
+  z-index: 999;
+  position: sticky;
 
-	.frameBody {
-		display: grid;
-	}
+  .frameBody {
+    display: grid;
+  }
 
-	.catalog_view {
-		padding-left: 3vw;
-		height: 50vh;
-		overflow-y: scroll;
+  .catalog_view {
+    padding-left: 3vw;
+    height: 50vh;
+    overflow-y: scroll;
 
-		div {
-			height: 10vh;
-			width: 100%;
-			display: flex;
-			align-items: center;
-			justify-content: space-between;
-		}
-	}
+    div {
+      height: 10vh;
+      width: 100%;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+  }
 }
 
 .createThread {
-	z-index: 999;
-	overflow-y: auto;
-	position: sticky;
-	display: grid;
+  z-index: 999;
+  overflow-y: auto;
+  position: sticky;
+  display: grid;
 
-	.frameBody {
-		word-break: break-all;
-	}
+  .frameBody {
+    word-break: break-all;
+  }
 
-	.frameHeader {
-		overflow-wrap: break-word;
-	}
+  .frameHeader {
+    overflow-wrap: break-word;
+  }
 
-	.frameBody {
-		margin-inline: 3vw;
-		margin-block: 1vh;
-		display: grid;
-		row-gap: 1vh;
-	}
+  .frameBody {
+    margin-inline: 3vw;
+    margin-block: 1vh;
+    display: grid;
+    row-gap: 1vh;
+  }
 
-	.createThreadHeader {
-		display: flex;
-		align-items: center;
-		justify-content: space-between;
-	}
+  .createThreadHeader {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
 
-	.frame {
-		.panels {
-			.output {
-				.frame {
-					.frameBody {
-						overflow-wrap: break-word;
-					}
-				}
-			}
-		}
-	}
+  .frame {
+    .panels {
+      .output {
+        .frame {
+          .frameBody {
+            overflow-wrap: break-word;
+          }
+        }
+      }
+    }
+  }
 
-	.formGrid {
-		display: grid;
-		grid-template-columns: 0.1fr 1fr;
-		padding: 0.5rem;
-	}
+  .formGrid {
+    display: grid;
+    grid-template-columns: 0.1fr 1fr;
+    padding: 0.5rem;
+  }
 }
 
 .connect-button {
-	font-size: min(8vw, 30px);
-	letter-spacing: 0.02em;
-	text-transform: uppercase;
-	text-shadow: 5px 5px black;
-	padding-inline: 3vw;
-	width: 100%;
+  font-size: min(8vw, 30px);
+  letter-spacing: 0.02em;
+  text-transform: uppercase;
+  text-shadow: 5px 5px black;
+  padding-inline: 3vw;
+  width: 100%;
 }
 
 .loading {
-	z-index: 999;
-	position: fixed;
-	width: 99%;
-	height: 20vh;
+  z-index: 999;
+  position: fixed;
+  width: 99%;
+  height: 20vh;
 
-	.frameBody {
-		display: flex;
-		align-items: center;
-		padding-inline: 5vw;
-		padding-block: 2vh;
-		font-size: min(8vw, 35px);
-		justify-content: space-between;
+  .frameBody {
+    display: flex;
+    align-items: center;
+    padding-inline: 5vw;
+    padding-block: 2vh;
+    font-size: min(8vw, 35px);
+    justify-content: space-between;
 
-		svg {
-			height: 7vh;
+    svg {
+      height: 7vh;
 
-			path {
-				fill: #fff;
-			}
-		}
-	}
+      path {
+        fill: #fff;
+      }
+    }
+  }
 }
 
 a.button {
-	text-decoration: none;
+  text-decoration: none;
 }
 
 .error {
-	z-index: 999;
-	position: fixed;
-	width: 99%;
+  z-index: 999;
+  position: fixed;
+  width: 99%;
 
-	.frameBody {
-		display: grid;
+  .frameBody {
+    display: grid;
 
-		.error_grid {
-			display: grid;
-			grid-template-columns: 2fr 1fr;
-			padding-inline: 3vw;
-			justify-content: space-between;
-			padding-block: 1vh;
-			word-break: break-all;
-			align-items: center;
-			overflow: scroll;
-			text-align: center;
-			h2 {
-				color: #e0e722;
-			}
+    .error_grid {
+      display: grid;
+      grid-template-columns: 2fr 1fr;
+      padding-inline: 3vw;
+      justify-content: space-between;
+      padding-block: 1vh;
+      word-break: break-all;
+      align-items: center;
+      overflow: scroll;
+      text-align: center;
+      h2 {
+        color: #e0e722;
+      }
 
-			img {
-				margin: auto;
+      img {
+        margin: auto;
 
-				height: 10vh;
+        height: 10vh;
 
-				filter: invert(87%) sepia(80%) saturate(3287%) hue-rotate(348deg) brightness(107%) contrast(81%);
-			}
-		}
-	}
+        filter: invert(87%) sepia(80%) saturate(3287%) hue-rotate(348deg) brightness(107%) contrast(81%);
+      }
+    }
+  }
 }

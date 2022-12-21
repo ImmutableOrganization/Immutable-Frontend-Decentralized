@@ -1,23 +1,23 @@
 // 404
 .four_o_four {
-	div {
-		font-size: 2rem;
-		margin-bottom: 1rem;
-	}
+  div {
+    font-size: 2rem;
+    margin-bottom: 1rem;
+  }
 
-	.frameBody {
-		padding-inline: 3vw;
-		padding-block: 1vh;
-	}
+  .frameBody {
+    padding-inline: 3vw;
+    padding-block: 1vh;
+  }
 
-	a {
-		font-size: 2rem;
-	}
+  a {
+    font-size: 2rem;
+  }
 
-	@media (max-width: 275px) {
-		a,
-		div {
-			font-size: 1.5rem;
-		}
-	}
+  @media (max-width: 275px) {
+    a,
+    div {
+      font-size: 1.5rem;
+    }
+  }
 }

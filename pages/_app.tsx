@@ -24,127 +24,127 @@ import { InjectedConnector } from 'wagmi/connectors/injected';
 import { GoogleAnalytics } from 'nextjs-google-analytics';
 
 export interface ErrorProps {
-	formError: FormError;
-	// eslint-disable-next-line @typescript-eslint/no-explicit-any
-	setFormError: any;
+  formError: FormError;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  setFormError: any;
 }
 export interface LoadingProps {
-	isLoading: boolean;
+  isLoading: boolean;
 }
 
 const { chains, provider } = configureChains(
-	[chain.arbitrum],
-	[alchemyProvider({ apiKey: 'E4mZVO8Fc9ZjEIisFEZzQfRW-3iI3K8M', priority: 1 }), publicProvider({ priority: 2 })],
+  [chain.arbitrum],
+  [alchemyProvider({ apiKey: 'E4mZVO8Fc9ZjEIisFEZzQfRW-3iI3K8M', priority: 1 }), publicProvider({ priority: 2 })],
 );
 
 const client = createClient({
-	autoConnect: true,
-	provider,
-	connectors: [new InjectedConnector({ chains })],
+  autoConnect: true,
+  provider,
+  connectors: [new InjectedConnector({ chains })],
 });
 
 interface PopupContextProps {
-	formError: FormError;
-	setFormError: React.Dispatch<React.SetStateAction<FormError>>;
-	loading: boolean;
-	setIsLoading: React.Dispatch<React.SetStateAction<boolean>>;
-	openToast: boolean;
-	setOpenToast: React.Dispatch<React.SetStateAction<boolean>>;
-	toastMessage: string;
-	setToastMessage: React.Dispatch<React.SetStateAction<string>>;
-	toastType: string;
-	setToastType: React.Dispatch<React.SetStateAction<string>>;
+  formError: FormError;
+  setFormError: React.Dispatch<React.SetStateAction<FormError>>;
+  loading: boolean;
+  setIsLoading: React.Dispatch<React.SetStateAction<boolean>>;
+  openToast: boolean;
+  setOpenToast: React.Dispatch<React.SetStateAction<boolean>>;
+  toastMessage: string;
+  setToastMessage: React.Dispatch<React.SetStateAction<string>>;
+  toastType: string;
+  setToastType: React.Dispatch<React.SetStateAction<string>>;
 }
 
 interface FormError {
-	open: boolean;
-	message: string;
+  open: boolean;
+  message: string;
 }
 const defaultError = { open: false, message: '' };
 
 export const PopupContext = React.createContext<PopupContextProps>({
-	formError: defaultError,
-	loading: false,
-	// eslint-disable-next-line @typescript-eslint/no-empty-function
-	setFormError: () => {},
-	// eslint-disable-next-line @typescript-eslint/no-empty-function
-	setIsLoading: () => {},
-	openToast: false,
-	toastMessage: '',
-	// eslint-disable-next-line @typescript-eslint/no-empty-function
-	setToastMessage: () => {},
-	// eslint-disable-next-line @typescript-eslint/no-empty-function
-	setOpenToast: () => {},
-	toastType: 'loading',
-	// eslint-disable-next-line @typescript-eslint/no-empty-function
-	setToastType: () => {},
+  formError: defaultError,
+  loading: false,
+  // eslint-disable-next-line @typescript-eslint/no-empty-function
+  setFormError: () => {},
+  // eslint-disable-next-line @typescript-eslint/no-empty-function
+  setIsLoading: () => {},
+  openToast: false,
+  toastMessage: '',
+  // eslint-disable-next-line @typescript-eslint/no-empty-function
+  setToastMessage: () => {},
+  // eslint-disable-next-line @typescript-eslint/no-empty-function
+  setOpenToast: () => {},
+  toastType: 'loading',
+  // eslint-disable-next-line @typescript-eslint/no-empty-function
+  setToastType: () => {},
 });
 
 PopupContext.displayName = 'PopupContext';
 
 export interface Account {
-	address?: string;
-	connector?: Connector;
-	isConnecting: boolean;
-	isReconnecting: boolean;
-	isConnected: boolean;
-	isDisconnected: boolean;
-	status: 'connecting' | 'reconnecting' | 'connected' | 'disconnected';
+  address?: string;
+  connector?: Connector;
+  isConnecting: boolean;
+  isReconnecting: boolean;
+  isConnected: boolean;
+  isDisconnected: boolean;
+  status: 'connecting' | 'reconnecting' | 'connected' | 'disconnected';
 }
 
 export const defaultAccount: Account = {
-	isConnecting: false,
-	isReconnecting: false,
-	isConnected: false,
-	isDisconnected: false,
-	status: 'disconnected',
+  isConnecting: false,
+  isReconnecting: false,
+  isConnected: false,
+  isDisconnected: false,
+  status: 'disconnected',
 };
 
 // used in dict
 export interface ChannelInfo {
-	has_unread_messages: boolean;
-	user_count: number;
+  has_unread_messages: boolean;
+  user_count: number;
 }
 
 function MyApp({ Component, pageProps }: AppProps) {
-	const router = useRouter();
-	const [formError, setFormError] = useState<FormError>(defaultError);
-	const [loading, setIsLoading] = useState<boolean>(false);
-	const [toastMessage, setToastMessage] = useState<string>('');
-	const [openToast, setOpenToast] = useState<boolean>(false);
-	const [toastType, setToastType] = useState<string>('loading');
+  const router = useRouter();
+  const [formError, setFormError] = useState<FormError>(defaultError);
+  const [loading, setIsLoading] = useState<boolean>(false);
+  const [toastMessage, setToastMessage] = useState<string>('');
+  const [openToast, setOpenToast] = useState<boolean>(false);
+  const [toastType, setToastType] = useState<string>('loading');
 
-	const [headerExpanded, setHeaderExpanded] = useState<boolean>(false);
-	return (
-		<>
-			<GoogleAnalytics trackPageViews gaMeasurementId={process.env.NEXT_PUBLIC_GA_ID} />
-			<PopupContext.Provider
-				value={{ formError, loading, setFormError, setIsLoading, openToast, toastMessage, setToastMessage, setOpenToast, toastType, setToastType }}
-			>
-				<WagmiConfig client={client}>
-					<>
-						{headerExpanded ? (
-							<Header setHeaderExpanded={setHeaderExpanded} />
-						) : (
-							<>
-								<div className='header nav-header'>
-									<a className={'button selected'} onClick={() => setHeaderExpanded(true)}>
-										<h2>MENU</h2>
-									</a>
-								</div>
-							</>
-						)}
-						<FormError formError={formError} setFormError={setFormError} />
-						<Loading isLoading={loading} />
-						<Toast openToast={openToast} message={toastMessage} type={toastType} setOpenToast={setOpenToast} />
-						<div key={router.asPath} className={'top-margin ' + (formError.open || loading ? 'blurred' : '')}>
-							<Component {...pageProps} />
-						</div>
-					</>
-				</WagmiConfig>
-			</PopupContext.Provider>
-		</>
-	);
+  const [headerExpanded, setHeaderExpanded] = useState<boolean>(false);
+  return (
+    <>
+      <GoogleAnalytics trackPageViews gaMeasurementId={process.env.NEXT_PUBLIC_GA_ID} />
+      <PopupContext.Provider
+        value={{ formError, loading, setFormError, setIsLoading, openToast, toastMessage, setToastMessage, setOpenToast, toastType, setToastType }}
+      >
+        <WagmiConfig client={client}>
+          <>
+            {headerExpanded ? (
+              <Header setHeaderExpanded={setHeaderExpanded} />
+            ) : (
+              <>
+                <div className='header nav-header'>
+                  <a className={'button selected'} onClick={() => setHeaderExpanded(true)}>
+                    <h2>MENU</h2>
+                  </a>
+                </div>
+              </>
+            )}
+            <FormError formError={formError} setFormError={setFormError} />
+            <Loading isLoading={loading} />
+            <Toast openToast={openToast} message={toastMessage} type={toastType} setOpenToast={setOpenToast} />
+            <div key={router.asPath} className={'top-margin ' + (formError.open || loading ? 'blurred' : '')}>
+              <Component {...pageProps} />
+            </div>
+          </>
+        </WagmiConfig>
+      </PopupContext.Provider>
+    </>
+  );
 }
 
 export default MyApp;

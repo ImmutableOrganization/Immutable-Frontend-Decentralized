@@ -1,91 +1,91 @@
 .nft {
-	.generatedImage {
-		z-index: 999;
-		position: fixed;
-		width: 99vw;
-		margin: auto;
-		text-transform: uppercase;
+  .generatedImage {
+    z-index: 999;
+    position: fixed;
+    width: 99vw;
+    margin: auto;
+    text-transform: uppercase;
 
-		ul {
-			text-align: left;
-		}
+    ul {
+      text-align: left;
+    }
 
-		.button {
-			width: 80%;
-		}
+    .button {
+      width: 80%;
+    }
 
-		.frameBody {
-			padding-block: 1vh;
-			padding-inline: 1vw;
-			text-align: center;
-		}
+    .frameBody {
+      padding-block: 1vh;
+      padding-inline: 1vw;
+      text-align: center;
+    }
 
-		img {
-			height: auto;
-			width: auto;
-			max-width: 95vw;
-			max-height: 50vh;
-		}
-	}
+    img {
+      height: auto;
+      width: auto;
+      max-width: 95vw;
+      max-height: 50vh;
+    }
+  }
 
-	.nft-showcase {
-		.frameBody {
-			display: flex;
-			flex-direction: column;
+  .nft-showcase {
+    .frameBody {
+      display: flex;
+      flex-direction: column;
 
-			.button {
-				margin-block: 1vh;
-				margin-inline: 3vw;
-			}
-		}
-	}
+      .button {
+        margin-block: 1vh;
+        margin-inline: 3vw;
+      }
+    }
+  }
 
-	text-transform: uppercase;
+  text-transform: uppercase;
 
-	.collection-name {
-		font-size: min(8vw, 70px);
-		text-shadow: 5px 5px 5px #b846ff;
-		letter-spacing: 0.02em;
-		animation: shadow 3s infinite;
-		color: white;
-	}
+  .collection-name {
+    font-size: min(8vw, 70px);
+    text-shadow: 5px 5px 5px #b846ff;
+    letter-spacing: 0.02em;
+    animation: shadow 3s infinite;
+    color: white;
+  }
 
-	.showcase-item-property {
-		text-align: left;
-		padding: 1vh;
-		text-decoration: underline;
-		margin-inline: 3vw;
-	}
+  .showcase-item-property {
+    text-align: left;
+    padding: 1vh;
+    text-decoration: underline;
+    margin-inline: 3vw;
+  }
 
-	ul {
-		text-align: left;
-	}
+  ul {
+    text-align: left;
+  }
 
-	.mint {
-		width: 80%;
-		padding-inline: 5vw;
-		padding-block: 1vh;
-		margin-block: 1vh;
-		font-weight: bold;
-		background-color: var(--primary);
-		font-size: min(8vw, 40px);
-		letter-spacing: 0.02em;
-		text-transform: uppercase;
-		text-shadow: 5px 5px black;
-	}
+  .mint {
+    width: 80%;
+    padding-inline: 5vw;
+    padding-block: 1vh;
+    margin-block: 1vh;
+    font-weight: bold;
+    background-color: var(--primary);
+    font-size: min(8vw, 40px);
+    letter-spacing: 0.02em;
+    text-transform: uppercase;
+    text-shadow: 5px 5px black;
+  }
 
-	.frame {
-		.frameBody {
-			padding-block: 1vh;
-			padding-inline: 1vw;
-			text-align: center;
-		}
+  .frame {
+    .frameBody {
+      padding-block: 1vh;
+      padding-inline: 1vw;
+      text-align: center;
+    }
 
-		img {
-			height: auto;
-			width: auto;
-			max-width: 95vw;
-			max-height: 50vh;
-		}
-	}
+    img {
+      height: auto;
+      width: auto;
+      max-width: 95vw;
+      max-height: 50vh;
+    }
+  }
 }

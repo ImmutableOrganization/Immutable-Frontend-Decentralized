@@ -12,18 +12,18 @@ const ipfsMatchBaseElement = `
 `;
 
 export default class MyDocument extends Document {
-	render() {
-		return (
-			<Html>
-				<Head>
-					<Script dangerouslySetInnerHTML={{ __html: ipfsMatchBaseElement }} />
-					<link rel='shortcut icon' href='https://ipfs.io/ipfs/Qmes8Ycb9JCLG9Ny2xeJxCFY7kSpyDfATEdgmncQ4TPVEs?filename=token.svg' />
-				</Head>
-				<body>
-					<Main />
-					<NextScript />
-				</body>
-			</Html>
-		);
-	}
+  render() {
+    return (
+      <Html>
+        <Head>
+          <Script dangerouslySetInnerHTML={{ __html: ipfsMatchBaseElement }} />
+          <link rel='shortcut icon' href='https://ipfs.io/ipfs/Qmes8Ycb9JCLG9Ny2xeJxCFY7kSpyDfATEdgmncQ4TPVEs?filename=token.svg' />
+        </Head>
+        <body>
+          <Main />
+          <NextScript />
+        </body>
+      </Html>
+    );
+  }
 }
