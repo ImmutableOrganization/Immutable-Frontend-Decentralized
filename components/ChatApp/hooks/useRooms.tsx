@@ -32,6 +32,22 @@ export const useRooms = (selectedRoomCallback: (_room: Room.RoomWrapper) => void
 
   const { setOpenToast, setToastMessage, setToastType } = useContext(PopupContext);
 
+  const allowStreamsForRoom = (_room: Room.RoomWrapper, allow: boolean) => {
+    console.log('123213');
+    if (rooms) {
+      const newRooms = rooms.map((room: Room.RoomWrapper, index: number) => {
+        if (room.roomName === _room.roomName) {
+          selectedRoomCallback({ ...room, allowStreams: allow });
+          return { ...room, allowStreams: allow };
+        }
+        return room;
+      });
+      console.log('allow', allow);
+      console.log(newRooms);
+      setRooms(newRooms);
+    }
+  };
+
   // separate code for updating room state vs stream state
   // organization and functionality
   const addToSavedRooms = (roomName: string, _password: string) => {
@@ -317,5 +333,6 @@ export const useRooms = (selectedRoomCallback: (_room: Room.RoomWrapper) => void
     blockPeerVideoController,
     blockPeerTextController,
     savedRooms,
+    allowStreamsForRoom,
   };
 };

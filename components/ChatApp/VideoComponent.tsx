@@ -8,8 +8,10 @@ interface VideoComponentProps {
   peerStreams: React.MutableRefObject<Room.PeerStream | undefined>;
   selectedRoom: Room.RoomWrapper;
   selfStream: MediaStream | undefined;
+  allowStreamsForRoom: (room: Room.RoomWrapper, allow: boolean) => void;
   blockPeerAudioController: (peerId: string, block: boolean) => void;
   blockPeerVideoController: (peerId: string, block: boolean) => void;
+  rooms: Room.RoomWrapper[] | undefined;
 }
 
 const options = [
@@ -62,8 +64,12 @@ export const VideoComponent: React.FunctionComponent<VideoComponentProps> = ({
   selectedRoom,
   blockPeerAudioController,
   blockPeerVideoController,
+  allowStreamsForRoom,
+  rooms,
 }) => {
   const [columnCount, setColumnCount] = useState<number>(100);
+
+  useEffect(() => {}, [rooms]);
 
   return (
     <div className='peerStreams'>
@@ -136,15 +142,22 @@ export const VideoComponent: React.FunctionComponent<VideoComponentProps> = ({
                         })}
                       </>
                     ) : (
-                      <></>
+                      <div className='options'>
+                        <input
+                          type='button'
+                          className='button'
+                          onClick={() => {
+                            allowStreamsForRoom(selectedRoom, true);
+                          }}
+                          value='Allow Streams'
+                        />
+                      </div>
                     )}
                   </>
                 ) : (
                   <div className='options'>
-                    <>
-                      Waiting for streams
-                      <RepeatingPeriod />
-                    </>
+                    Waiting for streams
+                    <RepeatingPeriod />
                   </div>
                 )}
               </div>

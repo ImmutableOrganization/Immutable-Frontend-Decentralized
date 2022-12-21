@@ -53,6 +53,7 @@ export const DecentralizedChat: NextPage = () => {
     blockPeerVideoController,
     blockPeerTextController,
     savedRooms,
+    allowStreamsForRoom,
   } = useRooms(setSelectedRoom, { getMessageListener });
 
   const { messagesRef, addMessage } = useMessages(sendMessageAction);
@@ -122,8 +123,10 @@ export const DecentralizedChat: NextPage = () => {
           selfStream={localStream}
           selectedRoom={selectedRoom}
           peerStreams={streamsRef}
+          allowStreamsForRoom={allowStreamsForRoom}
           blockPeerAudioController={blockPeerAudioController}
           blockPeerVideoController={blockPeerVideoController}
+          rooms={rooms}
         />
       )}
       {showChatFeed && (
