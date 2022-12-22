@@ -19,10 +19,10 @@ export const RoomsList: React.FunctionComponent<RoomsListProps> = ({ removeRoom,
           headerText={'Rooms'}
           body={() => (
             <div className='chat-channels'>
-              {rooms.map((room: Room.RoomWrapper) => (
+              {rooms.map((room: Room.RoomWrapper, index: number) => (
                 <>
                   {room.roomName && (
-                    <div key={room.roomName} className='rooms-list-item'>
+                    <div key={room.roomName + '.' + index} className='rooms-list-item'>
                       <>
                         {room.roomName}
                         <input type='button' className='button' onClick={() => removeRoom(room)} value='REMOVE' />

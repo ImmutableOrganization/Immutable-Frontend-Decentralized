@@ -102,6 +102,8 @@ export const switchToArbitrum = async () => {
     });
   } catch (switchError) {
     // This error code indicates that the chain has not been added to MetaMask.
+    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+    // @ts-ignore
     if (switchError.code === 4902) {
       try {
         //@ts-ignore

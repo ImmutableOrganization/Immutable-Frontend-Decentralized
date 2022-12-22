@@ -52,7 +52,6 @@ export const DecentralizedChat: NextPage = () => {
     blockPeerAudioController,
     blockPeerVideoController,
     blockPeerTextController,
-    savedRooms,
     allowStreamsForRoom,
   } = useRooms(setSelectedRoom, { getMessageListener });
 

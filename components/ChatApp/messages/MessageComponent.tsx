@@ -36,23 +36,16 @@ export const useMessages = (_sendMessageCallback: any) => {
       _sendMessageCallback(_message, _roomName);
     }
 
-    console.log('addMessage: _message = ', _message, ' _roomName = ', _roomName, ' isLocal = ', isLocal);
     if (messagesRef.current) {
-      console.log('messages');
       if (messagesRef.current[_roomName]) {
-        console.log('messages[_roomName] = ', messagesRef.current[_roomName]);
-
         setMessagesRef({
           ...messages,
           [_roomName]: [...messagesRef.current[_roomName], _message],
         });
       } else {
-        console.log('no for room');
         setMessagesRef({ ...messages, [_roomName]: [_message] });
       }
     } else {
-      console.log('no messages');
-
       setMessagesRef({ [_roomName]: [_message] });
     }
   };

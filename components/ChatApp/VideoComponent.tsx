@@ -2,7 +2,6 @@ import { useEffect, useState } from 'react';
 import ReactPlayer from 'react-player';
 import { Frame } from '../Frame';
 import { Room } from './rooms/room';
-import Dropdown from 'react-dropdown';
 
 interface VideoComponentProps {
   peerStreams: React.MutableRefObject<Room.PeerStream | undefined>;
@@ -13,34 +12,6 @@ interface VideoComponentProps {
   blockPeerVideoController: (peerId: string, block: boolean) => void;
   rooms: Room.RoomWrapper[] | undefined;
 }
-
-const options = [
-  { value: '1', label: '100%' },
-  { value: '2', label: '90%' },
-  { value: '3', label: '75%' },
-  { value: '4', label: '60%' },
-  { value: '5', label: '50%' },
-  { value: '6', label: '40%' },
-  { value: '7', label: '25%' },
-  { value: '8', label: '10%' },
-  // { value: '5', label: 'Five' },
-  // { value: '6', label: 'Six' },
-  // { value: '7', label: 'Seven' },
-  // { value: '8', label: 'Eight' },
-  // { value: '9', label: 'Nine' },
-];
-
-const widths = [
-  '100%',
-  '90vw',
-  '75vw',
-  '60vw',
-  '50vw',
-  '40vw',
-  '25vw',
-  '10vw',
-  // , '30vw', '35vw', '40vw', '45vw', '50vw'
-];
 
 const RepeatingPeriod: React.FunctionComponent = ({}) => {
   const [count, setCount] = useState<number>(0);
@@ -79,8 +50,7 @@ export const VideoComponent: React.FunctionComponent<VideoComponentProps> = ({
           headerText={selectedRoom.roomName + ' AUDIO / VIDEO'}
           body={() => (
             <>
-              <div className='video-column-count'>
-                {'Width: ' + columnCount + '%'}
+              <div className='options'>
                 <input
                   type={'range'}
                   className='text-input terminal-input'
@@ -93,14 +63,7 @@ export const VideoComponent: React.FunctionComponent<VideoComponentProps> = ({
                     }
                   }}
                 />
-                {/* <Dropdown
-									options={options}
-									onChange={(e) => {
-										setColumnCount(Number(e.value));
-									}}
-									value={options[columnCount - 1]}
-									placeholder='Select the number of columns'
-								/> */}
+                {'' + columnCount + '%'}
               </div>
               <div className='streams'>
                 {selfStream && (

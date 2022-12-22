@@ -15,7 +15,6 @@ export const BaseLink = ({ href, as, ...rest }) => {
         baseURI_as = resolve(document.baseURI, baseURI_as);
       }
     }
-    // console.log(`BaseLink: ${baseURI_as}`)
     return baseURI_as;
   }, [as, href]);
 

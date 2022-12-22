@@ -66,7 +66,9 @@ export const SingleRoom: React.FunctionComponent<SingleRoomProps> = ({
 
   return (
     <div className='currRoom'>
-      <span>You: {selfId}.</span>
+      <span>
+        You: <span className='highlight-text'>{selfId}</span>.
+      </span>
       {peers?.length} peers in room.
       <input type='button' className='button' value='Options' onClick={() => setOpenMessageOptions(true)} />
       <input type='button' className='button' value='Show Peer Options' onClick={() => setShowAllPeerOptions(true)} />

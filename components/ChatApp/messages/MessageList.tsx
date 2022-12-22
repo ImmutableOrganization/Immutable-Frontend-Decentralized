@@ -27,7 +27,7 @@ export const MessagesList: React.FC<MessageListProps> = ({ shortenPeerId, dateHi
           {messages.current[selectedRoom.roomName] ? (
             <div className='messages socketMessages'>
               {messages.current[selectedRoom.roomName].map((message: Messages.Message) => (
-                <div className={`socketMessage ` + (message.peerId === selfId ? 'localMessage' : '')}>
+                <div key={message.timestamp} className={`socketMessage ` + (message.peerId === selfId ? 'localMessage' : '')}>
                   {message.peerId === selfId ? (
                     <>
                       {message.message}

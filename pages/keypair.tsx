@@ -12,24 +12,21 @@ const useKeyRing = () => {
 
     // validate properties
 
-    const { privateKey, publicKey, revocationCertificate } = await openpgp.generateKey({
-      type: 'ecc', // Type of the key, defaults to ECC
-      curve: 'curve25519', // ECC curve name, defaults to curve25519
-      userIDs: [_properties], // you can pass multiple user IDs
-      passphrase: 'super long and hard to guess secret', // protects the private key
-      format: 'armored', // output key format, defaults to 'armored' (other options: 'binary' or 'object')
-    });
+    // const { privateKey, publicKey, revocationCertificate } = await openpgp.generateKey({
+    //   type: 'ecc', // Type of the key, defaults to ECC
+    //   curve: 'curve25519', // ECC curve name, defaults to curve25519
+    //   userIDs: [_properties], // you can pass multiple user IDs
+    //   passphrase: 'super long and hard to guess secret', // protects the private key
+    //   format: 'armored', // output key format, defaults to 'armored' (other options: 'binary' or 'object')
+    // });
 
     // ask if would like to save to device storage
     // if not it will only last during this browser session
     // import { useCopyToClipboard } from 'usehooks-ts'
     // this hook would be good to use for saving for user to
 
-    console.log(privateKey); // '-----BEGIN PGP PRIVATE KEY BLOCK ... '
-    console.log(publicKey); // '-----BEGIN PGP PUBLIC KEY BLOCK ... '
-    console.log(revocationCertificate); // '-----BEGIN PGP PUBLIC KEY BLOCK ... '
-    setPublicKey(publicKey);
-    setPrivateKey(privateKey);
+    setPublicKey('publicKey');
+    setPrivateKey('privateKey');
   };
 
   const getPrivateKey = () => {
