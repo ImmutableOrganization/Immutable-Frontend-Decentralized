@@ -10,8 +10,7 @@
   "scripts": {
     "dev": "next dev",
     "build": "next build",
-    "export": "next build && next export && npm run replaceFilePaths",
-    "replaceFilePaths": "node replacer.js",
+    "export": "next build && next export",
     "start": "next start",
     "prettyAllFiles": "npx prettier --write .",
     "nextLint": "next lint",
