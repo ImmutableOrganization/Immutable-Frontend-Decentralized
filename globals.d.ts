@@ -1,4 +1,5 @@
 declare module 'nft.storage/dist/bundle.esm.min.js';
+declare module '@coffeeandfun/google-profanity-words';
 
 interface Window {
   ethereum: any;

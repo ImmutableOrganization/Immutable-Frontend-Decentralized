@@ -24,6 +24,10 @@ export namespace Room {
     [peerid: string]: Peer;
   }
 
+  export interface lastMessageFromPeer {
+    [peerid: string]: number;
+  }
+
   export const emptyRoom: RoomWrapper = {
     roomName: '2d9227eb-bdd7-4dda-a1d1-d3a694b4195e',
     room: undefined,

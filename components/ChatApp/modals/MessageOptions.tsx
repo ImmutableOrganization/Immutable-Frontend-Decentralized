@@ -10,11 +10,19 @@ interface MessageOptionsModalProps {
   setShowChatFeed: Dispatch<SetStateAction<boolean>>;
   setShowVideoFeed: Dispatch<SetStateAction<boolean>>;
   setOpenMessageOptions: Dispatch<SetStateAction<boolean>>;
+  setMaxMessageSize: Dispatch<SetStateAction<number>>;
+  setBlockMessagesWithProfanity: Dispatch<SetStateAction<boolean>>;
+  setCenscorMessagesWithProfanity: Dispatch<SetStateAction<boolean>>;
+  setPeerMessageInterval: Dispatch<SetStateAction<number>>;
   dateHidden: boolean;
   timeHidden: boolean;
   shortenPeerId: boolean;
   showChatFeed: boolean;
   showVideoFeed: boolean;
+  maxMessageSize: number;
+  blockMessagesWithProfanity: boolean;
+  censcorMessagesWithProfanity: boolean;
+  peerMessageInterval: number;
 }
 
 export const MessageOptionsModal: React.FC<MessageOptionsModalProps> = ({
@@ -24,11 +32,19 @@ export const MessageOptionsModal: React.FC<MessageOptionsModalProps> = ({
   setShowChatFeed,
   setShowVideoFeed,
   setOpenMessageOptions,
+  setMaxMessageSize,
+  setBlockMessagesWithProfanity,
+  setCenscorMessagesWithProfanity,
+  setPeerMessageInterval,
   dateHidden,
   timeHidden,
   shortenPeerId,
   showChatFeed,
   showVideoFeed,
+  maxMessageSize,
+  blockMessagesWithProfanity,
+  censcorMessagesWithProfanity,
+  peerMessageInterval,
 }) => {
   return (
     <Frame
@@ -57,6 +73,21 @@ export const MessageOptionsModal: React.FC<MessageOptionsModalProps> = ({
               Show Video
               <FontAwesomeIcon icon={showVideoFeed ? faCheckSquare : faSquare}></FontAwesomeIcon>
             </label>
+            <label className='chat-option-item'>
+              MAX MESSAGE SIZE: <input type='number' value={maxMessageSize} onChange={(e) => setMaxMessageSize(parseInt(e.target.value))} />
+            </label>
+            <label className='chat-option-item'>
+              PEER MESSAGE INTERVAL: <input type='number' value={peerMessageInterval} onChange={(e) => setPeerMessageInterval(parseInt(e.target.value))} />
+            </label>
+            <label className='chat-option-item' onClick={() => setBlockMessagesWithProfanity(!blockMessagesWithProfanity)}>
+              BLOCK MESSAGES WITH PROFANITY
+              <FontAwesomeIcon icon={blockMessagesWithProfanity ? faCheckSquare : faSquare}></FontAwesomeIcon>
+            </label>
+            <label className='chat-option-item' onClick={() => setCenscorMessagesWithProfanity(!censcorMessagesWithProfanity)}>
+              CENSORE MESSAGES WITH PROFANITY
+              <FontAwesomeIcon icon={censcorMessagesWithProfanity ? faCheckSquare : faSquare}></FontAwesomeIcon>
+            </label>
+
             <input type='button' className='button' value='CLOSE' onClick={() => setOpenMessageOptions(false)} />
           </div>
         </>

@@ -6,10 +6,19 @@ import { useLocalStorage } from 'usehooks-ts';
 import { Messages } from '../messages/messages';
 import { Room } from '../rooms/room';
 import * as trystero from 'trystero';
+import DOMPurify from 'dompurify';
+import badWords from './badwords';
 
 export let sendMessage: ActionSender<Messages.Message>;
 
-export const useRooms = (selectedRoomCallback: (_room: Room.RoomWrapper) => void, messageCallback: Messages.MessageCallback) => {
+export const useRooms = (
+  selectedRoomCallback: (_room: Room.RoomWrapper) => void,
+  messageCallback: Messages.MessageCallback,
+  maxMessageSize: number,
+  blockMessagesWithProfanity: boolean,
+  censcorMessagesWithProfanity: boolean,
+  peerMessageInterval: number,
+) => {
   const [rooms, setRooms] = useState<Room.RoomWrapper[]>();
   const [savedRooms, setSavedRooms] = useLocalStorage<Room.SavedRoom[]>('roomNames', []);
   const { setFormError } = useContext(PopupContext);
@@ -28,6 +37,13 @@ export const useRooms = (selectedRoomCallback: (_room: Room.RoomWrapper) => void
   const setStreamRef = (data: Room.PeerStream) => {
     streamsRef.current = data;
     setStreams(data);
+  };
+
+  const [lastMessageFromPeer, setLastMessageFromPeer] = useState<Room.lastMessageFromPeer>();
+  const lastMessageFromPeerRef = React.useRef(lastMessageFromPeer);
+  const setLastMessageFromPeerRef = (data: Room.lastMessageFromPeer) => {
+    lastMessageFromPeerRef.current = data;
+    setLastMessageFromPeer(data);
   };
 
   const { setOpenToast, setToastMessage, setToastType } = useContext(PopupContext);
@@ -214,26 +230,61 @@ export const useRooms = (selectedRoomCallback: (_room: Room.RoomWrapper) => void
         }
 
         if (room) {
+          // this needs to be moved
           const [_sendMessage, getMessage] = room.makeAction<Messages.Message>('message');
           sendMessage = _sendMessage;
           getMessage((_msg, peerId) => {
+            if (!_msg) {
+              return;
+            }
+            if (_msg.message == undefined || _msg.message == null || _msg.message == '') {
+              return;
+            }
+            if (_msg.message.length > maxMessageSize) {
+              return;
+            }
+            if (_msg.timestamp == undefined || _msg.timestamp == null || _msg.timestamp <= 0) {
+              return;
+            }
+            if (_msg.peerId == undefined || _msg.peerId == null || _msg.peerId == '') {
+              return;
+            }
+            if (_msg.peerId != peerId) {
+              return;
+            }
+
+            if (lastMessageFromPeerRef.current && lastMessageFromPeerRef.current[peerId]) {
+              if (Date.now() - lastMessageFromPeerRef.current[peerId] < peerMessageInterval) {
+                return;
+              }
+            }
+
             if (streamsRef.current && streamsRef.current[peerId] && streamsRef.current[peerId].textBlocked) {
               return;
             }
 
-            if (!_msg) {
-              setFormError({ open: true, message: 'Message failed validation' });
-              return;
+            // sanitize message
+            _msg.message = DOMPurify.sanitize(_msg.message);
+            const foundSwears = badWords.filter((word: string) => _msg.message.toLowerCase().includes(word.toLowerCase()));
+            if (foundSwears.length > 0) {
+              if (blockMessagesWithProfanity) {
+                return;
+              } else {
+                if (censcorMessagesWithProfanity) {
+                  foundSwears.map((badWord: string) => {
+                    _msg.message.replaceAll(badWord, '*'.repeat(badWord.length));
+                  });
+                }
+              }
             }
-            if (_msg.message == undefined || _msg.message == null || _msg.message == '') {
-              setFormError({ open: true, message: 'Invalid message' });
-              return;
+
+            if (lastMessageFromPeerRef.current) {
+              lastMessageFromPeerRef.current[peerId] = Date.now();
+            } else {
+              lastMessageFromPeerRef.current = { [peerId]: Date.now() };
             }
-            if (_msg.timestamp == undefined || _msg.timestamp == null || _msg.timestamp <= 0) {
-              setFormError({ open: true, message: 'Invalid timestamp' });
-              return;
-            }
-            _msg.peerId = peerId;
+            setLastMessageFromPeerRef(lastMessageFromPeerRef.current);
+
             messageCallback.getMessageListener(_msg, _room.roomName);
           });
         } else {

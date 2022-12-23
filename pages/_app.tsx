@@ -32,10 +32,7 @@ export interface LoadingProps {
   isLoading: boolean;
 }
 
-const { chains, provider } = configureChains(
-  [chain.arbitrum],
-  [alchemyProvider({ apiKey: 'E4mZVO8Fc9ZjEIisFEZzQfRW-3iI3K8M', priority: 1 }), publicProvider({ priority: 2 })],
-);
+const { chains, provider } = configureChains([chain.arbitrum], [alchemyProvider({ apiKey: '', priority: 1 }), publicProvider({ priority: 2 })]);
 
 const client = createClient({
   autoConnect: true,

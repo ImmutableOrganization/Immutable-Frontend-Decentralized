@@ -37,6 +37,11 @@ export const DecentralizedChat: NextPage = () => {
     callSendMessage(message);
   };
 
+  const [maxMessageSize, setMaxMessageSize] = useState<number>(1000);
+  const [blockMessagesWithProfanity, setBlockMessagesWithProfanity] = useState<boolean>(false);
+  const [censcorMessagesWithProfanity, setCenscorMessagesWithProfanity] = useState<boolean>(true);
+  const [peerMessageInterval, setPeerMessageInterval] = useState<number>(1000);
+
   const {
     rooms,
     addRoom,
@@ -53,7 +58,7 @@ export const DecentralizedChat: NextPage = () => {
     blockPeerVideoController,
     blockPeerTextController,
     allowStreamsForRoom,
-  } = useRooms(setSelectedRoom, { getMessageListener });
+  } = useRooms(setSelectedRoom, { getMessageListener }, maxMessageSize, blockMessagesWithProfanity, censcorMessagesWithProfanity, peerMessageInterval);
 
   const { messagesRef, addMessage } = useMessages(sendMessageAction);
 
@@ -78,6 +83,8 @@ export const DecentralizedChat: NextPage = () => {
     <>
       {openMessageOptions && (
         <MessageOptionsModal
+          maxMessageSize={maxMessageSize}
+          setMaxMessageSize={setMaxMessageSize}
           setDateHidden={setDateHidden}
           setTimeHidden={setTimeHidden}
           setShortenPeerId={setShortenPeerId}
@@ -89,6 +96,12 @@ export const DecentralizedChat: NextPage = () => {
           setShowChatFeed={setShowChatFeed}
           showVideoFeed={showVideoFeed}
           setShowVideoFeed={setShowVideoFeed}
+          blockMessagesWithProfanity={blockMessagesWithProfanity}
+          setBlockMessagesWithProfanity={setBlockMessagesWithProfanity}
+          censcorMessagesWithProfanity={censcorMessagesWithProfanity}
+          setCenscorMessagesWithProfanity={setCenscorMessagesWithProfanity}
+          peerMessageInterval={peerMessageInterval}
+          setPeerMessageInterval={setPeerMessageInterval}
         />
       )}
       {showAllPeerOptions && (
