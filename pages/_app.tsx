@@ -111,7 +111,6 @@ function MyApp({ Component, pageProps }: AppProps) {
   const [openToast, setOpenToast] = useState<boolean>(false);
   const [toastType, setToastType] = useState<string>('loading');
 
-  const [headerExpanded, setHeaderExpanded] = useState<boolean>(false);
   return (
     <>
       <GoogleAnalytics trackPageViews gaMeasurementId={process.env.NEXT_PUBLIC_GA_ID} />
@@ -120,17 +119,7 @@ function MyApp({ Component, pageProps }: AppProps) {
       >
         <WagmiConfig client={client}>
           <>
-            {headerExpanded ? (
-              <Header setHeaderExpanded={setHeaderExpanded} />
-            ) : (
-              <>
-                <div className='header nav-header'>
-                  <a className={'button selected'} onClick={() => setHeaderExpanded(true)}>
-                    <h2>MENU</h2>
-                  </a>
-                </div>
-              </>
-            )}
+            <Header />
             <FormError formError={formError} setFormError={setFormError} />
             <Loading isLoading={loading} />
             <Toast openToast={openToast} message={toastMessage} type={toastType} setOpenToast={setOpenToast} />

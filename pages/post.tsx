@@ -32,7 +32,7 @@ const Post: NextPage = () => {
   return (
     <div className=''>
       <Head>
-        <title>Post {post_id} | Permanent Post</title>
+        <title>Immutable Post - {post_id}</title>
       </Head>
       <WalletHeader />
       {/* {!account.connector?.ready && <MetaMask />} */}

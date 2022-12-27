@@ -60,7 +60,6 @@
     "remark-gfm": "^3.0.1",
     "replace-in-file": "^6.3.5",
     "sass": "^1.50.1",
-    "simple-peer-light": "github:ImmutableOrganization/simple-peer-light-modified",
     "socket.io": "^4.5.1",
     "socket.io-client": "^4.5.1",
     "styled-components": "^5.3.5",

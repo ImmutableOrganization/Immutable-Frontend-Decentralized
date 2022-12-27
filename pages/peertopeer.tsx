@@ -10,8 +10,9 @@ import { MessageOptionsModal } from '../components/ChatApp/modals/MessageOptions
 import { useRouter } from 'next/router';
 import { Room } from '../components/ChatApp/rooms/room';
 import { Messages } from '../components/ChatApp/messages/messages';
+import Head from 'next/head';
 
-export const DecentralizedChat: NextPage = () => {
+export const PeerToPeer: NextPage = () => {
   const router = useRouter();
   const { roomName, password } = router.query;
 
@@ -23,8 +24,6 @@ export const DecentralizedChat: NextPage = () => {
       } else {
         setSelectedRoom({ roomName, room: undefined, password: '', allowStreams: true });
       }
-    } else {
-      console.log('HI NO ROOM');
     }
   }, [roomName]);
 
@@ -81,6 +80,9 @@ export const DecentralizedChat: NextPage = () => {
 
   return (
     <>
+      <Head>
+        <title>Peer to Peer</title>
+      </Head>
       {openMessageOptions && (
         <MessageOptionsModal
           maxMessageSize={maxMessageSize}
@@ -155,4 +157,4 @@ export const DecentralizedChat: NextPage = () => {
   );
 };
 
-export default DecentralizedChat;
+export default PeerToPeer;

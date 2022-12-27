@@ -71,7 +71,7 @@ export const VideoComponent: React.FunctionComponent<VideoComponentProps> = ({
                     <div className='streamHeader'>
                       <div className='overflow-text'>{'YOU'}</div>
                     </div>
-                    <ReactPlayer height={'auto'} width={'100%'} playing={true} controls={true} url={selfStream} />
+                    <ReactPlayer playsinline={true} height={'auto'} width={`${columnCount}vw`} playing={true} controls={true} url={selfStream} />
                   </div>
                 )}
                 {peerStreams.current ? (
@@ -96,7 +96,14 @@ export const VideoComponent: React.FunctionComponent<VideoComponentProps> = ({
                                         value='X'
                                       />
                                     </div>
-                                    <ReactPlayer height={'auto'} width={'100%'} playing={true} controls={true} url={_stream.mediaStream} />
+                                    <ReactPlayer
+                                      playsinline={true}
+                                      height={'auto'}
+                                      width={`${columnCount}vw`}
+                                      playing={true}
+                                      controls={true}
+                                      url={_stream.mediaStream}
+                                    />
                                   </>
                                 </div>
                               )}

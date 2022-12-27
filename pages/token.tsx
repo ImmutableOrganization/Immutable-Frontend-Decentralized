@@ -9,9 +9,6 @@ import { BaseLink } from '../components/BaseLink';
 // eslint-disable-next-line @typescript-eslint/ban-ts-comment
 // @ts-ignore
 const DynamicDaoBody = dynamic(() => import('../components/Token/DaoBody').then((mod) => mod.DaoBody), { ssr: false });
-// eslint-disable-next-line @typescript-eslint/ban-ts-comment
-// @ts-ignore
-const DynamicBuyBody = dynamic(() => import('../components/Token/BuyBody').then((mod) => mod.BuyBody), { ssr: false });
 
 const Token: NextPage = () => {
   const buyTokenBody = () => {
@@ -112,9 +109,6 @@ const Token: NextPage = () => {
       <Frame headerText={'DETAILS'} className='padding token-box' body={detailsBody} />
       <Suspense fallback={<div>Loading...</div>}>
         <Frame headerText='DAO' className='padding token-box' body={() => <DynamicDaoBody />} />
-      </Suspense>
-      <Suspense fallback={<div>Loading...</div>}>
-        <Frame className={'padding token-box'} headerText={'BUY IMT'} body={() => <DynamicBuyBody />} />
       </Suspense>
       <Frame className={'contact token-box'} headerText={'TWITTER'} body={communityBody} />
       <Frame className={'contact token-box'} headerText={'DISCORD'} body={discordBody} />

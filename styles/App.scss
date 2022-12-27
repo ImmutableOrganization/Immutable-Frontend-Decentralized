@@ -137,7 +137,7 @@ select {
 .selected {
   text-decoration: underline;
   text-decoration-color: #9d00ff;
-  outline: 1vw solid #9d00ff;
+  outline: 1px solid #9d00ff;
 }
 
 option {
@@ -228,6 +228,9 @@ option {
 }
 
 @media (min-width: 660px) {
+  .expanded {
+    grid-template-columns: 1fr !important;
+  }
   .nav-header {
     grid-template-columns: 1fr 1fr;
   }
@@ -805,4 +808,21 @@ input[type='range']:focus {
 
 input[type='range']:focus::-webkit-slider-runnable-track {
   background: #ccc;
+}
+
+.menu-transition {
+  // animation: maxOff 1.5s linear infinite;
+}
+
+@keyframes maxOff {
+  from {
+    grid-auto-rows: 10%;
+    max-height: 10vh;
+    opacity: 0.5;
+  }
+  to {
+    grid-auto-rows: auto;
+    max-height: fit-content;
+    opacity: 1;
+  }
 }
