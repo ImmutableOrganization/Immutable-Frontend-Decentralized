@@ -1,43 +1,36 @@
 .toast {
-    position: fixed;
-    bottom: 0;
-    z-index: 9999999;
+  position: fixed;
+  bottom: 0;
+  z-index: 9999999;
+  width: 100%;
+  margin-block: 0.1vh;
+  width: 98vw;
+
+  .toast-body {
+    display: flex;
+    align-items: center;
+    padding-inline: 3vw;
+    padding-block: 1vh;
+    justify-content: space-between;
+  }
+
+  .button {
     width: 100%;
-    margin-block: 0.1vh;
-    width: 98vw;
+  }
 
+  img {
+    height: 10vh;
+  }
 
-    .toast-body {
-        display: flex;
-        align-items: center;
-        padding-inline: 3vw;
-        padding-block: 1vh;
-        justify-content: space-between;
-    }
+  .spinner {
+    filter: invert(100%) sepia(0%) saturate(7487%) hue-rotate(201deg) brightness(106%) contrast(100%);
+  }
 
-    .button {
-        width: 100%;
-    }
+  .success {
+    filter: invert(70%) sepia(41%) saturate(1477%) hue-rotate(61deg) brightness(113%) contrast(120%);
+  }
 
-    svg {
-        height: 10vh;
-    }
-
-    .spinner {
-        path {
-            fill: white;
-        }
-    }
-
-    .success {
-        path {
-            fill: #39FF14;
-        }
-    }
-
-    .failure {
-        path {
-            fill: #FFFF33;
-        }
-    }
+  .failure {
+    filter: invert(87%) sepia(80%) saturate(3287%) hue-rotate(348deg) brightness(107%) contrast(81%);
+  }
 }
