@@ -1,5 +1,5 @@
 import { useContext, useEffect, useState } from 'react';
-import { ActionSender, BaseRoomConfig, joinRoom, selfId } from 'trystero';
+import { ActionSender, BaseRoomConfig, joinRoom, selfId } from 'trystero/ipfs';
 import React from 'react';
 import { PopupContext } from '../../../pages/_app';
 import { useLocalStorage } from 'usehooks-ts';
